@@ -31,7 +31,8 @@
 
 <script>
 // import regionPath from './region'
-const amapStyleConfig = window._config.amapStyleConfig;
+  let   amapStyleConfig= localStorage.getItem('global_config')
+     amapStyleConfig= amapStyleConfig?JSON.parse(amapStyleConfig):{}
 
 export default {
   name: "DrawElementGis",

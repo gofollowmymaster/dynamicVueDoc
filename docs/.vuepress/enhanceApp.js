@@ -12,6 +12,7 @@
 
 
   import ElementUI from 'element-ui';
+  import   dyPugin  from  "./components/dynamicPage/index.js"
 import 'element-ui/lib/theme-chalk/index.css';
 
 export default async ({
@@ -19,5 +20,8 @@ export default async ({
 }) => {
   if (typeof process === 'undefined') {
     Vue.use(ElementUI)
+    Vue.use(dyPugin)
+
   }
 }
+ 

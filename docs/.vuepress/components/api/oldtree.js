@@ -1,5 +1,7 @@
 import request from './request'
 import qs  from 'qs'
+
+
 const defaultConfig = {
   method: 'post',
   refuseToken: false,
@@ -18,11 +20,13 @@ const defaultConfig = {
 
 //----------------------古树名木-------------------
 export function oldtreeListApi (params) {
-  return request({
-    ...defaultConfig,
-    url: '/ancientTree/treeManage/manage/listTreeMangePage',
-    data: params,
-  })
+  // return request({
+  //   ...defaultConfig,
+  //   url: '/ancientTree/treeManage/manage/listTreeMangePage',
+  //   data: params,
+  // })
+  return Promise.resolve({})
+
 }
 
 
@@ -33,11 +37,13 @@ export function oldtreeUpdateApi (params) {
   params.treeNameId=params.treeNameId[0]?.id
   params.unit=params.unit[0]?.id
   params.pic=params.pic?.map(pic=>pic.fileId)
-  return request({
-    ...defaultConfig,
-    url: '/ancientTree/treeManage/manage/update',
-    data: params,
-  })
+  // return request({
+  //   ...defaultConfig,
+  //   url: '/ancientTree/treeManage/manage/update',
+  //   data: params,
+  // })
+
+  return Promise.resolve({})
 }
 
 
@@ -49,12 +55,14 @@ export function oldtreeSaveApi (params) {
   params.district=params.district[0]?.id
   
   params.pic=params.pic?.map(pic=>pic.fileId)
-  return request({
-    ...defaultConfig,
-    url: '/ancientTree/treeManage/manage/insert',
-    data: params,
+  // return request({
+  //   ...defaultConfig,
+  //   url: '/ancientTree/treeManage/manage/insert',
+  //   data: params,
 
-  })
+  // })
+  return Promise.resolve({})
+
 }
 
 
@@ -62,25 +70,30 @@ export function oldtreeDeleteApi (ids) {
   debugger
 
   ids=Array.isArray(ids)?ids.join(','):ids
-  return request({
-    ...defaultConfig,
-    url: '/ancientTree/treeManage/manage/batchDelete',
-    data: {ids},
-  }).then((res)=>{
-    debugger
-  })
+  // return request({
+  //   ...defaultConfig,
+  //   url: '/ancientTree/treeManage/manage/batchDelete',
+  //   data: {ids},
+  // }).then((res)=>{
+  //   debugger
+  // })
+  return Promise.resolve({})
+
 }
 
 export function oldtreeDetailApi (data) {
   debugger
-  return request({
-    ...defaultConfig,
-    url: '/ancientTree/treeManage/manage/getTreeMangeInfo?id='+data.id,
-    json: false,
-    method:'get'
-  }).then((res)=>{
-    return res.data
-  })
+  // return request({
+  //   ...defaultConfig,
+  //   url: '/ancientTree/treeManage/manage/getTreeMangeInfo?id='+data.id,
+  //   json: false,
+  //   method:'get'
+  // }).then((res)=>{
+  //   return res.data
+  // })
+
+  return Promise.resolve({})
+
 }
 
 
