@@ -1,7 +1,7 @@
 <template>
     <div>
       rhis is {{n}}
-      <button @click="add">+1</button>
+      <el-button @click="add">+1</el-button>
     </div>
 </template>
 <script>

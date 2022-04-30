@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import FormMixin from "@/common/dynamicPage/components/formItems/mixin";
+import FormMixin from "./mixin";
 
 
 export default {

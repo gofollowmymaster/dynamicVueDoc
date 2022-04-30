@@ -17,11 +17,11 @@ module.exports = {
       nav: [
         { text: '前端基础', link: '/guide/layout' },
         {
-          text: '后端基础',
+          text: '文档',
           // 这里是下拉列表展现形式。
           items: [
-            { text: 'JAVA', link: 'http://c.biancheng.net/cpp/u/java_rumen/' },
-            { text: 'PHP', link: '/guide/font' },
+            { text: 'Demo', link: '/guide/dynamic' },
+            { text: 'element', link: '/guide/font' },
           ]
         }
       ],

@@ -11,10 +11,14 @@
   "license": "ISC",
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.9.7",
+    "less": "^4.1.2",
+    "less-loader": "^7.3.0",
     "vuepress": "^1.9.7"
   },
   "dependencies": {
     "element-ui": "^2.15.8",
+    "moment": "^2.29.3",
+    "uppercamelcase": "^3.0.0",
     "vuepress-plugin-demo-container": "^0.2.0"
   }
 }

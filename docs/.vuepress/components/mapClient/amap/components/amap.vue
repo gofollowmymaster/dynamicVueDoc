@@ -10,12 +10,11 @@ import CONST from "../utils/constant";
 import { lngLatTo, toLngLat, toPixel } from "../utils/convert-helper";
 import registerMixin from "../mixins/register-component";
 import { lazyAMapApiLoaderInstance } from "../services/injected-amap-api-instance";
-import toolBar from "../../../../views/Amap/toolBar.vue"
 // import  AMap from  'AMap'
 
 export default {
   name: "el-amap",
-  components:{toolBar},
+  components:{},
   mixins: [registerMixin],
   props: [
     //  add v1.4.0 new feature
