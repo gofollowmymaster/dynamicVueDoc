@@ -44,5 +44,5 @@ module.exports = {
       startYear: '2021',// 项目开始时间，只填写年份
       author: '君逑',//设置全局作者
     },
-    plugins: ['@vuepress/back-to-top']
+    plugins: ['@vuepress/back-to-top','demo-container']
   };

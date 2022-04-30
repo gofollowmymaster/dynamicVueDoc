@@ -1,0 +1,43 @@
+
+.hz-root() {
+    html {
+      font-size: calc(10 / 1680 * 100vw);
+      --col-num: 12; //布局列数
+      --layout-margin: 2.2rem; //页面边距
+      --layout-gap: 18px; //列间距
+      --layout-col-gap: 18px; //列默认间距
+      --layout-row-gap: 18px; //行间距
+    }
+  }
+  
+  
+  .hz-root();
+  
+  @media (min-width: 1440px) {
+    html {
+      font-size: 10px;
+      --layout-gap: 18px;
+      --layout-margin: 32px;
+    }
+  }
+   
+  
+  /*phone竖屏*/
+  @media only screen and (max-width: 600px)   {
+    html {
+      // font-size: calc(10 / 1680 * 100vw);
+      --col-num: 6;
+      --layout-gap: 1.2rem;
+      --layout-margin: 2.8rem;
+    }
+  }
+
+  
+.hz-low-code{
+    // height: 100%;
+
+    position: relative;
+    @import './common.less';
+    @import './layout.less';
+    @import './ui.less';
+}
