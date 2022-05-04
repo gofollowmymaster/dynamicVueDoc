@@ -91,3 +91,15 @@ export function selectDictDataInfoApi(params) {
   })
 }
 
+
+export function buildDynamicSelectOption(dictType){
+  return {
+    key: 'id',
+    value: 'dictValue',
+    label: 'dictLabel',
+    apiPromise: () => {
+      return selectDictDataInfoApi({ dictType }).then((res) => res.data || [])
+    }
+  }
+}
+

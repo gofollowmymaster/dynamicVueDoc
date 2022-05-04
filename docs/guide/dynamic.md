@@ -1,12 +1,9 @@
 ---
-pageClass: full-width-container
-sidebar: false
 layout: wideLayout
 ---
 
 # dynamicCurdPage
 
-当选项过多时，使用下拉菜单展示并选择内容。
 
 ## 基本用法
 

@@ -16,11 +16,6 @@ const entityLabel = '古树名木'
  
 import fields from "./fields.js";
 
-const defaultConfig = {
-  method: 'post',
-  refuseToken: false,
-  json: true
-}
  
 
 //----------------------古树名木-------------------
@@ -145,15 +140,27 @@ export default {
   },
     created(){
       const self=this
-    window.addEventListener('message',(ev,data)=>{
-        console.log('------massage-----',ev,data)
-        debugger
-        if(ev.origin.indexOf(location.hostname)>-1&&ev.data.origin=='jsEditor'){
-          self.fields=JSON.parse(ev.data.content)
-          self.$forceUpdate()
-
-        }
-    })
+      window.addEventListener('message',(ev,data)=>{
+          if(ev.origin.indexOf(location.hostname)>-1&&ev.data.origin=='jsEditor'){
+            if(ev.data.type=='fields'){
+              self.fields=self.parseObject(ev.data.content)
+            }
+            if(ev.data.type=='page'){
+              self.pageOptions= deepMerge(self.pageOptions,self.parseObject(ev.data.content))
+            }
+            self.$forceUpdate()
+          }
+      })
+  },
+  methods:{
+    parseObject(obj){
+      const context={}
+      // const res=JSON.parse(obj)
+      // return res
+      const func=new Function('context',`return ${obj}`)
+      console.log()
+      return func()
+    }
   }
 }
 </script>
