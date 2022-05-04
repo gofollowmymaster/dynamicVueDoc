@@ -11,7 +11,8 @@
   </main>
 </template>
 <script>
-import { deepCopy } from '../../utils/tool';
+import { deepCopy ,appendToPreset,loadPresetConfig} from '../utils/tool';
+ 
 export default {
   name:'DymamicSearchForm',
   props: {
@@ -24,7 +25,7 @@ export default {
     options: {
       type: Object,
       default: function () {
-        return {};
+        return loadPresetConfig('searchForm');
       },
     },
  
@@ -43,7 +44,7 @@ export default {
         key: 'actionBtnSlot',
         label: '',
         wraperProperties: {
-          class: ['grid-col-2', 'grid-col-lg-2', 'grid-col-ss-4', 'grid-col-xs-6']
+          class: ['grid-col-6', 'grid-col-lg-4', 'grid-col-sm-6','grid-col-ss-8', 'grid-col-xs-12']
         }
       })
       return  fieldsClone
@@ -76,7 +77,5 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.flex {
-  display: flex;
-}
+ 
 </style>

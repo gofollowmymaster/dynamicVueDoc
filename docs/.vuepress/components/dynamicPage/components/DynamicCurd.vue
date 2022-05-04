@@ -1,63 +1,42 @@
 <template>
   <main class="p20 flex flex-direction">
     <DynamicSearchForm
-    v-if="options.searchFields&&options.searchFields.length"
-      :fields="options.searchFields"
-      :options="options.searchForm"
+    v-if="curdOpions.searchFields&&curdOpions.searchFields.length"
+      :fields="curdOpions.searchFields"
+      :options="curdOpions.searchForm"
       @search="onSearch"
     ></DynamicSearchForm>
-    <section class="my12 "  v-if="options.topToolBar">
-      <template v-for="(item, index) in options.topToolBar">
-
-        <el-popconfirm
-          class="ml6"
-          v-if="item.popconfirm"
-          v-bind="item.popconfirm"
-          :key="index"
-          @confirm="actionHandle(item)"
-        >
-          <component
-            slot="reference"
-            :is="item.component"
-            v-permission="item.permission"
-            v-text="item.label"
-            v-bind="item.properties"
-          ></component>
-        </el-popconfirm>
-        <component
-          v-else
-          :is="item.component"
-          v-text="item.label"
-          v-bind="item.properties"
-          v-permission="item.permission"
-          :key="index"
-          @click="actionHandle(item)"
-        ></component>
-      </template>
+    <section class="my12 "  v-if="curdOpions.topToolBar">
+      
+        <DynamicActions
+                :actions=" curdOpions.topToolBar"
+                :actionData="selected"
+                :actionBarWraper="$parent.$el"
+              ></DynamicActions>
+    
     </section>
     <section class="grid-wrap  full-width">
-      <div class="scroll p10 border grid-col-2" v-if="options.treeOptions">
+      <div class="scroll p10 border grid-col-4   grid-col-xs-12 grid-col-pp-24" v-if="curdOpions.treeOption">
         <el-tree
-          v-bind="options.treeOptions"
+          v-bind="curdOpions.treeOption"
           @node-click="treeClick"
         >
         </el-tree>
       </div>
       <section
         class="flex flex-direction"
-        :class="[options.treeOptions ? 'grid-col-10' : 'grid-col-12']">
+        :class="[curdOpions.treeOption ? 'grid-col-20  grid-col-xs-12 grid-col-pp-24' : 'grid-col-24']">
         <DynamicTable
           class="table-wraper flex1"
-          :table="options.tableOption"
-          :columns="options.tableFields"
+          :table="curdOpions.tableOption"
+          :columns="curdOpions.tableFields"
           :apiPromise="loadListApiPromise"
           @selecct-change="selecctChange"
-          @toRefreshTable="refresh"
         ></DynamicTable>
         <el-pagination
           class="mt16"
           background
-          v-bind="options.pagination"
+          v-bind="curdOpions.pagination"
           :total="total"
           @size-change="handleSizeChange"
           :pageSize.sync="pagination.pageSize"
@@ -66,24 +45,30 @@
         </el-pagination>
       </section>
     </section>
-    <DynamicFormDialog v-bind="currentDialogForm" @formSubmited="refresh">
-    </DynamicFormDialog>
+
   </main>
 </template>
 <script>
-import { deepCopy, deepMerge,objectFilter } from '../utils/tool'
+import { deepCopy, deepMerge,objectFilter,buildFormFields,buildSearchFields ,buildTableFields} from '../utils/tool'
 import actionMixin from './actionMixin'
 import {
   searchForm,
   pagination,
   tableOption,
-  treeOptions,
-  formOption,
-  dialogFormOption
+  treeOption,
+  dialogFormActionOption,
+  requestApiActionOption,
 } from '../presetConfig'
 export default {
   name: 'DynamicCurd',
   props: {
+    fields:{
+      type: Array,
+      required: false,
+      default(){
+        return []
+      }
+    },
     optionsProps: {
       type: Object,
       require: true
@@ -91,42 +76,140 @@ export default {
     isDebuggerMode:{
       type:Boolean,
       default:true
-    }
+    },
+     apiPromises: {
+      type: Object,
+      default(){
+        return {}
+      }
+    },
+    entityLabel:String
   },
   mixins:[actionMixin],
   data: function () {
+      console.log('--optionsProps--',this.optionsProps)
+
     return {
-      currentDialogForm: {
-        visible: { value: false }
-      },
       searchParams: {refreshKey:''},
       pagination: {
         pageNo: 1,
         pageSize:pagination.pageSize
       },
       total: 1,
-  
-      options:objectFilter(deepMerge({
+       }
+  },
+  computed: {
+    curdOpions(){
+       return objectFilter(deepMerge({
         searchForm,
-        tableOption,
-        treeOptions,
-        pagination
-      },this.optionsProps),(key,obj)=>{
+        treeOption,
+        pagination,
+        topToolBar: {
+          create: deepMerge(dialogFormActionOption,{
+            label: '新增',
+            permission:"新增",
+            isloadData: false,
+            dialog:{
+              properties:{
+                title: '新增'+this.entityLabel,
+                width: '60%',
+              },
+              body: {
+                formItemList: buildFormFields(this.fields, this.formSections),
+                actions: {
+                  save: {
+                    apiPromise:  this.apiPromises['create'],
+                  }
+                }
+              }
+            }
+          }),
+          bulkdelete: deepMerge(requestApiActionOption,{
+            label: '批量删除',
+            permission:"批量删除",
+            popconfirm: {
+              title: '确定删除选择的信息吗？',
+            },
+            apiPromise:   this.apiPromises['bulkdelete']||this.apiPromises['delete'] ,
+          })
+        },
+        searchFields: buildSearchFields(this.fields),
+        tableFields: buildTableFields(this.fields),
+        tableOption: {
+          ...tableOption,
+          loadListApi: this.apiPromises['list'],
+          'current-change': 'handleCurrentChange', // 事件 暂不支持
+          lineActions: {
+            update:  deepMerge(dialogFormActionOption,{
+              label: '更新',
+              permission:"更新",
+              sort:0,
+              dialog:   {
+                properties:{
+                title: '新增表单'+this.entityLabel,
+                width: '60%',
+              },
+                body: {
+                  formItemList: buildFormFields(
+                    this.fields,
+                    this.formSections
+                  ),
+                  actions: {
+                    save: {
+                      label: '更改',
+                      apiPromise:this.apiPromises['update']
+                    }
+                }
+                },
+              }
+            }),
+            detail:  deepMerge(dialogFormActionOption,{
+              label: '查看',
+              permission:"查看",
+              sort:0,
+              apiPromise:  this.apiPromises['detail'],
+              dialog: {
+                properties:{
+                  title: this.entityLabel+'详情',
+                },
+                body: {
+                  props:{
+                    textModel:true,
+                  },
+                  formItemList: buildFormFields(
+                    this.fields,
+                    this.formSections
+                  ),
+                  btns: {
+                    save: null,
+                  }
+                }
+              }
+            }),
+            delete: deepMerge(requestApiActionOption,{
+              label: '删除',
+              sort:10,
+              permission:"删除",
+              apiPromise: this.apiPromises['delete']||this.apiPromises['bulkdelete']
+            })
+          }
+        },
+        
+      },this.optionsProps,true),(key,obj)=>{
         if(key=='showTestTool'){
             return this.isDebuggerMode?true:false
         }else{
           return obj[key]
         }
       })
-    }
-  },
-  computed: {
+   
+    },
     queryParams () {
       return { ...this.searchParams, ...this.pagination }
     },
     loadListApiPromise () {
       debugger
-      return this.options.tableOption
+      return this.curdOpions.tableOption
         .loadListApi(this.queryParams)
         .then((data = {}) => {
           data = data.data || data
@@ -137,8 +220,10 @@ export default {
   },
   created () {
     this.selected = []
-    this.pagination.pageSize =
-      this.options.pagination.pageSize || this.pagination.pageSize
+    this.pagination.pageSize = this.curdOpions.pagination.pageSize || this.pagination.pageSize
+    this.$dynamicBus.$on('dynamicRefresh',()=>{
+      this.refresh()})
+     console.log('----this.curdOpions----',this.curdOpions)
   },
 
   methods: {
@@ -154,8 +239,8 @@ export default {
     treeClick (data, node) {
       debugger
       this.onSearch({
-        [this.options.treeOptions.fieldName]:
-          data[this.options.treeOptions['node-key']]
+        [this.curdOpions.treeOption.fieldName]:
+          data[this.curdOpions.treeOption['node-key']]
       })
     },
     onSearch (params) {
@@ -167,11 +252,11 @@ export default {
     },
 
     actionHandle (action) {
-      if (action.loadCheckedData && this.selected.length < 1) {
+      if (action.isloadData && this.selected.length < 1) {
         this.$message({ type: 'warning', message: '您没有选择任何数据' })
         return
       }
-      const actionData=action.loadCheckedData?this.selected:null
+      const actionData=action.isloadData?this.selected:null
       this.actionHandles(action,actionData)
        
     },

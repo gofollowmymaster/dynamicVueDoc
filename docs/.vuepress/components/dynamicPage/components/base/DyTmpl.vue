@@ -1,14 +1,14 @@
 <template>
-   <span class="px8 py4">
-       <slot></slot>
-   </span>
+   <div class="px8 py4">
+       {{tmpl}}
+   </div>
 </template>
 <script>
 
 export default {
   name: "DyTmpl",
   props: {
-    
+    tmpl:String
   },
   data: function () {
     return {}
@@ -20,7 +20,6 @@ export default {
     
   },
   mounted() {
-    
   },
   components: {},
   methods: {

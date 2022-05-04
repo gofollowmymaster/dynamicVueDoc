@@ -67,19 +67,16 @@ class TestValueCreator {
 
         if (['FormTextarea','FormInput', ].includes(fieldItem.type)) {
           obj[fieldItem.key] = this.makeInputValue(fieldItem);
-        }
-        if (['FormSelect','FormRadio','FormMulSelect'].includes(fieldItem.type)) {
+        }else if (['FormSelect','FormRadio','FormMulSelect'].includes(fieldItem.type)) {
           obj[fieldItem.key] = this.makeSelectRadioValue(fieldItem);
-        }
-        if (['FormIntNumber','FormDecimalNumber', ].includes(fieldItem.type)) {
+        }else if (['FormIntNumber','FormDecimalNumber', ].includes(fieldItem.type)) {
           obj[fieldItem.key] = this.makeNumberValue(fieldItem);
+        }else if(['FormDynamicSelect'].includes(fieldItem.type)){
+          obj[fieldItem.key] = this.makeDynamicSelectValue(fieldItem)||'1';
+        }else{
+          obj[fieldItem.key]='test'
         }
-        if(['FormDynamicSelect'].includes(fieldItem.type)){
-          obj[fieldItem.key] = this.makeDynamicSelectValue(fieldItem);
-        }
-        // if (['FormRateInput', ].includes(fieldItem.type)) {
-        //   obj[fieldItem.key] = this.makeNumberValue(fieldItem);
-        // }
+ 
         
         
       });
@@ -209,9 +206,9 @@ class TestValueCreator {
     const formItemIns=this.formIns.$refs[formItem.key][0]
     const length= Object.values(formItemIns.dynamicDict).length
     const index=generatRandomNum(length-1)
-    const randomItemKey=Object.values(formItemIns.dynamicDict)[index][formItemIns.dictKey]
+    const randomItemKey=Object.values(formItemIns.dynamicDict)[index]?.[formItemIns.dictKey]
     const optionItemDetail=formItemIns.dynamicDict[randomItemKey]
-    const dictValue=optionItemDetail[formItemIns.dictValue]
+    const dictValue=optionItemDetail?.[formItemIns.dictValue]
 
 
     return dictValue

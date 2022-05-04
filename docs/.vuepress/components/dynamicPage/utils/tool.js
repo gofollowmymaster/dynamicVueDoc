@@ -1,4 +1,5 @@
 import { getRule } from './validate'
+import presetConfig from '../presetConfig'
 
 export function isEmpty (value, containEmptyString = false) {
   let emptyValues = ['', undefined, null]
@@ -16,6 +17,13 @@ const superType = (data) => {
 
 export function hasValue (a) {
   if (a !== null && a !== undefined) {
+    return true
+  }
+  return false
+}
+
+export function isObjEmpty(obj){
+  if(['[]','{}'].includes(JSON.stringify(obj))){
     return true
   }
   return false
@@ -66,17 +74,16 @@ export function objectFilter(obj,func,filterEmptyValue=true){
 
 
 
-export function deepMerge (obj1, obj2, clone = true) {
-  if (clone) {
-    obj1 = deepCopy(obj1)
-    // obj2=deepCopy(obj2)
-  }
+export function deepMerge (obj1, obj2, isDeleteNull=false) {
+
+  obj1 = deepCopy(obj1)
+
   let key
   for (key in obj2) {
     // 都為對象
     if (obj1[key] && obj2[key] && ['object'].includes(superType(obj1[key]))) {
       if (superType(obj1[key]) == superType(obj2[key])) {
-        obj1[key] = deepMerge(obj1[key], obj2[key], clone)
+        obj1[key] = deepMerge(obj1[key], obj2[key], isDeleteNull)
         continue
       }
       console.warn('合并对象异常,类型不匹配：' + key)
@@ -97,7 +104,7 @@ export function deepMerge (obj1, obj2, clone = true) {
       continue
     }
     
-    if (!hasValue(obj2[key])) {
+    if (!hasValue(obj2[key])&&isDeleteNull) {
       delete obj1[key]
       continue
     }
@@ -133,9 +140,16 @@ export function deepMergeByKey (obj1, obj2, clone = true) {
   return obj1
 }
 
+export function loadPresetConfig(presetKey){
+  return presetConfig[presetKey]||{}
+}
+export function appendToPreset(presetKey,obj={}){
+  return deepMerge(loadPresetConfig(presetKey),obj)
+}
+
 const formOptionDefault = {
   wraperProperties: {
-    class: ['grid-col-4', 'grid-col-lg-4', 'grid-col-ss-6', 'grid-col-xs-6']
+    class: ['grid-col-8', 'grid-col-lg-6', 'grid-col-sm-8', 'grid-col-ss-12','grid-col-xs-24','grid-col-pp-24',]
   },
   rules: [],
   properties: {},
@@ -144,9 +158,10 @@ const formOptionDefault = {
 }
 
 export function buildFormFields (fields,formSections={}) {
-  // 按formSection分组
+  if(superType(fields)!=='array')return []
+
   fields = deepCopy(fields)
-  debugger
+  // debugger
   fields = fields
     .filter((item) => item.formable || item.formOption)
     .map((item) => {
@@ -175,6 +190,7 @@ export function buildFormFields (fields,formSections={}) {
       return item
     })
     .reduce((prev, next) => {
+      // 按formSection分组
       const formSection = next.formSection ? next.formSection : ''
       next.formSection = undefined
       if (prev[formSection]) {
@@ -203,7 +219,9 @@ const tableOptionDefault = {
 }
 
 export function buildTableFields (fields) {
-  debugger
+  if(superType(fields)!=='array')return []
+
+  // debugger
   let fieldsClone = deepCopy(fields)
 
   fieldsClone = fieldsClone
@@ -230,11 +248,13 @@ export function buildTableFields (fields) {
 
 const searchOptionDefault = {
   wraperProperties: {
-    class: ['grid-col-3', 'grid-col-lg-2', 'grid-col-ss-4', 'grid-col-xs-6']
+    class: ['grid-col-6', 'grid-col-lg-4', 'grid-col-sm-6','grid-col-ss-8', 'grid-col-xs-12','grid-col-pp-24']
   },
   properties: {}
 }
 export function buildSearchFields (fields) {
+  if(superType(fields)!=='array')return []
+
   let fieldsClone = deepCopy(fields)
   fieldsClone = fieldsClone
     .filter((item) => item.searchable || item.searchOption)

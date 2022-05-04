@@ -10,6 +10,7 @@ export const searchForm = {
 }
 export const tableOption = {
   dataList: [],
+  hasCheckbox: true,
   properties: {
     stripe: true,
     border: true,
@@ -44,7 +45,7 @@ export const pagination = {
   // background:true
 }
 
-export const treeOptions = {
+export const treeOption = {
   lazy: true,
   'node-key': 'deptId',
   props: {
@@ -68,29 +69,23 @@ export const formOption = {
   showTestTool: true
 }
 
-export const dialogFormOption = {
-  title: '',
-  width: '70%',
-  body: {
-    container:"el-dialog",
-    props: formOption,
-    formItemList: [],
-    data: {},
-    formDataUpdateHandle (formVm, param) {},
-    btns: {
-      save: {
-        actionType: 'submit',
-        label: '保存',
-        apiPromise: ()=>Promise.resolve(),
-        properties: {
-          type: 'primary'
-        },
-        callback: {
-          closeModal: true,
-          showTip: true,
-          emitEvent:'formSubmited'
-        }
-      },
+export const dynamicForm={
+  component: 'dynamicForm',
+  name:'@object@',
+  label:'',
+
+  props: {
+    class:["grid-col-24"],
+    apiPromise:  ()=>Promise.resolve(),
+
+    formOption: {
+      ...formOption,
+      textModel: false,
+      formItemList: [],       
+    },
+
+    actions: {
+      //  save:null,
       cancel: {
         actionType: 'close',
         label: '取消'
@@ -98,3 +93,115 @@ export const dialogFormOption = {
     }
   }
 }
+
+export const dialogFormOption = {
+  
+  container:"el-dialog",
+  properties:{
+    title: '',
+    width: '70%',
+  },
+  body: {
+    props: formOption,
+    formItemList: [],
+    data: {},
+    formDataUpdateHandle (formVm, param) {},
+    actions: {
+      save: {
+        component: 'el-button',
+        permission:"",
+        actionType: 'submit',
+        label: '保存',
+        isloadData: false,
+        apiPromise: ()=>Promise.resolve(),
+        properties: {
+          type: 'primary',
+          size:'mini'
+        },
+        callback: {
+          closeModal: true,
+          showTip: true,
+          refresh:true,
+        }
+      },
+      cancel: {
+        component: 'el-button',
+        isloadData: false,
+        properties: {
+          type: 'default',
+          size:'small'
+        },
+        actionType: 'close',
+        label: '取消'
+      }
+    }
+  }
+}
+export const dialogPageActionOption={
+  component: 'el-button',
+  label: '',
+  actionType: 'dialogPage',
+  properties: {
+    type: 'default',
+    size:'small',
+    key: '' 
+  },
+  permission:'',
+  dialog: {
+    properties:{
+      title: '',
+    },
+    container:"dy-page",
+    layout:'LayoutGrid',
+    // layout:{
+    //   name:'LayoutTabs',
+    //   properties:{
+    //       type:"card",
+    //   }
+    // },
+    body: [
+     
+    ]
+  }
+}
+
+export const dialogFormActionOption={
+  component: 'el-button',
+  label: '',
+  actionType: 'dialogForm',
+  permission:"",
+  isloadData: true,
+  properties: {
+    type: 'primary',
+    size:'small',
+    key: ''
+  },
+  dialog: dialogFormOption,
+}
+
+export const requestApiActionOption={
+  component: 'el-button',
+  label: '',
+  permission:"",
+  actionType: 'requestApi',
+  properties: {
+    type: 'default',
+    size:'small'
+  },
+  popconfirm: {
+    'confirm-button-text': '好的',
+    'cancel-button-text': '不用了',
+    title: '确定执行该操作吗？',
+    icon: 'el-icon-warning'
+  },
+  apiPromise: () => Promise.resolve(),
+  callback: {
+    showTip: true,
+    refresh:true
+  }
+}
+export default {
+  searchForm,tableOption,pagination,treeOption,formOption,dynamicForm,
+  dialogFormOption,dialogPageActionOption,dialogFormActionOption,requestApiActionOption
+}
+

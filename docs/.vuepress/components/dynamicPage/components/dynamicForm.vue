@@ -1,8 +1,6 @@
 <template>
     <main class="dynamic-form-wraper " 
     >
-   
-
           <DynamicFormContent 
             ref="DynamicFormContent"   
             :data="formData" 
@@ -10,11 +8,14 @@
             @formDataUpdated="formDataUpdated"
             v-bind="formOption">
           </DynamicFormContent>
-      <section class="flex mt12 p12"  >
+      <!-- <section class="flex mt12 p12"  >
         <el-button   v-for="btn in actions" v-bind="btn.properties" :key="btn.label" @click="actionHandle(btn)">
             {{btn.label}}  
-        </el-button>
-       </section>
+        </el-button> -->
+         <DynamicActions
+        :actions="actions"
+        :actionData="{}"
+      ></DynamicActions>
     
     </main>
      
@@ -43,11 +44,9 @@ export default {
         return {};
       },
     },
-    dataRquest: {
-      type: Object,
-      default: function () {
-        return {};
-      },
+    apiPromise: {
+      type: Function,
+      default: ()=>Promise.resolve(),
     },
     data:{
       type:Object,
@@ -59,18 +58,13 @@ export default {
   computed: {
   },
   watch:{
-    dataRquest:{
-      handler(dataRquest){
+    apiPromise:{
+      handler(apiPromise){
         debugger
-            if ( dataRquest?.apiPromise instanceof Function) {
+            if (apiPromise instanceof Function) {
         
-      const dataAdapter =
-      typeof dataRquest.dataAdapter === "function"? dataRquest.dataAdapter: (res) => res;
-      dataRquest
-        .apiPromise(this.data)
-        .then(dataAdapter)
+      apiPromise(this.data)
         .then((data) => {
-           
            this.formData=data
         });
       }

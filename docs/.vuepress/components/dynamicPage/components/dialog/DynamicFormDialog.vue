@@ -1,11 +1,9 @@
 <template>
-  <main class=" ">
+ 
     <component
-      v-bind="$attrs"
+      v-bind="properties"
       :is="container"
       :visible.sync="visible.value"
-      :fullscreen="fullscreen"
-      class="dialog-min-width  "
       custom-class="hz-low-code"
       :append-to-body="true"
     >
@@ -20,21 +18,20 @@
         </DynamicFormContent>
         <section
           class="flex mt12 p12"
-          :class="{ 'align-right': container == 'dialog' }"
-        >
+          :class="{ 'align-right': container == 'dialog' }">
           <el-button
-            v-for="btn in body.btns"
-            v-bind="btn.properties"
-            v-permission="btn.permission"
-            :key="btn.label"
-            @click="actionHandle(btn)"
+            v-for="action in body.actions"
+            v-bind="action.properties"
+            v-permission="action.permission"
+            :key="action.label"
+            @click="actionHandle(action)"
           >
-            {{ btn.label }}
+            {{ action.label }}
           </el-button>
         </section>
       </section>
     </component>
-  </main>
+
 </template>
 <script>
 import actionMixin from '../actionMixin'
@@ -43,9 +40,16 @@ export default {
   name: 'DynamicFormDialog',
   mixins:[actionMixin],
   props: {
-    visible: Object,
-    container: String,
-    fullscreen: Boolean,
+    visible: {
+      type:Object,
+      default(){
+        return {value:false}
+      }
+    },
+    container: {
+      type:String,
+      default:'el-dialog'
+    },
     body: {
       type: Object,
       default: function () {
@@ -61,7 +65,10 @@ export default {
   },
 
   computed: {},
-  mounted () {},
+  mounted () {
+    debugger
+    console.log(this)
+  },
   components: {},
   methods: {
     reset() {
@@ -75,9 +82,9 @@ export default {
         this.body.formDataUpdateHandle(formVm, param)
       }
     },
-    refresh(){
-      this.$emit('formSubmited')
-    }, 
+    // refresh(){
+    //   this.$emit('formSubmited')
+    // }, 
     closeModal(){
       this.visible.value=false
     }
@@ -85,13 +92,5 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.flex {
-  display: flex;
-}
-.align-right {
-  justify-content: flex-end;
-}
-/deep/ .el-dialog__wrapper {
-  position: absolute;
-}
+
 </style>

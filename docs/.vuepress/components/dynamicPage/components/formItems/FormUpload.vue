@@ -7,7 +7,7 @@
   >
     <el-upload
       v-if="!getTextModel"
-      accept=""
+      :accept="accept"
       action=""
       :file-list="fileListInit"
       :on-preview="handlePictureCardPreview"
@@ -26,7 +26,11 @@
     </el-dialog> 
      <DynamicCurd v-if="bindOptions['list-type']=='table'||getTextModel" 
         :style="{padding:0}"
-       :optionsProps="tableOptions"  ></DynamicCurd>
+        :fields="fileFields"
+        :apiPromises="apiPromises"
+       :optionsProps="tableOptions" 
+        entityLabel="附件"
+        ></DynamicCurd>
   </div>
 </template>
 
@@ -40,9 +44,7 @@ import {
 } from '../../utils/tool'
 
 import {
-  pagination,
   tableOption,
-  formOption
 } from '../../presetConfig'
 
 const  fileFields=[
@@ -61,7 +63,7 @@ const  fileFields=[
     },
     formOption:{
       wraperProperties: {
-        class: ['grid-col-12']
+        class: ['grid-col-24']
       },
     }
 
@@ -73,7 +75,7 @@ const  fileFields=[
     // tableable:true,
      formOption:{
       wraperProperties: {
-        class: ['grid-col-12']
+        class: ['grid-col-24']
       },
     }
      
@@ -85,7 +87,7 @@ const  fileFields=[
     tableable:true,
      formOption:{
       wraperProperties: {
-        class: ['grid-col-12']
+        class: ['grid-col-24']
       },
     }
      
@@ -110,68 +112,13 @@ export default {
   data() {
     const self=this
     return {
+      accept:getAccepts(self.accept),
       dialogImageUrl: "",
       dialogVisible: false,
-      tableOptions:{
-        topToolBar: null,
-        searchFields: null,
-        tableFields: buildTableFields( fileFields),
-        tableOption: {
-          ...tableOption,
-          hasCheckbox: false,
-          loadListApi:  ()=>{
-            debugger
-            console.log(self.fileList)
-            return Promise.resolve({list:self.fileList,totalCount:self.fileList.length})
-          },
-          lineActions: {
-            detail: {
-              component: 'el-button',
-              label: '查看',
-              actionType: 'dialogForm',
-              properties: {
-                key: 'detail',
-                size: 'small',
-              },
-              apiPromise: info=>Promise.resolve(info),
-              dialog: {
-                title: "文件详情",
-                width: "60%",
-          
-                body: { 
-                  props: deepMerge(formOption,{ textModel: true, formProperties: {
-                          'label-width': '100px',
-                          'label-position': 'left'
-                        },}),
-                  formItemList: formFields,
-                  data: {},
-                  btns: {
-                    save: null,
-                    cancel:  {
-                      actionType: "close",
-                      label: "取消",
-                    },
-                  },
-                },
-              },
-            },
-            delete:{
-              component:'el-button',
-              label:'删除',
-              actionType: "requestApi",
-              properties: {
-                key: "delete",
-                size: "small",
-              },
-              popconfirm: {
-                "confirm-button-text": "好的",
-                "cancel-button-text": "不用了",
-                title: "确定删除该项内容吗?",
-                icon: "el-icon-warning",
-                "icon-color": "yellow",
-              },
-              apiPromise: (file)=> {
-                  
+      fileFields,
+      apiPromises:{
+          // create:oldtreeSaveApi,
+        bulkdelete:(file)=> {
                   const fileListNew=[]
                   for(let fileItem in self.fileList){
                     if(fileItem.fileId!==file.fileId){
@@ -181,15 +128,20 @@ export default {
                   self.handleRemove(file, fileListNew)
                 return Promise.resolve({})
               },
-              callback:{
-                    refresh:true,
-                    showTip:true,
-                }
-            }
+        list:()=> Promise.resolve({list:self.fileList,totalCount:self.fileList.length}),
+        detail: info=>Promise.resolve(info),
+        // update:oldtreeUpdateApi
+      },
+      tableOptions:{
+        topToolBar: null,
+        searchFields: null,
+        tableOption: {
+          
+          lineActions: {
+            update:null 
           }
         },
-        treeOptions: null,
-        pagination,
+        treeOption: null,
 } ,
     fileListInit:[],
     // fileList:[],

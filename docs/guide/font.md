@@ -37,3 +37,9 @@
 </script>
 ```(注意：需要去掉前面的‘\’！！！)
 :::
+
+
+---
+title: Blogging Like a Hacker
+layout: exampleLayout
+---

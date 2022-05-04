@@ -45,10 +45,10 @@
 </template>
 
 <script>
-// import regionPath from './region'
-  let   amapStyleConfig= localStorage.getItem('global_config')
-     amapStyleConfig= amapStyleConfig?JSON.parse(amapStyleConfig):{}
-
+ 
+const amapStyleConfig =window._config?.amapStyleConfig||{}
+const regionPath=amapStyleConfig.region||[]
+delete  amapStyleConfig.region
 export default {
   name: 'selectPointGis',
   props: {
@@ -84,8 +84,7 @@ export default {
   data () {
     return {
       amapStyleConfig,
-      // path: regionPath,
-      center: [106.680603, 29.402348],
+      path: regionPath,
       events: {
         click: (selectedPoint) => {
           debugger

@@ -1,5 +1,5 @@
 module.exports = {
-    title: '君逑的博客',
+    title: 'huaz的博客',
     description: 'blog,sidama,junqiu',
     //dest: 'dist',// 设置输出目录
     head: [ // 注入到当前页面的 HTML <head> 中的标签
@@ -15,7 +15,9 @@ module.exports = {
       type: 'blog',
     //   logo: '/img/logo.png',
       nav: [
-        { text: '前端基础', link: '/guide/layout' },
+        { text: '示例', link: '/pageBuilder/index' },
+        { text: 'css', link: '/guide/layout' },
+
         {
           text: '文档',
           // 这里是下拉列表展现形式。
@@ -42,7 +44,17 @@ module.exports = {
       cyberSecurityRecord: '公安部备案文案',
       cyberSecurityLink: '公安部备案指向链接',
       startYear: '2021',// 项目开始时间，只填写年份
-      author: '君逑',//设置全局作者
+      author: 'huaz',//设置全局作者
     },
-    plugins: ['@vuepress/back-to-top','demo-container']
+    plugins: ['@vuepress/back-to-top','demo-container'],
+    pages: [
+      {
+        "lastUpdated": 1524027677000,
+        "path": "/guide/dynamic",
+        "title": "VuePress",
+        "frontmatter": {
+          layout:'exampleLayout'
+        }
+      },
+    ]
   };

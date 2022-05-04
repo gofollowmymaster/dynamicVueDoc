@@ -274,6 +274,9 @@
     -moz-appearance: textfield;
   }
   .page-dialog{
+    &.el-dialog__wrapper {
+      position: absolute;
+    }
     .el-dialog__headerbtn{
       // display: none;
     }
@@ -289,26 +292,6 @@
 }
 
 
-//  body .el-table th.gutter{
-//   display: table-cell!important;
-//   }
-
-//   body .el-table colgroup.gutter{
-//     display: table-cell!important;
-//     }
-
-//     .el-table{
-//       overflow: auto !important;
-//   }
-//   .el-table__header-wrapper,.el-table__body-wrapper,.el-table__footer-wrapper{overflow:visible;}
-//     .el-table__body-wrapper{
-//       overflow-x:visible !important;
-//     }
-//     /* 这个是为了解决前面样式覆盖之后伪类带出来的竖线 */
-//    .el-table::after{
-//       position: relative !important;
-//   }
-
 .el-drawer__body{
   padding-left: 16px;
   padding-right: 16px;
@@ -320,3 +303,4 @@
 .el-dialog{
   min-width: 360px;
 }
+

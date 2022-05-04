@@ -79,6 +79,6 @@ export default {
   bottom: 0;
   right: 0;
   background-color: #fff;
-  border: 1px solid red;
+  // border: 1px solid red;
 }
 </style>

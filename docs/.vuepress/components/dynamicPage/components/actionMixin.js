@@ -6,39 +6,31 @@ export default {
 
   methods: {
     actionHandles (action={}, actionData=null) {
-      debugger
-      let container=action.dialog?.container
-      const extra= {}
+       
+      let  dialog
       switch (action.actionType) {
-       case 'dialogContent' :
-        container==DY_DRAWER&&(extra.size=action.dialog.width)
-        if(container==DY_PAGE_WRAPER){
-          extra['custom-class']='page-dialog'
-          extra['fullscreen']=true
-          extra['modal']=false
-          extra['close-on-click-modal']=false
-          extra['close-on-click-modal']=false
+       case 'dialogPage' :
+         dialog=action.dialog
+        if(dialog.container==DY_DRAWER){
+          dialog.properties={size:dialog.properties.width,direction:'rtl',...dialog.properties}
         }
-          this.dialogContentHandle(action, actionData, extra)
+          this.dialogPageHandle(action, actionData)
          break;
         case 'dialogForm':
-          container==DY_DRAWER&&(extra.size=action.dialog.width)
-          if(container==DY_PAGE_WRAPER){
-            extra['custom-class']='page-dialog'
-            extra['fullscreen']=true
-            extra['modal']=false
-            extra['close-on-click-modal']=false
-            extra['close-on-click-modal']=false
+           dialog=action.dialog
+          if(dialog.container==DY_DRAWER){
+            dialog.properties={size:dialog.properties.width,direction:'rtl',...dialog.properties}
           }
-          this.dialogFormHandle(action, actionData,extra)
+          this.dialogFormHandle(action, actionData)
           break
 
         case 'requestApi':
           this.requestApiHandle(action, actionData)
           break
         case 'submit':
-          if(this.$refs.DynamicFormContent){
-            this.$refs.DynamicFormContent.validate((valid, data) => {
+          const DynamicFormContent=this.$refs.DynamicFormContent||this.$parent.$refs.DynamicFormContent
+          if(DynamicFormContent){
+            DynamicFormContent.validate((valid, data) => {
               console.log('---submit---', data)
               if (valid) {
                 this.requestApiHandle(action, data)
@@ -49,6 +41,15 @@ export default {
           }
 
           break
+          case 'reset':
+            const DynamicFormContent2=this.$refs.DynamicFormContent||this.$parent.$refs.DynamicFormContent
+            if(DynamicFormContent2){
+              DynamicFormContent2.resetFields()
+            }else{
+              console.warn('submit 动作 在组件中没有定义对应的 DynamicFormContent 表单 ref,')
+            }
+  
+            break
         case 'close':
           this.closeModalHandle(action)
           break
@@ -96,8 +97,8 @@ export default {
         vm.visible=false
         return
       }
-       if(typeof vm.closeModal ==='function'){
-        vm.closeModal()
+       if(typeof vm.close ==='function'){
+        vm.close()
         return 
       } 
       vm.closeModal(this.$parent)
@@ -112,7 +113,7 @@ export default {
         if(typeof this.refresh =='function'){
           this.refresh()
         }else{
-          this.$emit('refreshCommand')
+          this.$dynamicBus.$emit('dynamicRefresh')
         }
       }
       
@@ -143,12 +144,13 @@ export default {
       }
       console.warn('定义了未被识别的动作'+JSON.stringify(action))
     },
-    dialogContentHandle(action, actionData=null, extra = {}){
+    dialogPageHandle(action, actionData=null, extra = {}){
+      debugger
       const dataAdapter =
         typeof action.dataAdapter === 'function'
           ? action.dataAdapter
           : (res) => {
-            return res
+            return res||{}
           }
           if (!action.apiPromise) {
             const data = dataAdapter(actionData)
@@ -162,22 +164,19 @@ export default {
             .then((data) => {
               this.setCurrentDialogContent(action,data,extra)
             })      
-      
     },
     dialogFormHandle (action, actionData=null, extra = {}) {
       const dataAdapter =
         typeof action.dataAdapter === 'function'
           ? action.dataAdapter
           : (res) => {
-            return res
+            return res||{}
           }
-
       if (!action.apiPromise) {
         const data = dataAdapter(actionData)
         this.setCurrentDialogForm(action,data,extra)
         return
       }
-
       action
         .apiPromise(actionData) // todo  自定义主键
         .then(dataAdapter)
@@ -186,29 +185,35 @@ export default {
         })
     },
     setCurrentDialogForm(action,data=null,extra={}){
+      
       this.currentDialogForm = {
-        ...deepCopy(action.dialog),
         container: DY_DIALOG,
-        size: action.dialog.width,
-        visible: { value: true },
-        ...extra
-        // param: row,
+        ...deepCopy(action.dialog),
+        // size: action.dialog.width,
+        // visible: { value: true },
+        ...extra,
       }
-      data&&this.$set(this.currentDialogForm.body, 'data', data)
-      this.$emit('openDialogForm',this.currentDialogForm)
+      this.currentDialogForm.body.data= data
+
+      // this.$emit('openDialogForm',this.currentDialogForm)
+      debugger
+      this.$globalDialogForm(this.currentDialogForm,this.actionBarWraper)
+
     },
     setCurrentDialogContent (action,data=null,extra={}){
-      this.currentDialogContent = {
-        ...deepCopy(action.dialog),
-        container: DY_DIALOG,
-        size: action.dialog.width,
-        visible: { value: true },
-        ...extra
-        // param: row,
-      }
-      data&&this.$set(this.currentDialogContent, 'data', data)
-      this.$emit('openDialogContent',this.currentDialogContent)
 
+      this.currentDialogContent = {
+        container: DY_DIALOG,
+        ...deepCopy(action.dialog),
+        // ...action.dialog,
+        ...extra,
+      }
+      this.currentDialogContent.data=data
+      // this.$emit('openDialogContent',this.currentDialogContent)
+      debugger
+      this.$globalDialogPage(this.currentDialogContent,this.actionBarWraper)
+
+    
     }
   }
 }

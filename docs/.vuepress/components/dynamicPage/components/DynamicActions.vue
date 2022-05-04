@@ -1,6 +1,6 @@
 <template>
     <main class=" ">
-        <template v-for="(item, index) in actions">
+        <template v-for="(item, index) in actionsOrderByKey">
         <el-popconfirm
           class="ml6"
           v-if="item.popconfirm"
@@ -17,6 +17,7 @@
         </el-popconfirm>
         <component
           v-else
+          class="ml6"
           :is="item.component"
           v-text="item.label"
           v-bind="item.properties"
@@ -27,14 +28,14 @@
     </main>
 </template>
 <script>
-import actionMixin from '../actionMixin'
-
+import actionMixin from './actionMixin'
+import {isObjEmpty} from  "../utils/tool"
 export default {
   name:'DynamicActions',
   mixins:[actionMixin],
   props: {
     actions:{
-      type:Object,
+      type:[Object,Array],
       default(){
         return {}
       }
@@ -44,24 +45,37 @@ export default {
       default(){
         return {}
       }
+    },
+    actionBarWraper:{
+      type:[HTMLElement ,Object]
     }
-    
+     
+  },
+  computed:{
+    actionsOrderByKey(){
+      debugger
+      const actions=  Object.entries(this.actions).map(([key,value],index)=>{
+        return  {...value,actionKey:key}
+      })
+      actions.sort((a,b)=>a.sort-b.sort)
+      return actions
+    }
   },
   
-  computed: {
-    
-  },
-  mounted(){
-    console.log('----this.$attrs----',this.$attrs)
-  },
-  components: { },
   methods: {
      
-    reset() {
-      this.$refs["searchForm"].resetFields();
-    },
+
     actionHandle(action){
-        this.actionHandles(action,this.actionData)
+      let actionData=this.actionData
+      debugger
+      if(action.isloadData!==false&&isObjEmpty(actionData)){
+           this.$message({ type: 'warning', message: '您没有选择任何数据' })
+        return
+      }
+      if(action.isloadData===false){
+        actionData=null
+      }
+      this.actionHandles(action,actionData)
       
     },
   },

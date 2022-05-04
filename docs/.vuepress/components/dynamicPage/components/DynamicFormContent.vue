@@ -7,7 +7,7 @@
       :validate-on-rule-change="true"
       ref="form"
     >
-      <template  v-for="(formSection, index) of formItemList">
+      <template  v-for="(formSection) of formItemList">
       <main
         v-if="!formSection.hidden"
         :key="formSection.label"
@@ -81,15 +81,12 @@
 </template>
 
 <script>
-import FormMixin from './mixin.js'
 import { deepCopy, JSONDeepCopy } from '../utils/tool'
 
 
 
 export default {
   name: 'DynamicFormContent',
-  mixins: [FormMixin],
-
   props: {
     data: {
       type: Object,
@@ -113,16 +110,24 @@ export default {
       type: Boolean,
       default: false
     },
-    // 是否显示 全部收起、展开按钮
-    showAllFoldBtn: {
+ 
+     // 全部表单元素禁用。通常用于提交时使用
+    allDisabled: {
       type: Boolean,
       default: false
     },
-    // 是否显示浏览模式切换按钮
-    showScanTypeBtn: {
+    // 是否给表单显示border 外框，包含区块外侧有一个 boder，以及区块标题的灰色背景
+    borderForm: {
+      type: Boolean,
+      default: true
+    },
+    // 文字模式。不显示表单组件，而是只显示纯文字内容
+    // 同时，纯文本模式（即值为 true 的时候），会隐藏表单要素 label 左边的星号
+    textModel: {
       type: Boolean,
       default: false
-    }
+    },
+ 
   },
   data () {
     return {
@@ -138,7 +143,6 @@ export default {
       foldBlockList: [], // 收起的区块（放在这个里面，该区块就只显示区块标题，不显示内容）
       scanType: 'normal', // normal 默认（大表单），single（表单只显示单个区块，上方显示所有区块的按钮组）
       singleScanBlock: '', // 单个模式时，显示哪个表单
-      formItemListBak: null
     }
   },
   watch: {
@@ -152,7 +156,6 @@ export default {
     }
   },
   components: {},
-  created () {},
   provide () {
     return {
       // 状态切换函数
@@ -175,13 +178,25 @@ export default {
       transExpression: this.transExpression
     }
   },
+  created () {
+    //todo 问题 props 傳入formItemList 变化后 formItemListInit 不会变化
+    //是否允许props 傳入formItemList  动态更新
+    // this.formItemListInit=deepCopy(this.formItemList)
+    // Object.freeze(this.formItemList)
+  },
   methods: {
-    computeExpressions () {
-      if (!this.formItemListBak) {
-        this.formItemListBak = deepCopy(this.formItemList)
+    getFormItemListInit(){
+       if (!this.formItemListInit) {
+        this.formItemListInit = deepCopy(this.formItemList)
+        Object.freeze(this.formItemListInit)
       }
-
-      this.formItemListBak.forEach((formSection, index) => {
+      return this.formItemListInit
+    },
+    computeExpressions () {
+      debugger
+      const formItemListInit=this.getFormItemListInit()
+       
+      formItemListInit.forEach((formSection, index) => {
           const reg = /\$\{(.+)?\}/
         
          if (typeof formSection.hidden === 'string' && reg.test(formSection.hidden)) {
@@ -194,7 +209,7 @@ export default {
           }
 
         (!this.textModel)&&formSection.children.forEach((item, innerIndex) => {
-
+            
           for (const key in item.properties) {
             const propertyValue = item.properties[key]
             // if(item.key=='name'){
@@ -208,9 +223,25 @@ export default {
                 )
                 continue
               }
+              if (key == 'value') {
+                debugger
+                const newValue=this.transExpression(propertyValue)
+                newValue!=this.data[item.key]&&this.$set(this.data,item.key,newValue)
+                continue
+              }
+          
               this.formItemList[index].children[innerIndex].properties[key] =
                 this.transExpression(propertyValue)
             }
+            if(typeof propertyValue=='function'){
+              debugger
+              const newValue=propertyValue(this.data[item.key],deepCopy(this.data))
+                const oldValue=this.data[item.key]
+
+              newValue!==oldValue&&this.$set(this.data,item.key,newValue)
+              
+            }
+
           }
           if (typeof item.hidden === 'string' && reg.test(item.hidden)) {
             this.formItemList[index].children[innerIndex].hidden =
@@ -222,14 +253,20 @@ export default {
     transExpression (expression) {
       const instance = this.data
 
-      expression = expression.replace(/\$\{(.+)?\}/g, 'instance.$1')
-      const func = new Function('instance', `return ${expression}`)
+      expression = expression.replace(/\$\{(.+?)\}/g, 'instance.$1')
+      if(expression.indexOf('return')==-1){
+          expression=    `return ${expression}`
+      }debugger
+      const func = new Function('instance', expression)
       const res = func(instance)
       return res
     },
     // 监听值更新
     valueUpdateEvent (params) {
       this.$emit('formDataUpdated', this, params)
+      this.formItemMap((formItem)=>{
+          formItem.formDataUpdateHandle&&formItem.formDataUpdateHandle(this.data[formItem.key],this.data)
+      })
     },
 
     getData () {
@@ -241,6 +278,7 @@ export default {
       Object.keys(data).forEach((key) => {
         this.$set(this.data, key, data[key])
       })
+
     },
 
     validate (fn) {
@@ -384,7 +422,7 @@ export default {
       this.$refs.form.resetFields()
       this.formItemMap((formItem) => {
         // 如果某一项是
-        if (formItem.type === 'child-form') {
+        if (['FormChildForm','FormCurd'].includes(formItem.type)) {
           const a = this.$refs[formItem.key]
           if (a instanceof Array) {
             a[0].resetFields()
@@ -403,7 +441,27 @@ export default {
       } else {
         this.foldBlockList.splice(index, 1)
       }
-    }
+    },
+    isBlocked (formSection) {
+      return this.foldBlockList.indexOf(formSection.label) > -1
+    },
+    // 获取区块的样式
+    getBlockClass (blockItem) {
+      const c = blockItem.class
+      return Object.assign({}, c, {
+        'block-item': this.borderForm,
+        'block-hide': this.foldBlockList.indexOf(blockItem.label) > -1
+      })
+    },
+
+    // 获取 label
+    getFormItemLabel (formItem) {
+      if (
+        this.textModel &&['left','right'].includes(this.formProperties['label-position'])) {
+        return formItem.label + ':'
+      }
+      return formItem.label
+    },
   }
 }
 </script>

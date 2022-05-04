@@ -6,7 +6,7 @@ const {
   localStorage: { GlobalMenuPermissionList }
 } = globalStorageConstant
 
-Vue.directive('permission', {
+export default {
   bind: function (el, binding, vnode) {
     let hasPermission = false
     const permissionList = localStorage.getItem(GlobalMenuPermissionList)
@@ -32,4 +32,4 @@ Vue.directive('permission', {
       el.style.display = 'none'
     }
   }
-})
+}

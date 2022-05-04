@@ -65,10 +65,5 @@ export default {
 };
 </script>
 <style lang="css" scoped>
-.flex {
-  display: flex;
-}
-.align-right{
-  justify-content: flex-end;
-}
+ 
 </style>

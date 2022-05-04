@@ -29,32 +29,10 @@
           :key="col.key"
         >
           <template slot-scope="scope">
-            <template v-for="(action, index) in col.actions">
-              <el-popconfirm
-                class="ml6"
-                v-if="action.popconfirm"
-                v-bind="action.popconfirm"
-                :key="index"
-                @confirm="actionHandle(action, scope.row)"
-              >
-                <component
-                  slot="reference"
-                  :is="action.component"
-                  v-text="action.label"
-                  v-permission="action.permission"
-                  v-bind="action.properties"
-                ></component>
-              </el-popconfirm>
-              <component
-                v-else
-                :is="action.component"
-                v-text="action.label"
-                v-bind="action.properties"
-                :key="index"
-                v-permission="action.permission"
-                @click="actionHandle(action, scope.row)"
-              ></component>
-            </template>
+          <DynamicActions
+                :actions="col.actions"
+                :actionData="scope.row"
+                :actionBarWraper="$parent.$el"></DynamicActions>
           </template>
         </el-table-column>
         <el-table-column
@@ -85,22 +63,14 @@
         </el-table-column>
       </template>
     </el-table>
-    <DynamicFormDialog
-      v-bind="currentDialogForm"
-      @formSubmited="$emit('toRefreshTable')"
-    >
-    </DynamicFormDialog>
-    <DynamicPageDialog  v-bind="currentDialogContent"> </DynamicPageDialog>
+   
   </main>
 </template>
 <script>
-import { deepCopy } from '../../utils/tool'
-import actionMixin from '../actionMixin'
+import { deepCopy,loadPresetConfig } from '../utils/tool'
 
 export default {
   name: 'DanamicTable',
-  mixins:[actionMixin],
-
   props: {
     dataList: {
       type: Array,
@@ -117,7 +87,7 @@ export default {
     table: {
       type: Object,
       default: function () {
-        return {}
+        return loadPresetConfig('tableOption')
       }
     },
 
@@ -131,12 +101,6 @@ export default {
   data: function () {
     return {
       tableData: [],
-      currentDialogForm: {
-        visible: { value: false }
-      },
-      currentDialogContent:{
-        visible: { value: false }
-      }
     }
   },
   computed: {
@@ -173,7 +137,7 @@ export default {
             label: '操作',
             fixed: 'right'
           },
-          actions
+          actions:this.table.lineActions
         })
       }
 
@@ -183,7 +147,6 @@ export default {
   watch: {
     apiPromise: {
       handler (api) {
-        debugger
         if (api instanceof Promise) {
           api.then((dataList) => {
             this.tableData = dataList
@@ -195,7 +158,6 @@ export default {
     },
     tableData: {
       handler (tableData) {
-        debugger
         this.$nextTick(() => {
           this.$refs.table.doLayout()
         })
@@ -220,13 +182,8 @@ export default {
     handleRowClick (row, column, event) {
       this.$emit('row-click', row, column, event)
     },
-    actionHandle (action, row) {
-      debugger
-       this.actionHandles(action,row)
-    },
-    refresh(){
-      this.$emit('toRefreshTable')
-    },
+ 
+
      indexHandle(index) {
        debugger
         return index+1;

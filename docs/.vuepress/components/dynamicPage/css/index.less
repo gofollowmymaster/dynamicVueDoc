@@ -2,7 +2,7 @@
 .hz-root() {
     html {
       font-size: calc(10 / 1680 * 100vw);
-      --col-num: 12; //布局列数
+      --col-num: 24; //布局列数
       --layout-margin: 2.2rem; //页面边距
       --layout-gap: 18px; //列间距
       --layout-col-gap: 18px; //列默认间距
@@ -13,22 +13,26 @@
   
   .hz-root();
   
-  @media (min-width: 1440px) {
+ 
+  @media only screen and (max-width: 1266px)   {
     html {
-      font-size: 10px;
-      --layout-gap: 18px;
-      --layout-margin: 32px;
+      // font-size: calc(10 / 1680 * 100vw);
+      --layout-gap: 10px;
+      --layout-col-gap: 10px; //列默认间距
+      --layout-row-gap: 10px; //行间距
+
     }
   }
-   
   
   /*phone竖屏*/
   @media only screen and (max-width: 600px)   {
     html {
       // font-size: calc(10 / 1680 * 100vw);
-      --col-num: 6;
-      --layout-gap: 1.2rem;
-      --layout-margin: 2.8rem;
+      --col-num: 24;
+      --layout-gap: 6px;
+      --layout-col-gap: 6px; //列默认间距
+      --layout-row-gap: 6px; //行间距
+
     }
   }
 
@@ -36,7 +40,7 @@
 .hz-low-code{
     // height: 100%;
 
-    position: relative;
+    // position: relative;
     @import './common.less';
     @import './layout.less';
     @import './ui.less';

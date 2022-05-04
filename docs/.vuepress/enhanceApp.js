@@ -10,10 +10,18 @@
 //   }
 
 
+import ElementUI from 'element-ui';
+import   dyPugin  from  "./components/vuePlugins/index.js"
+import   pageBuilder  from  "./components/pageBuilder/index"
 
-  import ElementUI from 'element-ui';
-  import   dyPugin  from  "./components/dynamicPage/index.js"
+
 import 'element-ui/lib/theme-chalk/index.css';
+import {
+  buildFormFields,
+  appendToPreset
+} from './components/dynamicPage/utils/tool'
+
+  
 
 export default async ({
   Vue
@@ -21,6 +29,10 @@ export default async ({
   if (typeof process === 'undefined') {
     Vue.use(ElementUI)
     Vue.use(dyPugin)
+    Vue.use(pageBuilder)
+
+    Vue.prototype.$buildFormFields=buildFormFields
+    Vue.prototype.$appendToPreset=appendToPreset
 
   }
 }

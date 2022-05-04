@@ -14,7 +14,6 @@ import { lazyAMapApiLoaderInstance } from "../services/injected-amap-api-instanc
 
 export default {
   name: "el-amap",
-  components:{},
   mixins: [registerMixin],
   props: [
     //  add v1.4.0 new feature
