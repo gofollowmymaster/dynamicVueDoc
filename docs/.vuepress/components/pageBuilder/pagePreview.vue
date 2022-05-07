@@ -154,12 +154,20 @@ export default {
   },
   methods:{
     parseObject(obj){
-      const context={}
-      // const res=JSON.parse(obj)
+      let context={},res
+      try{
+        res=JSON.parse(obj,(k,v)=>{
+        if(typeof v==='string'&& v.startsWith('function')){
+           return  new Function('value',`return (${v.replace('\n','')})(value)`)
+        }
+        return v
+      })
+      }catch(err){
+        console.error(err)
+      }
       // return res
-      const func=new Function('context',`return ${obj}`)
-      console.log()
-      return func()
+      // const func=new Function('context',`return ${obj}`)
+      return res
     }
   }
 }

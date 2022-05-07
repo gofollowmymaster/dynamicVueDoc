@@ -1,20 +1,25 @@
 // import { buildDynamicSelectOption,elementUploadFileApi } from "../api/global.js";
 
 export function buildDynamicSelectOption(dictType){
+
   return {
     key: 'id',
-    value: 'dictValue',
-    label: 'dictLabel',
-    apiPromise: `() => {
+    value: 'value',
+    label: 'label',
+    apiPromise: () => {
+      debugger
       return Promise.resolve([{
-        value:'1',
-        label:'11'
+        value:1,
+        label:'11',
+        id:1
       },
       {
-        value:'2',
-        label:'22'
+        value:2,
+        label:'22',
+        id:2
+
       }])
-    }`
+    }
   }
 }
 
@@ -84,6 +89,7 @@ export default [
           {
             linkKey: 'ownership2',
             linkValue: function (data) {
+              console.log('-------data-------',data)
               return data
             },
             linkDisable:false
@@ -113,19 +119,19 @@ export default [
   },
   {
     key: "ownership2",
-    type: "FormSelect",
+    type: "FormDynamicSelect",
     label: "权属2",
-    options:[
-      {
-        value:1,
-        label:'11'
-      },
-      {
-        value:2,
-        label:'22'
-      },
-    ],
-    // options:  buildDynamicSelectOption('tree_manage_distribution'), 
+    // options:[
+    //   {
+    //     value:1,
+    //     label:'11'
+    //   },
+    //   {
+    //     value:2,
+    //     label:'22'
+    //   },
+    // ],
+    options:  buildDynamicSelectOption('tree_manage_distribution'), 
     tableOption: {
       sort:3
     }, 
