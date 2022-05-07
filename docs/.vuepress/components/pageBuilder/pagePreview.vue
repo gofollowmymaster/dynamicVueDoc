@@ -154,19 +154,17 @@ export default {
   },
   methods:{
     parseObject(obj){
-      let context={},res
+      let res
       try{
         res=JSON.parse(obj,(k,v)=>{
         if(typeof v==='string'&& v.startsWith('function')){
-           return  new Function('value',`return (${v.replace('\n','')})(value)`)
+           return window.eval('('+v+')');
         }
         return v
       })
       }catch(err){
         console.error(err)
       }
-      // return res
-      // const func=new Function('context',`return ${obj}`)
       return res
     }
   }

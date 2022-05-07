@@ -1,27 +1,49 @@
 // import { buildDynamicSelectOption,elementUploadFileApi } from "../api/global.js";
+import request from '../api/request'
+
+export function selectDictDataInfoApi(params) {
+  return request({
+    url: '/sys/dict/data/selectDictDataInfo?'+qs.stringify(params),
+    refuseToken: false,
+    json: false,
+    method:'get'
+  })
+}
+
 
 export function buildDynamicSelectOption(dictType){
-
   return {
     key: 'id',
-    value: 'value',
-    label: 'label',
+    value: 'dictValue',
+    label: 'dictLabel',
     apiPromise: () => {
-      debugger
-      return Promise.resolve([{
-        value:1,
-        label:'11',
-        id:1
-      },
-      {
-        value:2,
-        label:'22',
-        id:2
-
-      }])
+      return selectDictDataInfoApi({ dictType }).then((res) => res.data || [])
     }
   }
 }
+
+// export function buildDynamicSelectOption(dictType){
+
+//   return {
+//     key: 'id',
+//     value: 'value',
+//     label: 'label',
+//     apiPromise: () => {
+//       debugger
+//       return Promise.resolve([{
+//         value:1,
+//         label:'11',
+//         id:1
+//       },
+//       {
+//         value:2,
+//         label:'22',
+//         id:2
+
+//       }])
+//     }
+//   }
+// }
 
 
 
