@@ -1,5 +1,6 @@
 import dynamicPage from "../dynamicPage/index.js"
-import permission from './directive.js'
+import permission from './permissionDirective.js'
+import resizeAble from './resizeAbleDirective.js'
 
 
  
@@ -10,6 +11,7 @@ export default {
       this.install.installed = true;
   
       Vue.directive('permission',permission)
+      Vue.directive('resize',resizeAble)
       Vue.use(dynamicPage)
 
     },

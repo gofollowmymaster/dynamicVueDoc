@@ -11,16 +11,32 @@
 </template>
 <script>
 
- 
+ import {buildTableFields} from '../dynamicPage/utils/tool'
 const entityLabel = '古树名木'
  
 import fields from "./fields.js";
-
+import Mock from  "mockjs"
  
-
+const tableFields=buildTableFields(fields)
+const mockInfo={}
+tableFields.forEach((field)=>{
+  debugger
+    mockInfo[field.key+'|1']='@cname'
+})
+console.log('------mock-----',Mock.mock({
+      'list|10':[
+        mockInfo
+      ],
+      totalCount:20
+  }))
 //----------------------古树名木-------------------
  function oldtreeListApi (params) {
-  return Promise.resolve({})
+  return Promise.resolve(Mock.mock({
+      'list|10':[
+        mockInfo
+      ],
+      totalCount:20
+  }))
 }
 
  function oldtreeUpdateApi (params) {
@@ -46,6 +62,7 @@ import fields from "./fields.js";
 import {
   buildFormFields,
   appendToPreset,
+  deepMerge,
 } from '../dynamicPage/utils/tool'
  
 
