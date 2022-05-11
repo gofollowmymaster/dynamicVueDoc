@@ -1,12 +1,41 @@
 
 import {generatRandomNum} from  "../../utils/tool"
-/**
-* Created by 王冬 on 2021/9/18.
-* QQ: 20004604
-* weChat: qq20004604
-* 功能说明：
-* 测试数据生成器
-*/
+
+
+import Mock from "mockjs";
+
+const Random = Mock.Random
+
+function mockDyFields(fields) {
+  const mockInfo = {};
+  fields.forEach((field) => {
+    switch (field.type) {
+      case "FormDate":
+        mockInfo[field.key + "|1"] = "@date";
+        break;
+      case "FormDateTime":
+        mockInfo[field.key + "|1"] = "@datetime";
+        break;
+      case "FormRadio":
+      case "FormSelect":
+        // mockInfo[field.key + "|1"] = field.options(
+        //   Random.integer(0, field.options.length - 1)
+        // );
+           mockInfo[field.key + "|1"] = Random.integer(0,3);
+        break;
+      case "FormIntNumber":
+        mockInfo[field.key + "|1-100"] = 1;
+        break;
+      case "FormDecimalNumber":
+        mockInfo[field.key + "|1-100.1-3"] = 1;
+        break;
+      default:
+        mockInfo[field.key + "|1"] = "@cword";
+    }
+  });
+  return mockInfo;
+}
+ 
 const DATAENUM = {
   // 合法标准随机数据
   StandardData: 0,
@@ -15,16 +44,7 @@ const DATAENUM = {
   // 非法超限数据
   OutLimitData: 2,
 };
-/* 测试数据生成类
-* 1. 入参是 formItem（即单个表单元素的值）
-* 2. 生成的数据分为多种：
-* 2.1 【自定义数据】，用户对某字段，传入自定义数据生成函数时，优先采用这个；
-* 2.2 【合法标准随机数据】；
-* 2.3 【合法边界数据】（比如长度最大或者最小）；
-* 2.4 【非法超限数据】（过长或者过短）（并且该 key 未被添加到 this.exceptOutLimitKeys 里）
-* 具体生成哪个，根据配置决定；
-* 3. 超限数据的话，需要当前 key 在超限范围列表里的时候，才会生成（否则生成【合法标准随机数据】
-* */
+ 
 class TestValueCreator {
   constructor(formIns){
     this.formIns=formIns
@@ -124,11 +144,13 @@ class TestValueCreator {
       let s = `${label}`;
       if (max) {
         // 如果长度不够，自动在后面补够长度
-        s = s.padEnd(max + 1, 'Test');
+        s=Mock.mock(`@word(${max+1})`)
+
       } else if (min) {
         // 2. 如果有 min，则取 min-1 的长度
         // 再补够长度，再截取到长度-1
-        s = s.padEnd(min, 'Test').slice(0, min - 1);
+        s=Mock.mock(`@word(${max-1})`)
+
       } else if (required) {
         // 如果是必填，则设置该值为空
         s = '';
@@ -142,10 +164,12 @@ class TestValueCreator {
       let s = `${label}`;
       if (max) {
         // 有 max 则取最大 max
-        s = s.padEnd(max + 1, 'Test').slice(0, max);
+ 
+        s=Mock.mock(`@word(${max})`)
       } else if (min) {
         // 否则，如果有 min，则取最小 min
-        s = s.padEnd(min, 'Test').slice(0, min);
+        s=Mock.mock(`@word(${min})`)
+
       } else if (required) {
         // 此时无长度限制，那么判断：如果是必填，则默认设置该值为 label（确保有值）
         s = `${label}`;
@@ -155,21 +179,13 @@ class TestValueCreator {
       }
       return s;
     } else {
+
+
       let len;
-      // 默认随机数据
-      if (max && min) {
-        len = Math.floor(((max + 1 - min) * Math.random())) + min;
-      } else if (max) {
-        len = Math.floor(((max + 1) * Math.random()));
-      } else if (min) {
-        // 如果只有最小限制的话，最大长度也不能太大，因此最大长度默认设置为 20，最小长度为 min
-        len = Math.floor((20 + 1 - min) * Math.random());
-      } else {
-        // 其他时候，长度随机为 0~20
-        len = Math.floor((21 * Math.random()));
-      }
-      let s = `${label}`;
-      s = s.padEnd(len, 'Test').slice(0, len+1);
+      min=min||1
+      max=max||10
+      s=Mock.mock(`@word(${min}, ${max})`)
+    
       return s;
     }
   }
