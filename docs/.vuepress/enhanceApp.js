@@ -28,6 +28,7 @@ export default async ({
 }) => {
   if (typeof process === 'undefined') {
     Vue.use(ElementUI)
+ 
     Vue.use(dyPugin)
     Vue.use(pageBuilder)
 

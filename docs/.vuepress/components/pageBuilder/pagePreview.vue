@@ -1,6 +1,6 @@
 <template>
   <DynamicCurdPage
-  class="relative"
+  class="page-wraper"
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
@@ -47,14 +47,14 @@ function mockDyFields(fields) {
 }
 
 //----------------------古树名木-------------------
-function oldtreeListApi(params) {
-  return Promise.resolve(
-    Mock.mock({
-      "list|10": [mockDyFields(fields)],
-      totalCount: 20,
-    })
-  );
-}
+// function oldtreeListApi(params) {
+//   return Promise.resolve(
+//     Mock.mock({
+//       "list|10": [mockDyFields(fields)],
+//       totalCount: 20,
+//     })
+//   );
+// }
 
 function oldtreeUpdateApi(params) {
   return Promise.resolve({});
@@ -73,6 +73,9 @@ function oldtreeDetailApi(data) {
   return Promise.resolve(
      Mock.mock(mockDyFields(buildFormFields(fields)))
   );
+}
+function buildDynamicSelectOption(){
+   return {}
 }
 
 import {
@@ -95,7 +98,14 @@ export default {
       apiPromises: {
         create: oldtreeSaveApi,
         bulkdelete: oldtreeDeleteApi,
-        list: oldtreeListApi,
+        list:   (params)=> {
+          return Promise.resolve(
+            Mock.mock({
+              "list|10": [mockDyFields(this.fields)],
+              totalCount: 20,
+            })
+          );
+        },
         detail: oldtreeDetailApi,
         update: oldtreeUpdateApi,
       },
@@ -174,13 +184,17 @@ export default {
         ev.origin.indexOf(location.hostname) > -1 &&
         ev.data.origin == "jsEditor"
       ) {
+
+         const contentParsed= self.parseObject(ev.data.content)
+        if(!contentParsed)return 
+
         if (ev.data.type == "fields") {
-          self.fields = self.parseObject(ev.data.content);
+          self.fields = contentParsed;
         }
         if (ev.data.type == "page") {
           self.pageOptions = deepMerge(
             self.pageOptions,
-            self.parseObject(ev.data.content)
+            contentParsed
           );
         }
         self.$forceUpdate();
@@ -188,6 +202,7 @@ export default {
     });
   },
   methods: {
+   
     parseObject(obj) {
       let res;
       try {
@@ -197,12 +212,20 @@ export default {
           }
           return v;
         });
-      } catch (err) {
-        console.error(err);
+      } catch (er) {
+        try{
+        res= eval(obj)
+        }catch(err){
+          console.error(err);
+        }
+        
       }
       return res;
     },
   },
 };
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.page-wraper{
+  position: relative;
+}</style>

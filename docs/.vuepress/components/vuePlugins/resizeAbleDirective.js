@@ -7,8 +7,25 @@ export default {
       const left = getPrevElement(resize);
       const mid =getPrevElement(resize);
       const box = resize.parentNode;
+
+      const mask=document.createElement('div')
+      mask.style.position='fixed'
+      mask.style.top= 0
+
+      mask.style.width='100vw'
+      mask.style.height='100vh'
+      // mask.style.backgroundColor='red'
+      mask.style.zIndex= 100
+
+      mask.id='full-mask'
+      mask.style.display='none'
+
+      document.body.appendChild(mask)
+
       // 鼠标按下事件
       resize.onmousedown = function(e) {
+        document.querySelector('#full-mask').style.display='block'
+
         const startX = e.clientX;
         const resizeLeft = resize.offsetLeft;
         // 鼠标拖动事件
@@ -27,6 +44,8 @@ export default {
         document.onmouseup = function() {
           document.onmousemove = null;
           document.onmouseup = null;
+          document.querySelector('#full-mask').style.display='none'
+
         };
         return false;
       };
