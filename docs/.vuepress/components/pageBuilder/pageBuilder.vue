@@ -155,13 +155,18 @@ export default {
         );
     },
     transApiSchem(data){
-
+      try{
       if(data.code){
           const code = JSON.parse(data.code)
       const fieldsContent=[{
         key:'keyword',
         label:'关键字',
         searchable:true,
+      },{
+        key:'index',
+        type:'index',
+        label:'序号',
+        tableable:true
       }]
       
       let index=0
@@ -186,11 +191,16 @@ export default {
         pageConfig.title=data.title 
         this.pageConfig=JSON.stringify(pageConfig)
       }
-      
-
-
 
        this.$refs.schemLoader.close()
+
+       
+       }catch(err){
+         this.$alert('解析数据失败:'+err)
+       }
+
+
+
 
 
     }
