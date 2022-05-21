@@ -1,4 +1,4 @@
-# PJ栅格系统使用文档   <Badge text="beta" type="warning"/> <Badge text="默认主题"/>
+# 栅格系统使用文档  
 
 ## 技术支持
 - 基于CSS3 Grid布局实现。主要使用到的css属性包括：grid-template-columns grid-template-rows  grid-gap grid-column-start  grid-column-end justify-self。

@@ -73,7 +73,7 @@ export default {
       },
       // 页面配置
       pageOptions: {
-        tableOption: {
+        listOption: {
           lineActions: {
             detail: null,
             aview: appendToPreset('dialogPageActionOption',{
