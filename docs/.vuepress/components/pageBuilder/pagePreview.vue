@@ -1,6 +1,6 @@
 <template>
   <DynamicCurdPage
-  class="relative"
+    class="relative"
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
@@ -14,7 +14,7 @@ const entityLabel = "古树名木";
 import fields from "./fields.js";
 import Mock from "mockjs";
 
-const Random = Mock.Random
+const Random = Mock.Random;
 
 function mockDyFields(fields) {
   const mockInfo = {};
@@ -31,7 +31,7 @@ function mockDyFields(fields) {
         // mockInfo[field.key + "|1"] = field.options(
         //   Random.integer(0, field.options.length - 1)
         // );
-           mockInfo[field.key + "|1"] = Random.integer(0,3);
+        mockInfo[field.key + "|1"] = Random.integer(0, 3);
         break;
       case "FormIntNumber":
         mockInfo[field.key + "|1-100"] = 1;
@@ -70,9 +70,7 @@ function oldtreeDeleteApi(ids) {
 }
 
 function oldtreeDetailApi(data) {
-  return Promise.resolve(
-     Mock.mock(mockDyFields(buildFormFields(fields)))
-  );
+  return Promise.resolve(Mock.mock(mockDyFields(buildFormFields(fields))));
 }
 
 import {
@@ -174,33 +172,34 @@ export default {
         ev.origin.indexOf(location.hostname) > -1 &&
         ev.data.origin == "jsEditor"
       ) {
-        if (ev.data.type == "fields") {
-          self.fields = self.parseObject(ev.data.content);
-        }
-        if (ev.data.type == "page") {
-          self.pageOptions = deepMerge(
-            self.pageOptions,
-            self.parseObject(ev.data.content)
-          );
+        try {
+          if (ev.data.type == "fields") {
+            self.fields = self.parseObjByEval(ev.data.content);
+          }
+          if (ev.data.type == "page") {
+            self.pageOptions = deepMerge(
+              self.pageOptions,
+              self.parseObjByEval(ev.data.content)
+            );
+          }
+        } catch (err) {
+          console.error(err);
         }
         self.$forceUpdate();
       }
     });
   },
   methods: {
-    parseObject(obj) {
-      let res;
-      try {
-        res = JSON.parse(obj, (k, v) => {
-          if (typeof v === "string" && v.startsWith("function")) {
-            return window.eval("(" + v + ")");
-          }
-          return v;
-        });
-      } catch (err) {
-        console.error(err);
-      }
-      return res;
+    parseObjByEval(obj) {
+      return eval(obj);
+    },
+    parseObjectByJson(obj) {
+      return JSON.parse(obj, (k, v) => {
+        if (typeof v === "string" && v.startsWith("function")) {
+          return window.eval("(" + v + ")");
+        }
+        return v;
+      });
     },
   },
 };

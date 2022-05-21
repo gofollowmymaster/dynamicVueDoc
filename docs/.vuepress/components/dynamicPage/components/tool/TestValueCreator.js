@@ -93,9 +93,11 @@ class TestValueCreator {
           obj[fieldItem.key] = this.makeNumberValue(fieldItem);
         }else if(['FormDynamicSelect'].includes(fieldItem.type)){
           obj[fieldItem.key] = this.makeDynamicSelectValue(fieldItem)||'1';
-        }else{
-          obj[fieldItem.key]='test'
-        }
+        }else if(['FormDate']){
+          obj[fieldItem.key]= Mock.mock('@date')
+        }else if(['FormDateTime']){
+          obj[fieldItem.key]= Mock.mock('@datetime')
+        } 
  
         
         

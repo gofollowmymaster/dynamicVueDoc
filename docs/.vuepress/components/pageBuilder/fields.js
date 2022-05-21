@@ -112,7 +112,7 @@ export default [
 				"@*any*@": [
 					{
 						"linkKey": "ownership2",
-						"linkValue": "function linkValue(data) {\n          console.log('-------data-------', data);\n          return data + 1;\n        }",
+						"linkValue": function linkValue(data) {          console.log('-------data-------', data);          return data + 1;        },
 						"linkDisable": false
 					}
 				]
@@ -158,7 +158,7 @@ export default [
 			"key": "id",
 			"value": "value",
 			"label": "label",
-			"apiPromise": "function apiPromise() {\n      debugger;\n      return Promise.resolve([{\n        value: 1,\n        label: '11',\n        id: 1\n      }, {\n        value: 2,\n        label: '22',\n        id: 2\n      }]);\n    }"
+			"apiPromise": function apiPromise() {      debugger;     return Promise.resolve([{        value: 1,        label: '11',        id: 1      }, {        value: 2,        label: '22',        id: 2      }]);    }
 		},
 		"tableOption": {
 			"sort": 3

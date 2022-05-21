@@ -7,8 +7,18 @@ export default {
       const left = getPrevElement(resize);
       const mid =getPrevElement(resize);
       const box = resize.parentNode;
+      
+      const mark= document.createElement('div')
+      mark.setAttribute('class','fixed full-width top0 full-height z-index10')
+      mark.style.opacity=0
+
       // 鼠标按下事件
       resize.onmousedown = function(e) {
+        mark.style.display="block"
+       
+
+
+        box.parentNode.appendChild(mark)
         const startX = e.clientX;
         const resizeLeft = resize.offsetLeft;
         // 鼠标拖动事件
@@ -27,6 +37,8 @@ export default {
         document.onmouseup = function() {
           document.onmousemove = null;
           document.onmouseup = null;
+          mark.style.display="none"
+
         };
         return false;
       };

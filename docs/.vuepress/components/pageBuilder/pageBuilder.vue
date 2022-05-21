@@ -97,16 +97,17 @@ export default {
   // position: absolute;
   // left: 195px;
   // top: calc(50% - 23px);
-  line-height: 100px;
-  text-align: center;
+  // text-align: center;
   background: #969595;
   // border-radius: 5px;
-  width: 5px;
+  width: 2px;
   z-index: 1;
 }
 
 /*拖拽区鼠标悬停样式*/
 .resize:hover {
   background: #757575;
+  width: 4px;
+
 }
 </style>
