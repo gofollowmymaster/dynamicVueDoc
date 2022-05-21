@@ -1,7 +1,7 @@
 ---
-pageClass: full-width-container
 sidebar: false
-layout: previewLayout
+navbar: false
+pageClass: preview-page-class wide-width-container
 ---
 <pagePreview >  </pagePreview>
 

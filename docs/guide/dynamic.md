@@ -1,5 +1,5 @@
 ---
-layout: wideLayout
+pageClass: wide-width-container
 ---
 
 # dynamicCurdPage

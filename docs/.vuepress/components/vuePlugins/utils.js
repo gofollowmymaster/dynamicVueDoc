@@ -1,4 +1,5 @@
 import moment from 'moment'
+import Mock from "mockjs";
 
 export function treeToMap (tree, childrenKey, key) {
   debugger
@@ -154,17 +155,7 @@ export function downFile (data, name, suffix = '') {
     navigator.msSaveBlob(blob, name + suffix)
   }
 }
-
-// 基于fileId下载文件
-// export function downloadBaseFileId (fileId) {
-//   request({
-//     url: env + '/file/downloadFile',
-//     method: 'post',
-//     responseType: 'blob',
-//     responseOrigin: true,
-//     data: { id: fileId }
-//   }).then(res=>{})
-// }
+ 
 
 /* 树形结构转一维数组
 @createTime 2022-04-18
@@ -274,103 +265,44 @@ export function pureType (value) {
   })
 }
 
-/* BaseModal组件数据纯净化(过滤空值，将对象直接取value，将日期格式的数据直接转格式，有格式函数的执行格式函数)
-一般用作提交数据时处理参数
-@createTime 2022-04-22
-@createUser luyi
-@updateTime 2022-04-22
-@updateUser luyi
 
-@params items:[]，modalItems数组
-@params data，获取到的formData
-*/
 
-export function formDataPureValue (items, data) {
-  const result = { ...data }
-  for (const key in result) {
-    if (pureType(result[key]) === 'object') {
-      result[key] = result[key].value
+const Random = Mock.Random;
+
+export function mockDyFields(fields) {
+  const mockInfo = {};
+  fields.forEach((field) => {
+    switch (field.type) {
+      case "FormDate":
+        mockInfo[field.key + "|1"] = "@date";
+        break;
+      case "FormDateTime":
+        mockInfo[field.key + "|1"] = "@datetime";
+        break;
+      case "FormRadio":
+      case "FormSelect":
+        // mockInfo[field.key + "|1"] = field.options(
+        //   Random.integer(0, field.options.length - 1)
+        // );
+        mockInfo[field.key + "|1"] = Random.integer(0, 3);
+        break;
+      case "FormIntNumber":
+        mockInfo[field.key + "|1-100"] = 1;
+        break;
+      case "FormDecimalNumber":
+        mockInfo[field.key + "|1-100.1-3"] = 1;
+        break;
+      default:
+        mockInfo[field.key + "|1"] = "@cword";
     }
-  }
-  for (const index in items) {
-    const item = items[index]
-    const key = item.key
-    if (hasValue(result[key])) {
-      // 有值的时候
-      if (item.type === 'date' && item.moment) {
-        // 有moment配置，直接格式日期
-        result[key] = moment(result[key]).format(item.moment)
-      }
-      if (item.formater) {
-        // 有格式函数
-        result[key] = item.formater(result, result[key])
-      }
-    } else {
-      // 去掉空值
-      delete result[key]
-    }
-    if (item.type === 'slot' || item.slot) {
-      // 去掉slot项
-      delete result[key]
-    }
-  }
-  function hasValue (val) {
-    if (val === '' || val === undefined || val === null) {
-      return false
-    }
-    if (val instanceof Array) {
-      if (val.length) {
-        return true
-      } else {
-        return false
-      }
-    }
-    return true
-  }
-  console.log('纯化值=', result)
-  return result
+  });
+  return  mockInfo;
+}
+ 
+export function  apiListMock(fields,num=10){
+  return Mock.mock({
+    ["list|"+num]: [mockDyFields(fields)],
+    totalCount: 20,
+  })
 }
 
-/* BaseModal组件回显数据
-@createTime 2022-04-22
-@createUser luyi
-@updateTime 2022-04-22
-@updateUser luyi
-
-@params items:[]，modalItems数组
-@params data:{}||null，后端响应的数据，若配置为null，则不做数据回显
-@params echo:{}，需要回显的字段，例如key1字段需要回显成key2字段，{key1(data){return data[key2]}}，最终都以此配置为准
-@params httpDict:function(dictKey){}，用于select，有此配置时，对应项会自动请求数据字典(数据字典为公用方法)
-@params httpPromise:boolean，用于select，有此配时置，对应项会自动请求数据字典
-*/
-
-export function formDataEchoData ({
-  items = [],
-  data,
-  echo = {},
-  httpDict = true, // 用于select
-  httpPromise = true // 用于select
-} = {}) {
-  for (const index in items) {
-    const unit = items[index]
-    const key = unit.key
-    if (unit.type === 'select') {
-      if (httpPromise && unit.httpPromise) {
-        // 对应项，需要请求后台
-        unit.httpPromise(unit)
-      }
-    }
-    if (data) {
-      // 需要回显数据
-      unit.data = data[key]
-      if (unit.type === 'select') {
-        unit.data = { value: data[key] }
-      }
-    }
-    if (key in echo) {
-      unit.data = echo[key](data, unit)
-    }
-  }
-  console.log('回显值为=', items)
-  return items
-}

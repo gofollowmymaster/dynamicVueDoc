@@ -1,6 +1,4 @@
-# 前端声明式快速开发组件
-
-## 表单组件
+# 动态表单
 1. 简介
    - 通过JSON配置生成表单
    - 
@@ -37,19 +35,19 @@
 
 
 4.声明配置解读
+
 ```
+
 [{
-    key: "name",                  //*字段名   
-    type: "FormInput",            //*表单组件类型（表单项组件名）
-    label: "公园名称",            //*表单项label
-    formSection: "基础信息",      //表单项分组名  只有一个分组不会展示
-    formOption: {                 //可选 表单配置详细
-    
+    key: "name",                  
+    type: "FormInput",           
+    label: "公园名称",           
+    formSection: "基础信息",      
+    formOption: {                  
       wraperProperties:{    //会传入elment 表单组件FormItem的参数props
         style: {},
         class: [],
       },
-      
       rules: [                  //表单验证验证规则
        'required'  ,'email'    //系统预置规则包括    required email url integer
        /^[1-9]\d{5}(?!\d)$/     //正则表单式验证
@@ -59,7 +57,6 @@
             required: true
        }
       ],
-     
       properties: {    //会传入elment 表单组件本身  支持表达式语法
         disabled: '${natureDictId}==1',
         readOnly: '${natureDictId}==3',
@@ -83,7 +80,6 @@
       },
     ],
     formOption: {
-   
         valueLink: {    // 实现事件式数据联动
           "1": [        //当前natureDictId 为1时 的联动
               {
@@ -119,46 +115,9 @@
         }
     },
   },]
-```
-
 
 ```
-{
-  title: "更新表单",
-  width: "60%",
-  body: { 
-      formDataUpdateHandle:(formVm,param)=>{
-          //操作表單組件   formVm 表單組件  param 字段更新信息
-      },
-        props: {
-          formProperties: {
-            "hide-required-asterisk": false,
-            "label-width": "100px",
-            "label-position": "top",
-          },
-          borderForm: true,
-          showFoldBtn: true,
-          showTestTool: true,
-        },
-    formItemList: formFields,
-    data: {},
-    btns: [
-      {
-        actionType: "submit",
-        label: "更改",
-        apiPromise: parkUpdateApi,
-        properties: {
-          type: "primary",
-        },
-      },
-      {
-        actionType: "close",
-        label: "取消",
-      },
-    ],
-  },
-}
-```
+ 
 
 数据交互的两种方式: 模板语法 vs valueLink
 模板语法为数据驱动(计算属性)   valueLink(变动后hook)

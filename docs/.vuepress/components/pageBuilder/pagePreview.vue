@@ -1,10 +1,6 @@
 <template>
   <DynamicCurdPage
-<<<<<<< HEAD
-    class="relative"
-=======
   class="page-wraper"
->>>>>>> 28f2229c63e8f163b77d17d0ebf8a41665531b5c
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
@@ -16,49 +12,12 @@ import { buildTableFields } from "../dynamicPage/utils/tool";
 const entityLabel = "古树名木";
 
 import fields from "./fields.js";
+import { mockDyFields } from "../vuePlugins/utils";
 import Mock from "mockjs";
 
-const Random = Mock.Random;
 
-function mockDyFields(fields) {
-  const mockInfo = {};
-  fields.forEach((field) => {
-    switch (field.type) {
-      case "FormDate":
-        mockInfo[field.key + "|1"] = "@date";
-        break;
-      case "FormDateTime":
-        mockInfo[field.key + "|1"] = "@datetime";
-        break;
-      case "FormRadio":
-      case "FormSelect":
-        // mockInfo[field.key + "|1"] = field.options(
-        //   Random.integer(0, field.options.length - 1)
-        // );
-        mockInfo[field.key + "|1"] = Random.integer(0, 3);
-        break;
-      case "FormIntNumber":
-        mockInfo[field.key + "|1-100"] = 1;
-        break;
-      case "FormDecimalNumber":
-        mockInfo[field.key + "|1-100.1-3"] = 1;
-        break;
-      default:
-        mockInfo[field.key + "|1"] = "@cword";
-    }
-  });
-  return mockInfo;
-}
 
-//----------------------古树名木-------------------
-// function oldtreeListApi(params) {
-//   return Promise.resolve(
-//     Mock.mock({
-//       "list|10": [mockDyFields(fields)],
-//       totalCount: 20,
-//     })
-//   );
-// }
+ 
 
 function oldtreeUpdateApi(params) {
   return Promise.resolve({});
@@ -108,7 +67,7 @@ export default {
             })
           );
         },
-        detail: oldtreeDetailApi,
+        // detail: oldtreeDetailApi,
         update: oldtreeUpdateApi,
       },
       // 页面配置

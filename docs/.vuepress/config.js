@@ -1,6 +1,6 @@
 module.exports = {
-    title: 'huaz的博客',
-    description: 'blog,sidama,junqiu',
+    title: 'Dynamic-Vue',
+    description: '前端开发利器,数据驱动视图,高效低代码搬砖',
     //dest: 'dist',// 设置输出目录
     head: [ // 注入到当前页面的 HTML <head> 中的标签
       ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
@@ -15,18 +15,37 @@ module.exports = {
       type: 'blog',
     //   logo: '/img/logo.png',
       nav: [
+        { text: '文档', link: '/guide/index' },
+        { text: '组件', link: '/guide/components/index' },
+        { text: '操作', link: '/guide/actions/index' },
+        { text: '样式', link: '/guide/layout' },
         { text: '示例', link: '/pageBuilder/index' },
-        { text: 'css', link: '/guide/layout' },
-
-        {
-          text: '文档',
-          // 这里是下拉列表展现形式。
-          items: [
-            { text: 'Demo', link: '/guide/dynamic' },
-            { text: 'element', link: '/guide/font' },
-          ]
-        }
       ],
+      sidebar: {
+        '/guide/components/': [
+          '',     /* /foo/ */
+          'form',  /* /foo/one.html */
+          'list',   /* /foo/two.html */
+          'search',   /* /foo/two.html */
+          'detail'   /* /foo/two.html */
+        ],
+  
+        '/guide/actions/': [
+          '',      /* /bar/ */
+          'requestApi', /* /bar/three.html */
+          'router'   /* /bar/four.html */
+        ],
+  
+        // fallback
+        '/': [
+          '',        /* / */
+          'contact', /* /contact.html */
+          'about'    /* /about.html */
+        ]
+      },
+      displayAllHeaders: false, // 默认值：false
+      activeHeaderLinks: true, // 默认值：true
+      lineNumbers: true,
       // 密钥
       // keyPage: {
       //   keys: ['09837bc188d666df38872c1274219a9c'], // 1.3.0 版本后需要设置为密文
@@ -35,9 +54,8 @@ module.exports = {
       // },
       smoothScroll: true,
       lastUpdated: 'Last Updated', // string | boolean
-      //sidebar: 'auto',// 该语法表示使用当前页面标题自动生成侧边栏
-      sidebar: 'auto',
-      sidebarDepth: 2, // 侧边栏显示2级
+      // sidebar: 'auto',
+      // sidebarDepth: 2, // 侧边栏显示2级
       // 备案
       record: 'ICP 备案文案',
       recordLink: 'ICP 备案指向链接',
@@ -47,14 +65,5 @@ module.exports = {
       author: 'huaz',//设置全局作者
     },
     plugins: ['@vuepress/back-to-top','demo-container'],
-    pages: [
-      {
-        "lastUpdated": 1524027677000,
-        "path": "/guide/dynamic",
-        "title": "VuePress",
-        "frontmatter": {
-          layout:'exampleLayout'
-        }
-      },
-    ]
+ 
   };
