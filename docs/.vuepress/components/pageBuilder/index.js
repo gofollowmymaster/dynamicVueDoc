@@ -12,6 +12,7 @@ files.keys().forEach((url) => {
  components[urlKey] = fileDefault;
 });
 
+import MonacoEditor from 'vue-monaco-editor'
 
  
 
@@ -25,6 +26,8 @@ export default {
    for (let name in components) {
      Vue.component(name, components[name]);
    }
+   Vue.component('MonacoEditor', MonacoEditor);
+
 
  },
 };

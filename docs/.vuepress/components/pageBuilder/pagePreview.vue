@@ -1,6 +1,10 @@
 <template>
   <DynamicCurdPage
+<<<<<<< HEAD
     class="relative"
+=======
+  class="page-wraper"
+>>>>>>> 28f2229c63e8f163b77d17d0ebf8a41665531b5c
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
@@ -47,14 +51,14 @@ function mockDyFields(fields) {
 }
 
 //----------------------古树名木-------------------
-function oldtreeListApi(params) {
-  return Promise.resolve(
-    Mock.mock({
-      "list|10": [mockDyFields(fields)],
-      totalCount: 20,
-    })
-  );
-}
+// function oldtreeListApi(params) {
+//   return Promise.resolve(
+//     Mock.mock({
+//       "list|10": [mockDyFields(fields)],
+//       totalCount: 20,
+//     })
+//   );
+// }
 
 function oldtreeUpdateApi(params) {
   return Promise.resolve({});
@@ -71,6 +75,9 @@ function oldtreeDeleteApi(ids) {
 
 function oldtreeDetailApi(data) {
   return Promise.resolve(Mock.mock(mockDyFields(buildFormFields(fields))));
+}
+function buildDynamicSelectOption(){
+   return {}
 }
 
 import {
@@ -93,7 +100,14 @@ export default {
       apiPromises: {
         create: oldtreeSaveApi,
         bulkdelete: oldtreeDeleteApi,
-        list: oldtreeListApi,
+        list:   (params)=> {
+          return Promise.resolve(
+            Mock.mock({
+              "list|10": [mockDyFields(this.fields)],
+              totalCount: 20,
+            })
+          );
+        },
         detail: oldtreeDetailApi,
         update: oldtreeUpdateApi,
       },
@@ -172,18 +186,30 @@ export default {
         ev.origin.indexOf(location.hostname) > -1 &&
         ev.data.origin == "jsEditor"
       ) {
-        try {
-          if (ev.data.type == "fields") {
-            self.fields = self.parseObjByEval(ev.data.content);
-          }
-          if (ev.data.type == "page") {
-            self.pageOptions = deepMerge(
-              self.pageOptions,
-              self.parseObjByEval(ev.data.content)
-            );
-          }
-        } catch (err) {
-          console.error(err);
+        // try {
+        //   if (ev.data.type == "fields") {
+        //     self.fields = self.parseObjByEval(ev.data.content);
+        //   }
+        //   if (ev.data.type == "page") {
+        //     self.pageOptions = deepMerge(
+        //       self.pageOptions,
+        //       self.parseObjByEval(ev.data.content)
+        //     );
+        //   }
+        // } catch (err) {
+        //   console.error(err);
+
+         const contentParsed= self.parseObject(ev.data.content)
+        if(!contentParsed)return 
+
+        if (ev.data.type == "fields") {
+          self.fields = contentParsed;
+        }
+        if (ev.data.type == "page") {
+          self.pageOptions = deepMerge(
+            self.pageOptions,
+            contentParsed
+          );
         }
         self.$forceUpdate();
       }
@@ -200,8 +226,31 @@ export default {
         }
         return v;
       });
+      },
+   
+    parseObject(obj) {
+      let res;
+      try {
+        res = JSON.parse(obj, (k, v) => {
+          if (typeof v === "string" && v.startsWith("function")) {
+            return window.eval("(" + v + ")");
+          }
+          return v;
+        });
+      } catch (er) {
+        try{
+        res= eval(obj)
+        }catch(err){
+          console.error(err);
+        }
+        
+      }
+      return res;
     },
   },
 };
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.page-wraper{
+  position: relative;
+}</style>
