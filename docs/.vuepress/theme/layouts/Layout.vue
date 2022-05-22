@@ -1,6 +1,6 @@
 <template>
   <div
-    class="theme-container"
+    class="theme-container hz-low-code"
     :class="pageClasses"
     @touchstart="onTouchStart"
     @touchend="onTouchEnd"

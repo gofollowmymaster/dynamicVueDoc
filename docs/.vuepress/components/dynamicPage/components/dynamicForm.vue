@@ -4,14 +4,10 @@
           <DynamicFormContent 
             ref="DynamicFormContent"   
             :data="formData" 
-            :formItemList="formOption.formItemList"
+            :formItemList="formItemList"
             @formDataUpdated="formDataUpdated"
             v-bind="formOption">
           </DynamicFormContent>
-      <!-- <section class="flex mt12 p12"  >
-        <el-button   v-for="btn in actions" v-bind="btn.properties" :key="btn.label" @click="actionHandle(btn)">
-            {{btn.label}}  
-        </el-button> -->
          <DynamicActions
         :actions="actions"
         :actionData="{}"
@@ -37,6 +33,12 @@ export default {
       default: function () {
         return {};
       },
+    },
+    formItemList:{
+      type:Array,
+      default:function(){
+        return []
+      }
     },
     actions:{
       type: Object,

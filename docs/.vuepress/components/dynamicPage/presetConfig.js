@@ -69,20 +69,16 @@ export const formOption = {
   showTestTool: true
 }
 
-export const dynamicForm={
-  component: 'dynamicForm',
-  name:'@object@',
-  label:'',
-
-  props: {
+export const DynamicForm={
+ 
     class:["grid-col-24"],
     apiPromise:  ()=>Promise.resolve(),
-
+    data:{},
     formOption: {
       ...formOption,
       textModel: false,
-      formItemList: [],       
     },
+    formItemList: [],       
 
     actions: {
       //  save:null,
@@ -91,7 +87,7 @@ export const dynamicForm={
         label: '取消'
       }
     }
-  }
+  
 }
 
 export const dialogFormOption = {
@@ -201,7 +197,7 @@ export const requestApiActionOption={
   }
 }
 export default {
-  searchForm,tableOption,pagination,treeOption,formOption,dynamicForm,
+  searchForm,tableOption,pagination,treeOption,formOption,DynamicForm,
   dialogFormOption,dialogPageActionOption,dialogFormActionOption,requestApiActionOption
 }
 
