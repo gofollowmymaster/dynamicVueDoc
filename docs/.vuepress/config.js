@@ -2,6 +2,7 @@ module.exports = {
     title: 'Dynamic-Vue',
     description: '前端开发利器,数据驱动视图,高效低代码搬砖',
     dest: 'dist',// 设置输出目录
+    base:'/dy-vue2',
     head: [ // 注入到当前页面的 HTML <head> 中的标签
       ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
       ['link', { rel: 'icon', href: '/img/logo.ico' }], // 增加一个自定义的 favicon(网页标签的图标)
