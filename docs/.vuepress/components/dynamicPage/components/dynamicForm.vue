@@ -48,7 +48,6 @@ export default {
     },
     apiPromise: {
       type: Function,
-      default: ()=>Promise.resolve(),
     },
     data:{
       type:Object,

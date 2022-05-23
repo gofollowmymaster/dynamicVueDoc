@@ -27,52 +27,11 @@ props：
 | searchOption  | 搜索栏配置 | Object|×  |{} |有值时会在搜索栏中展示 | 
 | listOption  | 列表配置 | Object|×  |{} |有值时会在列表中展示 |  
 | detailOption  | 详情配置 | Object |×  |{} |有值时会在详情中展示， 会在表单基础上叠加，只在详情中有与表单中不一样的情况才需要配置 | 
-
-#### 示例
-```
-
-[
- { key: "keyWord", type: "FormInput", label: "关键字", searchable: true },
-  {
-    key: "sName",          //字段名   接口字段名  必填
-    type: "FormTextarea",   //表单类型             可选  默认为FormInput
-    label: "姓名",          //中文名              可选  默认为空 
-    formSection:'基础信息', //表单区块             可选  默认为空 
-    formOption: {          //表单子项配置             可选   有值时会在表单中展示
-      label:'员工姓名'      //子项内配置会覆盖通用配置
-    },
-    searchOption: {          //搜索栏子项配置            可选   有值时会在搜索栏中展示
-      type: "FormInput",     //子项内配置会覆盖通用配置
-    },
-    listOption: {          //列表子项配置            可选   有值时会在列表中展示
-      key:'username'        //子项内配置会覆盖通用配置
-    },
-    detailOption: {          //详情子项配置         可选   有值时会在详情中展示     详情子项配置是在表单子项基础上叠加，通常只在详情中有与表单中不一样的情况才需要配置
-    },
-  },
-  {
-    key: "nickName",
-    type: "FormInput",
-    label: "外号",
-    tableable:true,
-    formOption: {
-    },
-  },
-  {
-    key: "originalNumber",
-    type: "FormInput",
-    label: "原编号",   
-    tableable:true,
-    formOption: {
-    },
-  }, 
  
-]
-
-```
 
 ### 字段表单配置子项 
 > 字段表单配置子项，是针对表单新增，修改，详情（detailOption为非false）有效。通过配置可以实现表单内数据回显、校验、交互、提交，等**交互功能**，也可以定义表单**样式、布局**；
+> 表单组件中，字段顺序是按照，字段先后顺序排列；所以无需特别配置
 
  |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
@@ -89,7 +48,7 @@ props：
 :::
 
 ::: demo
-```html
+``` html
 <template>
 <ClientOnly>
 
@@ -103,11 +62,7 @@ props：
   
 </template>
 <script>
-
-const entityLabel = '****'
- 
 const fields  =[
- 
   {
     key: "name",                  
     type: "FormInput",           
@@ -120,8 +75,6 @@ const fields  =[
       },
       rules: [                  //表单验证验证规则
        'required'  ,      //系统预置规则包括    required email url integer
-      
- 
       ],
       properties: {    //会传入elment 表单组件本身  支持表达式语法
         disabled: '${status}==1',
@@ -131,7 +84,6 @@ const fields  =[
       },
     },
   },
-  
   {
     key: "status",
     type: "FormSelect",
@@ -153,7 +105,6 @@ const fields  =[
     ],
     formOption: {
         valueLink: {    // 实现事件式数据联动
-       
           '@*any*@':[          //为任何值 对address字段的操作
             {
               linkKey: "address",
@@ -184,7 +135,6 @@ const fields  =[
     formOption: {
          rules: [                  //表单验证验证规则
         'email',    //系统预置规则包括    required email url integer
-      
        {                        //自定义规则
             message: '请输入***',
             trigger: 'blur',
@@ -203,7 +153,6 @@ const fields  =[
       ]
     },
   }, 
-  
   {
     key: "address",
     label: "公司地址",   
@@ -232,6 +181,340 @@ export default {
 </script>
 ```
 :::
+
+### 搜索栏配置子项 
+> 搜索栏， 实质也是表单，所以理论上凡是表单配置子项都可以无缝配置在搜索栏子项中。
+> 不过常态下搜索栏无需验证，表单项间无交互，所以rules，valueLink，hidden通常是无需配置的，总之搜索栏配置是表单配置的子集
+>  默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
+
+
+|  键   | 意义  |类型| 必选  |默认值  |备注   
+|  ----  | ----  |----  |----  |----  |----  |----  |
+| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
+| properties  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容联动    required、value可配置在其内 实现动态定义表单项值以及必填验证    | 
+| defaultValue  | 默认值 |Object |×  |{} |  默认值 | 
+| sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
+| extra  | 额外信息 | string |×  |'' |额外的表单属性，会一通绑定到表单上 | 
+
+
+::: tip 字段搜索栏配置说明
+和字段表单配置一样，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在searchOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、properties、valueLink、defaultValue，searchOption，listOption等配置后，绑定到搜索表单组件。 
+:::
+
+::: demo
+```html
+<template>
+<ClientOnly>
+
+  <DynamicSearchForm
+    class="relative"
+    :options="searchOption"
+    :fields="fields"
+  ></DynamicSearchForm>
+</ClientOnly>
+  
+</template>
+<script>
+
+const fields  =[
+  {
+    key: "name",                  
+    type: "FormInput",           
+    label: "姓名",           
+    searchOption: {                  
+      wraperProperties:{    //会传入elment 表单组件FormItem的参数props
+        style: {},
+        class: ['grid-col-8'],
+      },
+      properties: {    //会传入elment 表单组件本身  支持表达式语法
+        clearable:true
+      },
+    },
+  },
+  
+  {
+    key: "status",
+    type: "FormSelect",
+    label: '多选框',
+    options: [          //select radio 相关组件有必填options信息
+      {
+        value: "1",
+        label: "11",
+      },
+      {
+        value: "2",
+        label: "22",
+      },
+      {
+        value: "3",
+        label: "33",
+      },
+    ],
+    searchOption: {
+      sort:1
+    },
+  },
+   {
+    key: "cName",
+    label: "公司名称",
+    formOption: {},
+  },
+  {
+    key: "email",
+    label: "邮箱",
+    searchOption: true,
+  },
+   
+]
+
+export default {
+  data () {
+    return {
+      searchOption:this.$appendToPreset('searchForm',{
+         
+      }),
+      fields:this.$buildSearchFields(fields),
+    }
+  }
+}
+ 
+</script>
+```
+:::
+
+
+### 表格配置子项 
+> 表格配置,支持template属性，制定展示内容
+> 默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
+> 对于配有options数组的字段，没有配置展示组件时，Dy-Vue会自动获取对应label作为展示用
+
+
+|  键   | 意义  |类型| 必选  |默认值  |备注   
+|  ----  | ----  |----  |----  |----  |----  |----  |
+| template  | 默认值 |function |×  |{} |  默认返回原始值，可返回字符串或对象  | 
+| sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
+ 
+
+::: demo
+```html
+<template>
+<ClientOnly>
+
+  <DynamicTable
+    class="relative"
+    :table="tableOption"
+    :columns="columns"
+    :dataList="data"
+  ></DynamicTable>
+</ClientOnly>
+  
+</template>
+<script>
+
+const fields  =[
+  {
+    key: "name",                  
+    type: "FormInput",           
+    label: "姓名",           
+    tableOption: {                  
+        sort:2
+    },
+  },
+  
+  {
+    key: "status",
+    type: "FormSelect",
+    label: '多选框',
+    options: [          //select radio 相关组件有必填options信息
+      {
+        value: 1,
+        label: "11",
+      },
+      {
+        value: 2,
+        label: "22",
+      },
+      {
+        value: 3,
+        label: "33",
+      },
+    ],
+    tableOption: {
+    },
+  },
+   {
+    key: "cName",
+    label: "公司名称",
+    tableOption: {
+      sort:1,
+        template(row){
+         return row.cName+'有限公司'
+       }
+    },
+  },
+  {
+    key: "email",
+    label: "邮箱",
+    tableOption: true,
+  },
+   
+]
+
+export default {
+  data () {
+    return {
+      tableOption:this.$appendToPreset('tableOption',{
+         
+      }),
+      columns:this.$buildTableFields(fields),
+      data:[
+        {
+          name:'李华',
+          status:1,
+          cName:'腾威网络',
+          email:'q231542@163.com'
+        }
+      ]
+    }
+  }
+}
+ 
+</script>
+```
+:::
+
+
+### 详情配置子项 
+
+ 
+> 详情配置子项，本质上也是表单组件渲染，可通过配置表单展示模式，将表单展示为更界面友好的详情页，详情页面无需验证，valueLink交互，这些配置没有意义 
+> 字段详情配置子项，通常无需配置，Dy-Vue会默认使用formOption配置，  特许场景下支持detailOption自定义配置，detailOption中配置将覆盖formOption配置  
+> 默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
+
+ |  键   | 意义  |类型| 必选  |默认值  |备注   
+|  ----  | ----  |----  |----  |----  |----  |----  |
+| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
+| properties  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容联动    required、value可配置在其内 实现动态定义表单项值以及必填验证    | 
+| hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
+| sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
+
+
+::: demo
+``` html
+<template>
+<ClientOnly>
+
+  <DynamicForm
+    class="relative"
+    :formOption="formOption"
+    :formItemList="formItemList"
+    :actions="actions"
+    :data="data"
+  ></DynamicForm>
+</ClientOnly>
+  
+</template>
+<script>
+const fields  =[
+  {
+    key: "name",                  
+    type: "FormInput",           
+    label: "姓名",           
+    formSection: "基础信息",      
+    formOption: {                  
+      wraperProperties:{    //会传入elment 表单组件FormItem的参数props
+        style: {},
+        class: ['grid-col-24'],
+      },
+    },
+  },
+  {
+    key: "status",
+    type: "FormSelect",
+    label: '多选框',
+    formSection: "基础信息",      
+    options: [          //select radio 相关组件有必填options信息
+      {
+        value: 1,
+        label: "选我会给设置姓名disabled",
+      },
+      {
+        value: 2,
+        label: "选我会设置姓名必填",
+      },
+      {
+        value: 3,
+        label: "选我会设置姓名只读",
+      },
+    ],
+    formOption: {
+        
+    },
+  },
+   {
+    key: "cName",
+    label: "公司名称",
+    formSection: "职业信息",      
+    formOption: {
+      properties: {    //会传入elment 表单组件本身  支持表达式语法
+        value: '${status}==3?"333":"222"',
+      },
+    },
+  },
+  {
+    key: "email",
+    label: "邮箱",
+    formSection: "职业信息",      
+    formOption: {
+         
+    },
+  },
+    {
+    key: "phone",
+    label: "公司电话",   
+    formSection: "职业信息",      
+    formOption: {
+      
+    },
+  }, 
+  {
+    key: "address",
+    label: "公司地址",   
+    formSection: "职业信息",      
+    formOption: {
+    },
+  }, 
+]
+
+export default {
+  data () {
+    return {
+      formOption:this.$appendToPreset('formOption',{
+         textModel:true
+      }),
+      formItemList:this.$buildFormFields(fields),
+      data:{
+        name:'李佩',
+        cName:'滕王',
+        status:1,
+        email:'2312@we.com',
+        phone:'18002356365',
+        address:'重庆天一路',
+      },
+      actions:{
+        cancel:{
+          component:'el-button',
+          label:'取消'
+        }
+      }
+    }
+  }
+}
+ 
+</script>
+```
+:::
+
 
 ## 页面配置
 >常规增删改查页面几乎不需要特别配置，Dy-Vue已经预置了相关配置，但业务总是多变的，非常规页面的配置是开发的重点
@@ -390,9 +673,6 @@ export default {
       pageOptions: {
         topToolBar:{
           create:null,  //删除顶部新增操作按钮
-          link:this.$appendToPreset('requestApiActionOption',{   //添加新的顶部操作按钮
-             apiPromise:()=>Promise.resolve({}),
-          })
         },
           treeOption:null,   //删除左侧tree
         },
@@ -426,8 +706,8 @@ function mockApi (data) {
 :::
 
 
-### 自定义表单配置
-参考表单组件配置：[Dynamic-Form](/guide/components/form)
+### 自定义上方操作栏配置
+参考表单组件配置：[Dynamic-Action](/guide/actions/index)
 
 ### 自定义列表配置
 参考列表组件配置：[Dynamic-List/Table](/guide/components/list)
@@ -435,9 +715,11 @@ function mockApi (data) {
 ### 自定义搜索栏配置
 参考搜索栏组件配置：[Dynamic-Search](/guide/components/search)
 
-### 自定义详情配置
-参考详情组件配置：[Dynamic-Form/Detail](/guide/components/detail)
+### 自定义查询树配置
+查询树
 
+### 自定义分页配置
+分页
  
 ## Api配置
 >Api配置中包含增删改查相关Api函数，返回值均为Promise
@@ -445,10 +727,12 @@ function mockApi (data) {
 |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | create  | 新增 |function| × | ()=>Promise.reslove({}) |   | 
-| bulkdelete  | 删除（支持批量） |function |× | 同上|   | 
+| bulkdelete  | 批量删除  |function |× | 同上|   | 
 | list  | 列表 | function | ×  | 同上 |   | 
 | detail  | 详情 | function |×  |  同上|  | 
 | update  | 修改 | function |×  | 同上 |  | 
+| delete  | 删除 | function |×  | 同上 | 未配置delete项是会尝试使用bulkdelete  | 
+
 ## 页面名称-entityLabel
 >默认、预设情况下 新增/修改/详情 标题会依据页面名称自动生成，若需要自定义可在页面配置中配置以覆盖预设的标题
 

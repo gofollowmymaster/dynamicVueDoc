@@ -3,7 +3,7 @@
  
 import {
   buildFormFields,
-  appendToPreset
+  appendToPreset,buildSearchFields,buildTableFields,buildDetailFields
 } from './components/dynamicPage/utils/tool'
 
 import 'element-ui/lib/theme-chalk/index.css';
@@ -18,6 +18,11 @@ export default async ({
 }) => {
   debugger
   Vue.prototype.$buildFormFields=buildFormFields
+  Vue.prototype.$buildSearchFields=buildSearchFields
+  Vue.prototype.$buildTableFields=buildTableFields
+  Vue.prototype.$buildDetailFields=buildDetailFields
+
+
   Vue.prototype.$appendToPreset=appendToPreset
 
   if (!isServer) {

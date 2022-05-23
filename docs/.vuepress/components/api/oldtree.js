@@ -18,7 +18,7 @@ const defaultConfig = {
 //   })
 // }
 
-//----------------------古树名木-------------------
+//----------------------实体-------------------
 export function oldtreeListApi (params) {
   // return request({
   //   ...defaultConfig,

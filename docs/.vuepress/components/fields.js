@@ -32,7 +32,7 @@ export default [
   {
     key: "originalTreeNumber",
     type: "FormInput",
-    label: "原古树名木编号",   
+    label: "原实体编号",   
     formOption: {
     },
   }, 
@@ -46,7 +46,7 @@ export default [
   {
     key: "ownership",
     type: "FormDynamicSelect",
-    label: "权属",
+    label: "属性",
     tableOption: {
       sort:3
     }, 
@@ -54,7 +54,7 @@ export default [
   {
     key: "ownership1",
     type: "FormDynamicSelect",
-    label: "权属1",
+    label: "属性1",
     tableOption: {
       sort:3
     }, 
@@ -62,7 +62,7 @@ export default [
   {
     key: "ownership2",
     type: "FormDynamicSelect",
-    label: "权属2",
+    label: "属性2",
     tableOption: {
       sort:3
     }, 

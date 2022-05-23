@@ -66,7 +66,8 @@ export const formOption = {
   },
   borderForm: false,
   showFoldBtn: true,
-  showTestTool: true
+  showTestTool: true,
+  textModel:false
 }
 
 export const DynamicForm={
@@ -74,10 +75,7 @@ export const DynamicForm={
     class:["grid-col-24"],
     apiPromise:  ()=>Promise.resolve(),
     data:{},
-    formOption: {
-      ...formOption,
-      textModel: false,
-    },
+    formOption ,
     formItemList: [],       
 
     actions: {

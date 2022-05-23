@@ -9,7 +9,7 @@
 </template>
 <script>
 import { buildTableFields } from "../dynamicPage/utils/tool";
-const entityLabel = "古树名木";
+const entityLabel = "实体";
 
 import fields from "./fields.js";
 import { mockDyFields } from "../vuePlugins/utils";
