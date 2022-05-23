@@ -14,10 +14,6 @@ files.keys().forEach((url) => {
 
 import MonacoEditor from 'vue-monaco-editor'
 
- 
-
-
-
 export default {
  install(Vue) {
    if (this.install.installed) return;
@@ -27,8 +23,6 @@ export default {
      Vue.component(name, components[name]);
    }
    Vue.component('MonacoEditor', MonacoEditor);
-
-
  },
 };
 

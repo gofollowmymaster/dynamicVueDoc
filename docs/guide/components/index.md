@@ -91,12 +91,16 @@ props：
 ::: demo
 ```html
 <template>
+<ClientOnly>
+
   <DynamicForm
     class="relative"
     :formOption="formOption"
     :formItemList="formItemList"
     :actions="actions"
   ></DynamicForm>
+</ClientOnly>
+  
 </template>
 <script>
 
@@ -215,7 +219,7 @@ export default {
       formOption:this.$appendToPreset('formOption',{
          
       }),
-      formItemList:this.$buildFormFields(fields)
+      formItemList:this.$buildFormFields(fields),
       actions:{
         save:{
           
@@ -235,12 +239,16 @@ export default {
 ::: demo 只配置字段示例
 ```html
 <template>
+<ClientOnly>
+
   <DynamicCurdPage
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
     :apiPromises="apiPromises"
   ></DynamicCurdPage>
+</ClientOnly>
+
 </template>
 <script>
 
@@ -331,12 +339,16 @@ function mockApi (data) {
 ::: demo 用户配置示例
 ```html
 <template>
+<ClientOnly>
+
   <DynamicCurdPage
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
     :apiPromises="apiPromises"
   ></DynamicCurdPage>
+</ClientOnly>
+
 </template>
 <script>
 

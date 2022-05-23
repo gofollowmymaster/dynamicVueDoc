@@ -1,39 +1,42 @@
-// 使用异步函数也是可以的
-// export default ({
-//     Vue, // VuePress 正在使用的 Vue 构造函数
-//     options, // 附加到根实例的一些选项
-//     router, // 当前应用的路由实例
-//     siteData, // 站点元数据
-//     isServer // 当前应用配置是处于 服务端渲染 或 客户端
-//   }) => {
-//     // ...做一些其他的应用级别的优化
-//   }
+ 
 
-
-import ElementUI from 'element-ui';
-import   dyPugin  from  "./components/vuePlugins/index.js"
-import   pageBuilder  from  "./components/pageBuilder/index"
-
-
-import 'element-ui/lib/theme-chalk/index.css';
+ 
 import {
   buildFormFields,
   appendToPreset
 } from './components/dynamicPage/utils/tool'
 
+import 'element-ui/lib/theme-chalk/index.css';
   
 
 export default async ({
-  Vue
+  Vue,
+      options, // 附加到根实例的一些选项
+    router, // 当前应用的路由实例
+    siteData, // 站点元数据
+    isServer // 当前应用配置是处于 服务端渲染 或 客户端
 }) => {
-  if (typeof process === 'undefined') {
-    Vue.use(ElementUI)
- 
-    Vue.use(dyPugin)
-    Vue.use(pageBuilder)
+  debugger
+  Vue.prototype.$buildFormFields=buildFormFields
+  Vue.prototype.$appendToPreset=appendToPreset
 
-    Vue.prototype.$buildFormFields=buildFormFields
-    Vue.prototype.$appendToPreset=appendToPreset
+  if (!isServer) {
+    import('element-ui').then(({default:ElementUI})=>{
+      Vue.use(ElementUI)
+    })
+    import('./components/vuePlugins/index.js').then(({default:dyPugin})=>{
+      Vue.use(dyPugin)
+    })
+    import('./components/pageBuilder/index').then(({default:pageBuilder})=>{
+    Vue.use(pageBuilder)
+  })
+
+
+
+
+
+
+   
 
   }
 }
