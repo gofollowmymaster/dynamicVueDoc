@@ -35,7 +35,7 @@
       <div class="resize" v-resize></div>
       <iframe
         ref="previewIframe"
-        src="/pageBuilder/preview"
+        :src="$site.base+'/pageBuilder/preview'"
         frameborder="0"
         class="full-height flex1 frame-container"
       ></iframe>
