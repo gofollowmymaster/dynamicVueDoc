@@ -12,7 +12,6 @@ files.keys().forEach((url) => {
  components[urlKey] = fileDefault;
 });
 
-import MonacoEditor from 'vue-monaco-editor'
 
 export default {
  install(Vue) {
@@ -22,7 +21,11 @@ export default {
    for (let name in components) {
      Vue.component(name, components[name]);
    }
-   Vue.component('MonacoEditor', MonacoEditor);
+  import('vue-monaco-editor').then(({default:MonacoEditor})=>{
+    Vue.component('MonacoEditor', MonacoEditor);
+
+  })
+
  },
 };
 
