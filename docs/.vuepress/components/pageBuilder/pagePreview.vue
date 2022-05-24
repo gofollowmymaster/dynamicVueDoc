@@ -174,6 +174,11 @@ export default {
       }
     });
   },
+  mounted(){
+       import('../dynamicPage/components/pageTemplate/DynamicCurdPage').then(({default:DynamicCurdPage})=>{
+    Vue.use(pageBuilder)
+  })
+  },
   methods: {
     parseObjByEval(obj) {
       return eval(obj);
