@@ -1,7 +1,7 @@
 <template>
     <!-- 日期范围选择框 -->
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-item-box">
         <el-date-picker v-model="val"
                         type="daterange"
@@ -24,7 +24,7 @@
         name: 'FormDateRange',
         props: {
             value: {
-                type: String,
+                type: [String,Array],
                 default: ''
             },
         },
@@ -33,23 +33,20 @@
             val: {
                 get () {
                     if (this.value) {
-                        return JSON.parse(this.value);
+                        if(typeof this.value =='string') return JSON.parse(this.value)
+                        return this.value;
                     } else {
                         return [];
                     }
                 },
                 set (v) {
-                    debugger
-                    this.$emit('input', JSON.stringify(v));
-                    // 只有非子表单的情况下，才会冒泡上去数据变更
-                    if (this.formItemType !== 'childForm') {
+                    this.$emit('input', v);
+                    this._valueLink(v);
+
                         this.statusChangeFn.valueUpdateEvent({
                             [this.item.key]: v,
                         });
-                    } else {
-                        // 如果是子表单的话，执行内置的变更
-                        this.childChangeData.valueUpdateEvent();
-                    }
+               
                 }
             },
             textModelValue () {

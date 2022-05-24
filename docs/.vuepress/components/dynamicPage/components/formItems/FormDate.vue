@@ -1,7 +1,7 @@
 <template>
     <!-- 日期选择框 -->
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-item-box">
         <el-date-picker v-model="val"
                         class="form-date-item"

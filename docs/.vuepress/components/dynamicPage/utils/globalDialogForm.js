@@ -22,7 +22,6 @@ const globalDynamicFormDialogFunc = function(options = {},el=null) {
 
  
 }
-// Vue.prototype.$DynamicFormDialog = DynamicFormDialog
 
 
 export default globalDynamicFormDialogFunc

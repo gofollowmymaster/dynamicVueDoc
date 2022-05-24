@@ -7,7 +7,6 @@ import {
 } from './components/dynamicPage/utils/tool'
 
 import 'element-ui/lib/theme-chalk/index.css';
-  
 
 export default async ({
   Vue,
@@ -21,8 +20,6 @@ export default async ({
   Vue.prototype.$buildSearchFields=buildSearchFields
   Vue.prototype.$buildTableFields=buildTableFields
   Vue.prototype.$buildDetailFields=buildDetailFields
-
-
   Vue.prototype.$appendToPreset=appendToPreset
 
   if (!isServer) {

@@ -3,19 +3,25 @@
 import { hasValue } from '../../utils/tool'
 export default {
     props: {
-      rowData: {
+        rowData: {
             type: Object,
             default: () => ({}),
         },
         item: {
           type: Object,
           default: () => ({}),
-      },
+        },
       
-      field: {
+        field: {
             type: String,
             default: '',
         },
+        colOptions:{
+            type: Object,
+            default(){
+                return {}
+            },
+        }
     },
    
     computed: {

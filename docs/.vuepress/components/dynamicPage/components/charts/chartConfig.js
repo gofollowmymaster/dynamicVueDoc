@@ -88,6 +88,51 @@ export const  commonPieChartOption=deepMergeByKey(basePieChartOption,{
   },
 })
 
+
+export const  solidPieChartOption=deepMergeByKey(commonPieChartOption,{
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    top: '90%',
+    left: 'center'
+  },
+  title: {
+    text: '',
+    left: 'center',
+    top: 'center',
+    textStyle: {
+      fontSize: '14',
+      fontWeight: 'bold'
+    }
+  },
+  series: [
+    {
+      name: '',
+      type: 'pie',
+      avoidLabelOverlap: false,
+      label: {
+        show: false,
+        position: 'center',
+        formatter:'{b}',
+        color:'',
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: '12',
+          fontWeight: 'bold'
+        },
+      },
+      labelLine: {
+        show: false
+      },
+      data: [],
+      radius : [ '0%', '90%' ],//内外圆的大小
+    }
+  ]
+})
+
 export const leftPieChartOption=deepMergeByKey(basePieChartOption,{
   legend: {
     top: 'center',
@@ -164,9 +209,15 @@ export const baseBarChartOption=deepMergeByKey(baseOption,{
     data: []
 
   },
-  yAxis: {
+  yAxis: [{
     type: 'value',
-  },
+    min: 0,
+    max: 100,
+    interval: 10,
+    axisLabel: {
+      formatter: '{value}'
+    }
+  }],
   series: [
     {
       colorBy:"series",
@@ -215,12 +266,50 @@ export const stackBarChartOption=deepMergeByKey(baseBarChartOption,{
 
 
 
+export const stackBarLineChartOption=deepMergeByKey(baseBarChartOption,{
+ 
+  
+  grid: {
+    top:"20%",
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+ 
+  series: [
+    {
+    name: '',
+    label: {
+      show: false
+    },
+    type:'bar',
+    stack: 'total'
+  },
+  {
+    name: '',
+    label: {
+      show: false
+    },
+    type:'line',
+ 
+  },
+
+  
+   
+  ]
+
+})
+
+
+
 export default {
   basePieChart:basePieChartOption,
   commonPieChart:commonPieChartOption,
   baseLineChart:baseLineChartOption,
   leftPieChart:leftPieChartOption,
   baseBarChart:baseBarChartOption,
-  stackBarChart:stackBarChartOption
+  stackBarChart:stackBarChartOption,
+  solidPieChart:solidPieChartOption
 }
 

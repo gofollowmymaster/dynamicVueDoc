@@ -5,124 +5,187 @@
     class="form-input-box form-item-box"
   >
     <DynamicCurd
-      :optionsProps="item.options"
+      :optionsProps="curdOptions"
       :fields="item.fields"
       :apiPromises="apiPromises"
       :entityLabel="item.entityLabel"
-      ref="dynamiCurd"
+      ref="dynamicCurd"
     ></DynamicCurd>
-
   </div>
 </template>
 
 <script>
-import FormMixin from "./mixin";
-
+import { deepMerge } from '../../utils/tool'
+import FormMixin from './mixin'
+const defaultCurdOptions = {
+  searchForm: null,
+  topToolBar: {
+    bulkdelete: null,
+    create: {
+      dialog: {
+        body: {
+          actions: {
+            save: {
+              callback: {
+                showTip: false
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  tableOption: {
+    hasCheckbox: false,
+    lineActions: {
+      detail: null,
+      delete: {
+        callback: {
+          showTip: false
+        }
+      },
+      update: {
+        dialog: {
+          body: {
+            actions: {
+              save: {
+                callback: {
+                  showTip: false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  treeOption: null
+}
 export default {
-  name: "FormCurd",
+  name: 'FormCurd',
   mixins: [FormMixin],
-  data() {
+  data () {
     return {
       apiPromises: {
         update: this.tableUpdateApi,
         create: this.tableSaveApi,
-        detail: this.tableDetailApi,
+        // detail: this.tableDetailApi,
         delete: this.tableDeleteApi,
-        list: this.loadtableApi,
-      },
-    };
-  },
-  computed: {
-    val: {
-      get() {
-        return this.value?.map((file) => file.fileId) || [];
-      },
-
-      set(v) {
-        this.$emit("input", v);
-
-        // 只有非子表单的情况下，才会冒泡上去数据变更
-        if (this.formItemType !== "childForm") {
-          this.statusChangeFn.valueUpdateEvent({
-            [this.item.key]: v,
-          });
-        } else {
-          // 如果是子表单的话，执行内置的变更
-          this.childChangeData.valueUpdateEvent();
-        }
-      },
-    },
-    localTableName(){
-      return 'locaTable-'+this.item.key
+        list: this.loadtableApi
+      }
     }
   },
-  methods: {
-    resetFields(){
-      localStorage.removeItem(this.localTableName);
-      this.$refs.dynamiCurd.refresh()
+  watch: {
+    value: {
+      handler (tableList) {
+        let tableMap = {}
+        if (tableList?.length) {
+          tableMap = tableList.reduce((prev, next) => {
+            prev[next.id] = next
+            return prev
+          }, {})
+        }
+
+        localStorage.setItem(this.localTableName, JSON.stringify(tableMap))
+        this.$nextTick(() => {
+          this.$refs.dynamicCurd.refresh()
+        })
+      },
+      immediate: true
+    }
+  },
+  computed: {
+    curdOptions () {
+      return deepMerge(defaultCurdOptions, this.item.options)
     },
-    loadtableApi(params) {
-      const { pageNo, pageSize } = params;
-      let tableList = localStorage.getItem(this.localTableName);
-      if (!tableList) {
-        tableList = "{}";
+    val: {
+      get () {
+        return this.value || []
+      },
+
+      set (tableList) {
+        this.$emit('input', tableList)
+        this._valueLink(tableList)
+
+        this.statusChangeFn.valueUpdateEvent({
+          [this.item.key]: tableList
+        })
       }
-      tableList = JSON.parse(tableList);
-      const start = (pageNo - 1) * pageSize,
-        end = start + pageSize;
+    },
+    localTableName () {
+      return 'locaTable-' + this.item.key
+    }
+  },
+  mounted () {},
+  methods: {
+    resetFields () {
+      localStorage.removeItem(this.localTableName)
+      this.$refs.dynamiCurd && this.$refs.dynamiCurd.refresh()
+    },
+    loadtableApi (params) {
+      const { pageNo, pageSize } = params
+      let tableList = localStorage.getItem(this.localTableName)
+      if (!tableList) {
+        tableList = '{}'
+      }
+      tableList = JSON.parse(tableList)
+      const start = (pageNo - 1) * pageSize
+      const end = start + pageSize
       return Promise.resolve().then(() => {
         return {
           list: Object.values(tableList).slice(start, end),
-          totalCount: tableList.length,
-        };
-      });
+          totalCount: tableList.length
+        }
+      })
     },
 
-    tableUpdateApi(data) {
-      let tableList = localStorage.getItem(this.localTableName);
+    tableUpdateApi (data) {
+      let tableList = localStorage.getItem(this.localTableName)
       if (!tableList) {
-        tableList = "{}";
+        tableList = '{}'
       }
-      tableList = JSON.parse(tableList);
-      tableList[data.id] = data;
-      localStorage.setItem(this.localTableName, JSON.stringify(tableList));
-      return Promise.resolve().then(() => ({}));
-    },
-    tableSaveApi(data) {
-      let tableList = localStorage.getItem(this.localTableName);
-      if (!tableList) {
-        tableList = "{}";
-      }
-      tableList = JSON.parse(tableList);
-      const id = new Date().getTime();
-      data.id = id;
-      tableList[id] = data;
-      localStorage.setItem(this.localTableName, JSON.stringify(tableList));
-      return Promise.resolve().then(() => ({}));
-    },
-    tableDetailApi(data) {
-      const id = data.id;
-      let tableList = localStorage.getItem(this.localTableName);
-      if (!tableList) {
-        tableList = "{}";
-      }
-      tableList = JSON.parse(tableList);
-      return Promise.resolve().then(() => tableList[id]);
-    },
-    tableDeleteApi(data) {
-      const id = data.id;
-      let tableList = localStorage.getItem(this.localTableName);
-      if (!tableList) {
-        tableList = "{}";
-      }
-      tableList = JSON.parse(tableList);
-      delete tableList[id];
-      localStorage.setItem(this.localTableName, JSON.stringify(tableList));
+      tableList = JSON.parse(tableList)
+      tableList[data.id] = data
+      this.val = Object.values(tableList)
 
-      return Promise.resolve().then(() => ({}));
+      return Promise.resolve().then(() => ({}))
     },
-  },
-};
+    tableSaveApi (data) {
+      let tableList = localStorage.getItem(this.localTableName)
+      if (!tableList) {
+        tableList = '{}'
+      }
+      tableList = JSON.parse(tableList)
+      const id = new Date().getTime()
+      data.id = id
+      tableList[id] = data
+      this.val = Object.values(tableList)
+
+      return Promise.resolve().then(() => ({}))
+    },
+    tableDetailApi (data) {
+      const id = data.id
+      let tableList = localStorage.getItem(this.localTableName)
+      if (!tableList) {
+        tableList = '{}'
+      }
+      tableList = JSON.parse(tableList)
+      return Promise.resolve().then(() => tableList[id])
+    },
+    tableDeleteApi (data) {
+      const id = data.id
+      let tableList = localStorage.getItem(this.localTableName)
+      if (!tableList) {
+        tableList = '{}'
+      }
+      tableList = JSON.parse(tableList)
+      delete tableList[id]
+      this.val = Object.values(tableList)
+
+      return Promise.resolve().then(() => ({}))
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">

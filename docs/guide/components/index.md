@@ -20,8 +20,8 @@ props：
 |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | key  | 字段名 | string |√ | - |formSection |  
-| label  | 中文名 | string |× |'' |单元格 |  
-| type  | 表单类型 | string |×  |FormInput |单元格 | 
+| label  | 中文名 | string |× |'' |  |  
+| type  | 表单组件名 | string |×  |FormInput | 支持的[表单组件](./form.html#表单组件)  | 
 | formSection  | 表单区块 | string |×  |'' |按区块展示在表单、详情中 | 
 | formOption  | 表单配置 |Object |×  |{} |有值时会在表单中展示 | 
 | searchOption  | 搜索栏配置 | Object|×  |{} |有值时会在搜索栏中展示 | 
@@ -77,9 +77,9 @@ const fields  =[
        'required'  ,      //系统预置规则包括    required email url integer
       ],
       properties: {    //会传入elment 表单组件本身  支持表达式语法
-        disabled: '${status}==1',
-        readOnly: '${status}==3',
-        required:'${status}==2',
+        disabled: '#{status}==1',
+        readOnly: '#{status}==3',
+        required:'#{status}==2',
         clearable:true
       },
     },
@@ -304,7 +304,7 @@ export default {
     class="relative"
     :table="tableOption"
     :columns="columns"
-    :dataList="data"
+    :data="data"
   ></DynamicTable>
 </ClientOnly>
   
@@ -386,7 +386,6 @@ export default {
 
 ### 详情配置子项 
 
- 
 > 详情配置子项，本质上也是表单组件渲染，可通过配置表单展示模式，将表单展示为更界面友好的详情页，详情页面无需验证，valueLink交互，这些配置没有意义 
 > 字段详情配置子项，通常无需配置，Dy-Vue会默认使用formOption配置，  特许场景下支持detailOption自定义配置，detailOption中配置将覆盖formOption配置  
 > 默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列

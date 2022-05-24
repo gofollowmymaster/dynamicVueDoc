@@ -1,8 +1,9 @@
-// props dialogVisible:{value:true} title 弹窗title zoom 地图视窗层级 推荐11  position 当前选择点位置[lon,lat]
+// props dialogVisible:{value:true} title 弹窗title zoom 地图视窗层级 推荐11
+//position 当前选择点位置[lon,lat]
 
 <template>
   <el-dialog
-  class="select-point-container"
+    class="select-point-container"
     :title="title"
     :visible.sync="visible.value"
     :width="'45vw'"
@@ -14,14 +15,17 @@
     <el-amap
       class="amap-box"
       vid="amap-vue"
+      ref="map"
       :events="events"
       :lockMapBound="true"
       v-bind="amapStyleConfig"
     >
-      <el-amap-marker
-        v-if="position.length"
-        :position="position"
-      ></el-amap-marker>
+    <el-amap-info-window  v-if="position.length" :position="position" :offset="[0,-24]">
+       <div class="info" style="position:inherit;margin-bottom:0;">
+         {{text}}
+         </div> 
+    </el-amap-info-window>
+      <el-amap-marker v-if="position.length" :position="position"  ></el-amap-marker>
       <el-amap-polygon
         v-if="path.length"
         :vid="'overlay-polygon-1'"
@@ -45,17 +49,15 @@
 </template>
 
 <script>
- 
-const amapStyleConfig =window._config?.amapStyleConfig||{}
-const regionPath=amapStyleConfig.region||[]
-delete  amapStyleConfig.region
+const amapStyleConfig = window._config?.amapStyleConfig
+const regionPath = amapStyleConfig?.regionPath
 export default {
   name: 'selectPointGis',
   props: {
     visible: {
-      type:Object,
+      type: Object,
       default: function () {
-        return {value:false}
+        return { value: false }
       }
     },
     zoom: {
@@ -85,20 +87,46 @@ export default {
     return {
       amapStyleConfig,
       path: regionPath,
+      center: [106.680603, 29.402348],
+      text: '',
       events: {
         click: (selectedPoint) => {
           debugger
           const { lng, lat } = selectedPoint.lnglat
+
           this.$emit('change', [lng, lat])
         }
-      }
+      },
+      infoWin: null
     }
   },
-  computed: {
-
+  watch: {
+    position: {
+      handler (position) {
+        if (!position.length) return
+        debugger
+        this.geocoder.getAddress(position, (status, result) => {
+          if (status === 'complete' && result.regeocode) {
+            this.text = result.regeocode.formattedAddress
+           
+          } else {
+            console.error('根据经纬度查询地址失败')
+          }
+        })
+      },
+      immediate: true,
+      deep: true
+    }
   },
-
-  mounted () {},
+  beforeCreate () {
+    this.geocoder = new AMap.Geocoder({
+      // city: "010", //城市设为北京，默认：“全国”
+      // radius: 1000 //范围，默认：500
+    })
+  },
+  mounted () {
+   
+  },
   methods: {
     selectPointConfirm () {
       if (this.position.length < 1) {
@@ -107,22 +135,20 @@ export default {
           showCancelButton: true,
           callback: (action) => {
             if (action === 'confirm') {
-               this.visible.value= false
+              this.visible.value = false
             }
           }
         })
         return
       }
-      this.visible.value= false
-
+      this.visible.value = false
     },
     clearPosition () {
       this.$emit('change', [])
     },
 
     handleClose () {
-           this.visible.value= false
-
+      this.visible.value = false
     }
   }
 }
@@ -135,7 +161,10 @@ export default {
 }
 
 .select-point-container /deep/ .el-dialog__body {
-   height: auto !important;
+  height: auto !important;
   padding: 0px 4px;
+}
+/deep/ .amap-info-close ,/deep/ .amap-info-sharp{
+  display: none;
 }
 </style>

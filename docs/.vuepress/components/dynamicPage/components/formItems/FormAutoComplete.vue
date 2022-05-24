@@ -1,7 +1,7 @@
 <template>
     <!-- 输入搜索框 -->
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-item-box">
         <el-autocomplete v-model.trim="val"
                          :placeholder="getPlaceholder(item)"

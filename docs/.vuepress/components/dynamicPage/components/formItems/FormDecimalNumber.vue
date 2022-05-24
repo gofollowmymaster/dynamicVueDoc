@@ -62,7 +62,7 @@
         computed: {
             // 千分位的数字
             dealInputValue () {
-                  
+                   
                 if (isEmpty(this.value,true)) {
                     return '';
                 }
@@ -102,13 +102,15 @@
             },
             val: {
                 get () {
-                     
+                      
                     if (isEmpty(this.value,true)) {
                         return '';
                     }
                     return this.value;
                 },
                 set (v) {
+                    this._valueLink(v);
+
                     if (isEmpty(this.value,true)) {
                         this.$emit('input', v);
                         // 只有非子表单的情况下，才会冒泡上去数据变更

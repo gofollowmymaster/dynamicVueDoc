@@ -23,6 +23,10 @@ export default {
       type: String,
       default: ''
     },
+    navType:{
+      type:String,
+      default:'dialog'
+    }
 
   },
   data: function () {
@@ -40,11 +44,15 @@ export default {
   components: {},
   methods: {
     goBack(){
+      if(this.navType=='router'){
+      this.$router.go(-1)
+      }
       this.$emit('update:visible',false)
-      this.$nextTick(()=>{
-          debugger
-          this.$emit('closed')
-      })
+        this.$nextTick(()=>{
+            debugger
+            this.$emit('closed')
+        })
+        return 
     }
   },
 };
@@ -54,10 +62,10 @@ export default {
   background: white;
 }
  .slide-fade-left-enter-active {
-  transition: all 0.6s ease;
+  transition: all 0.4s ease;
 }
 .slide-fade-left-leave-active {
-  transition: all 0.6s ease;
+  transition: all 0.4s ease;
 }
  .slide-fade-left-leave-to
 /* .slide-fade-leave-active for below version 2.1.8 */ {
@@ -66,7 +74,7 @@ export default {
 }
 .slide-fade-left-enter
 /* .slide-fade-leave-active for below version 2.1.8 */ {
-  transform: translateX(100px);
+  transform: translateX(20px);
   opacity: 0;
 }
 .border-b{

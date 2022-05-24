@@ -1,6 +1,6 @@
 <template>
   <div class="pie-container  ">
-      <v-chart class="chart" :option="pieChartOption" />
+      <v-chart class="chart" :option="pieChartOption" :autoresize="true"/>
   </div>
 </template>
 <script>
@@ -25,7 +25,7 @@ export default {
     }
   },
   data () {
-    const pieChartOptionTemplate=chartOptions[this.type+'Chart']?(chartOptions[this.type+'Chart']):chartOptions['basePieChart']
+    const pieChartOptionTemplate=chartOptions[this.type+'PieChart']?(chartOptions[this.type+'PieChart']):chartOptions['basePieChart']
     return {
        pieChartOptionTemplate:deepMergeByKey(JSONDeepCopy(pieChartOptionTemplate),this.extraOptions)
     }

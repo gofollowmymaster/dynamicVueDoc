@@ -4,14 +4,13 @@
       :data="tableData"
       v-bind="table.properties"
       ref="table"
-      @selection-change="handleSelectionChange"
-      @row-click="handleRowClick"
+      v-on="$listeners"
     >
       <template v-for="col in columnsComputed">
         <el-table-column
           v-if="col.type == 'index'"
           :key="col.key"
-           v-bind="{ ...col.tableOption }"
+          v-bind="{ ...col.tableOption }"
           type="index"
           :index="indexHandle"
         >
@@ -21,6 +20,7 @@
           v-bind="{ ...col.tableOption }"
           :key="col.key"
           type="selection"
+          :reserve-selection="true"
         >
         </el-table-column>
         <el-table-column
@@ -29,10 +29,11 @@
           :key="col.key"
         >
           <template slot-scope="scope">
-          <DynamicActions
-                :actions="col.actions"
-                :actionData="scope.row"
-                :actionBarWraper="$parent.$el"></DynamicActions>
+            <DynamicActions
+              :actions="col.actions"
+              :actionData="scope.row"
+              :actionBarWraper="$parent.$el"
+            ></DynamicActions>
           </template>
         </el-table-column>
         <el-table-column
@@ -44,35 +45,31 @@
           <template slot-scope="scope">
             <component
               v-if="
-                col.tableOption.template &&col.tableOption.template(scope.row, col.key)&&
+                col.tableOption.template &&
+                col.tableOption.template(scope.row, col.key) &&
                 col.tableOption.template(scope.row, col.key).component
               "
               :is="col.tableOption.template(scope.row, col.key).component"
               :rowData="scope.row"
               :field="col.key"
               :item="col.tableOption.template(scope.row, col.key)"
+              :colOptions="col"
             ></component>
-            <ColTeml v-else-if="col.tableOption.template" v-bind="{}">
-              {{
-                col.tableOption.template(scope.row, col.key) ||
-                scope.row[col.key]
-              }}</ColTeml
-            >
-            <ColTeml v-else v-bind="{}"> {{ scope.row[col.key] }}</ColTeml>
+            <ColTeml v-else   :rowData="scope.row"  :field="col.key" :colOptions="col" >
+              </ColTeml>
           </template>
         </el-table-column>
       </template>
     </el-table>
-   
   </main>
 </template>
 <script>
-import { deepCopy,loadPresetConfig } from '../utils/tool'
+import { deepCopy, loadPresetConfig } from '../utils/tool'
 
 export default {
   name: 'DanamicTable',
   props: {
-    dataList: {
+    data: {
       type: Array,
       default: function () {
         return []
@@ -96,11 +93,17 @@ export default {
       default: function () {
         return null
       }
+    },
+    selected: {
+      type: [ Object],
+      default () {
+        return {}
+      }
     }
   },
   data: function () {
     return {
-      tableData: [],
+      tableData: []
     }
   },
   computed: {
@@ -120,11 +123,11 @@ export default {
           key: 'selection',
           type: 'selection',
           tableOption: {
-            width: 55
+            width: 40
           }
         })
       }
-     
+
       if (this.table.lineActions) {
         const actions = Object.values(this.table.lineActions).filter(
           (action) => action.component
@@ -133,11 +136,11 @@ export default {
           type: 'lineActions',
           key: 'lineActions',
           tableOption: {
-            width: actions.length * 86,
+            'width': this.table.lineActions.width|| (actions.length * 80),
             label: '操作',
             fixed: 'right'
           },
-          actions:this.table.lineActions
+          actions: this.table.lineActions
         })
       }
 
@@ -160,14 +163,25 @@ export default {
       handler (tableData) {
         this.$nextTick(() => {
           this.$refs.table.doLayout()
+
+          this.selectRefresh()
         })
       },
-      deep: true
-      // immediate: true,
+      deep: true,
+      immediate: true
     },
-    dataList: {
-      handler (dataList) {
-        this.tableData = dataList
+    selected : {
+      handler (selected) {
+
+        this.selectRefresh(selected)
+      },
+      deep: true,
+      immediate: true
+
+    },
+    data: {
+      handler (data) {
+        this.tableData = data
       },
       deep: true,
       immediate: true
@@ -176,18 +190,23 @@ export default {
   mounted () {},
   components: {},
   methods: {
-    handleSelectionChange (list) {
-      this.$emit('selecct-change', list)
-    },
-    handleRowClick (row, column, event) {
-      this.$emit('row-click', row, column, event)
-    },
- 
+    selectRefresh () {
+      this.$nextTick(() => {
+        const mainKey =this.table.properties['row-key']
+        this.tableData.forEach(row=>{
+            if(this.selected[row[mainKey]]){
+                 this.$refs.table.toggleRowSelection(row, true)
+                 return
+            }
+           this.$refs.table.toggleRowSelection(row, false)
+        })
 
-     indexHandle(index) {
-       debugger
-        return index+1;
-      } 
+       
+      })
+    },
+    indexHandle (index) {
+      return index + 1
+    }
   }
 }
 </script>

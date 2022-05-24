@@ -41,9 +41,11 @@ export default {
       delete obj.append
       delete obj.defaultValue
       delete obj.extra
-      delete obj.extra
       delete obj.properties
       delete obj.options
+      delete obj.groupProperties
+      obj.maxlength= obj.maxlength||255
+
 
 
       return obj
@@ -54,17 +56,18 @@ export default {
       if (this.allDisabled) {
         return true
       }
-      const disabled = this.item.properties.disabled
       return this.item.properties.disabled
     },
     val: {
       get () {
+         
         return this.value
       },
 
       set (v) {
         // console.log(`|${v}|`);
         this.$emit('input', v)
+        this._valueLink(v);
         // 只有非子表单的情况下，才会冒泡上去数据变更
         if (this.formItemType !== 'childForm') {
           this.statusChangeFn.valueUpdateEvent({
@@ -87,9 +90,10 @@ export default {
       return false
     }
   },
-  mounted () {
-    // todo 初始化时候触发valueLink  （数据第一次加载时触发不是表单渲染出来触发）
-    // this._valueLink&&this._valueLink(this.val);
+  created () {
+    if(hasValue(this.item.defaultValue)){
+      this.val= hasValue(this.value)?this.value: this.item.defaultValue
+    }
   },
   methods: {
     // 获取输入框的 placeholder

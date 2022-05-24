@@ -1,7 +1,7 @@
 <template>
     <!--  三级联动下拉框（通过数据字典获取选项）  -->
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-item-box">
         <el-row v-if="!getTextModel">
             <!-- 默认 3 级联动 -->
@@ -64,15 +64,12 @@
                 },
                 set (v) {
                     this.$emit('input', v);
-                    // 只有非子表单的情况下，才会冒泡上去数据变更
-                    if (this.formItemType !== 'childForm') {
-                        this.statusChangeFn.valueUpdateEvent({
-                            [this.item.key]: v,
-                        });
-                    } else {
-                        // 如果是子表单的话，执行内置的变更
-                        this.childChangeData.valueUpdateEvent();
-                    }
+                    this._valueLink(v);
+ 
+                    this.statusChangeFn.valueUpdateEvent({
+                        [this.item.key]: v,
+                    });
+                   
                 }
             },
         },

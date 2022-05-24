@@ -1,6 +1,6 @@
 <template>
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-item-box">
         <el-select style="width:100%"
                    v-model="val"
@@ -45,18 +45,12 @@
                     return this.value||[];
                 },
                 set (v) {
-                    debugger
                     this.$emit('input', v);
                     this._valueLink(v);
-                    // 只有非子表单的情况下，才会冒泡上去数据变更
-                    if (this.formItemType !== 'childForm') {
-                        this.statusChangeFn.valueUpdateEvent({
-                            [this.item.key]: v,
-                        });
-                    } else {
-                        // 如果是子表单的话，执行内置的变更
-                        this.childChangeData.valueUpdateEvent();
-                    }
+                    this.statusChangeFn.valueUpdateEvent({
+                        [this.item.key]: v,
+                    });
+                
                 }
             },
         }
@@ -64,26 +58,6 @@
 </script>
 
 <style scoped lang="less">
-
-
-    // .form-item-box /deep/ .el-input {
-    //     position: relative;
-    //     width: 100%;
-    //     height: 36px;
-
-    //     .el-input__inner {
-    //         position: absolute;
-    //         width: 100%;
-    //         height: 36px;
-    //         line-height: 36px;
-    //         padding-right: 10px;
-    //         padding-left: 12px;
-    //     }
-
-    //     .el-input__inner:focus {
-    //         border-color: #8D94A5;
-    //     }
-    // }
 
     .el-select-dropdown__item.selected {
         color: #606266;

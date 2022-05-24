@@ -12,6 +12,8 @@
 // 自动测试工具
 // 目的是通过 refForm 获取表单组件，以及 fields 获取表单结构，自动推断出表单应该填写的内容
 import TestValueCreator from "./TestValueCreator";
+import MockValueCreator from "./MockValueCreator";
+
 export default {
   name: "TestTool",
   props: {
@@ -44,7 +46,9 @@ export default {
     if( this.$parent.$options.name!=='DynamicFormContent' ){
       console.error('获取表单示例失败!表单测试数据填充器必须包裹在DynamicFormContent内')
     } 
-    this.TestValueCreator = new TestValueCreator(this.$parent);
+    // this.TestValueCreator = new TestValueCreator(this.$parent);
+    this.TestValueCreator =   process.env.NODE_ENV == 'development'?new MockValueCreator(this.$parent):new TestValueCreator(this.$parent);
+
   },
   data() {
     return {

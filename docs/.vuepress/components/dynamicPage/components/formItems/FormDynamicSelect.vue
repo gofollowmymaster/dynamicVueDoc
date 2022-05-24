@@ -2,7 +2,7 @@
   <!--  字典下拉框（指通过数据字典获取选项）  -->
   <div
     :style="item.style || {}"
-    :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+    :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
     class="form-item-box"
   >
     <el-select
@@ -53,38 +53,16 @@ export default {
 
     this.item.options.apiPromise().then((res) => {
       this.dynamicDict = res.reduce((prev, next) => {
-        prev[next[this.dictKey]] = next;
+        prev[next[this.dictKey]+''] = next;
         return prev;
       }, {});
     });
   },
   computed: {
     textModelValue() {
-      const content =
-        this.dynamicDict[this.dictKey] &&
-        this.dynamicDict[this.dictKey].find((item) => {
-          return item[this.dictValue] === this.val;
-        });
-      return (content && content[this.dictValue]) || "";
-    },
-
-    val: {
-      get() {
-        return this.value;
-      },
-      set(v) {
-        this.$emit("input", v);
-        this._valueLink(v);
-        // 只有非子表单的情况下，才会冒泡上去数据变更
-        if (this.formItemType !== "childForm") {
-          this.statusChangeFn.valueUpdateEvent({
-            [this.dictKey]: v,
-          });
-        } else {
-          // 如果是子表单的话，执行内置的变更
-          this.childChangeData.valueUpdateEvent();
-        }
-      },
+      
+      const content = this.dynamicDict[this.val] 
+      return (content && content[this.dictLabel]) || this.val;
     },
   },
 };

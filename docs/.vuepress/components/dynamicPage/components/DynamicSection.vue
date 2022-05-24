@@ -1,87 +1,61 @@
+
+
 <template>
-    <main class=" ">
-      <component    v-bind="$attrs" :is="container"  :visible.sync="visible.value" :fullscreen="fullscreen">
-       <section  v-if="visible.value" >
-          <component 
-           v-for="item in body" 
-           :is="item.component"
-            v-bind="item.props"
-            
-            >
+    <components  :is="layoutComp.name"    v-bind="layoutComp.properties" >
+      <template  v-for="section in bodyShow">
+          <component :key="section.key||(section.component+section.name)" :is="section.component"  :label="section.label"  
+          :data="section.name=='@object@'?data:data[section.name]"  
+          v-bind="section.props"  :props="section.props">
+              <slot></slot>
+          </component> 
+      </template>
 
-          </component>
-      <section class="flex mt12 p12" :class="{'align-right':container=='dialog'}">
-        <el-button   v-for="btn in body.btns" v-bind="btn.properties" :key="btn.label" @click="actionHandle(btn)">
-            {{btn.label}}  
-        </el-button>
-      </section>
-       </section>
-    </component>
-
-    </main>
-     
+    </components>
 </template>
 <script>
+
 export default {
-  name:'DynamicFormDialog',
+  name:'DynamicSection',
   props: {
-    visible:Object,
-    container:String,
-    fullscreen:Boolean,
+    data:{},
+ 
+ 
     body: {
-      type: Object,
+      type: Array,
       default: function () {
-        return {};
+        return [];
       },
     },
-    properties:{
-      type: Object,
-      default: function () {
-        return {};
-      },
+    
+    layout:{
+      type:[String,Object],
+      default:'LayoutGrid'
     },
+ 
   },
   
   computed: {
-    
+    layoutComp(){
+      if(typeof this.layout ==='string'){
+        return {name:this.layout,properties:{}}
+      }
+      return this.layout
+    },
+    bodyShow(){
+      return this.body.filter(item=>!item.hidden)
+    }
   },
   mounted(){
-    console.log('----this.$attrs----',this.$attrs)
   },
   components: { },
   methods: {
-     
-    reset() {
-      this.$refs["searchForm"].resetFields();
-    },
-    actionHandle(action){
-       
-      switch (action.actionType){
-        case  'submit':
-            this.$refs.DynamicFormContent.validate((valid, data  )=>{
-                  console.log(data)
-                  if(valid){
-                    const dataAdapter=  (typeof action.dataAdapter ==='function')?action.dataAdapter:(res)=>{return res}
-                    const callback= (typeof action.callback ==='function' )?action.callback:(action.showTip&&((res)=>{
-                      this.visible.value=false
-                      this.$message&&this.$message('success',res.msg||res.message||'操作成功')}))
-                    action.apiPromise(data).then(dataAdapter).then(callback)
-                  }
-            })
-           break;
-          case 'close':
-              this.visible.value=false 
-           break;
-      }
-    },
+ 
+      
   },
 };
 </script>
 <style lang="css" scoped>
-.flex {
-  display: flex;
-}
-.align-right{
-  justify-content: flex-end;
-}
+ 
 </style>
+
+

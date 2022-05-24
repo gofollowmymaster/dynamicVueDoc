@@ -90,7 +90,7 @@ export default {
                   },
                 },
                 body: [
-                  appendToPreset("DynamicForm", {
+                  appendToPreset("DynamicFormOption", {
                     label: "基本信息",
                     props: {
                       apiPromise: oldtreeDetailApi,
@@ -103,7 +103,7 @@ export default {
                       },
                     },
                   }),
-                  appendToPreset("DynamicForm", {
+                  appendToPreset("DynamicFormOption", {
                     label: "管理信息",
                     props: {
                       apiPromise: oldtreeDetailApi,

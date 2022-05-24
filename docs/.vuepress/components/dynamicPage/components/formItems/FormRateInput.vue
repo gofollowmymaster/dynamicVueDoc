@@ -91,6 +91,8 @@
                     }
                 },
                 set (v) {
+                    this._valueLink(v);
+
                     if (v === '') {
                         this.$emit('input', v);
                         this.statusChangeFn.valueUpdateEvent({

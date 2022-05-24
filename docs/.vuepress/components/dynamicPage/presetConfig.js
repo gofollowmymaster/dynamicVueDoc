@@ -1,22 +1,31 @@
+import { appendToPreset, deepMerge } from './utils/tool'
+// const isDebug = window?._config?.isDebug
+// const isDebug
+const showTestTool = process.env.NODE_ENV == 'development' ? true : false
 export const searchForm = {
   properties: {
     'label-width': '80px',
     'label-position': 'right'
   },
-  showTestTool: true,
+  showTestTool,
   borderForm: false,
-  trigger:'click',
-  resetable:true,
+  trigger: 'click',
+  resetable: true,
+  searchLabel: '搜索',
+  searchClasses: [
+    'grid-col-6',
+    'grid-col-lg-4',
+    'grid-col-sm-6',
+    'grid-col-ss-8',
+    'grid-col-xs-12'
+  ]
 }
 export const tableOption = {
-  dataList: [],
   hasCheckbox: true,
   properties: {
     stripe: true,
     border: true,
     'row-class-name': '',
-    // height: "250",
-    // "max-height": "250",
     'highlight-current-row': true,
     selectable: true,
     expand: true,
@@ -24,12 +33,15 @@ export const tableOption = {
     'empty-text': '暂无数据',
     align: 'center',
     'header-align': 'center',
-    'row-style': { height: '40px' }
+    'row-style': { height: '40px' },
+    'row-key': 'id'
   },
-    colOptions: {
+  colOptions: {
     // width:120,
     minWidth: 60,
-    'show-overflow-tooltip': true
+    'show-overflow-tooltip': true,
+    align: 'center',
+    'header-align': 'center'
   }
 
   // style: "width: 100%",
@@ -38,7 +50,7 @@ export const tableOption = {
 export const pagination = {
   small: false,
   'current-page': 1,
-  pageSize: 10,
+  pageSize: 5,
   layout: 'total,sizes, prev, pager, next, jumper',
   'hide-on-single-page': true,
   'page-sizes': [10, 20, 30, 40, 50]
@@ -66,34 +78,54 @@ export const formOption = {
   },
   borderForm: false,
   showFoldBtn: true,
-  showTestTool: true,
-  textModel:false
+  showTestTool
 }
 
-export const DynamicForm={
- 
-    class:["grid-col-24"],
-    apiPromise:  ()=>Promise.resolve(),
-    data:{},
-    formOption ,
-    formItemList: [],       
+export const submitActionOption = {
+  component: 'el-button',
+  permission: '',
+  actionType: 'submit',
+  isLoadData: false,
+  label: '提交',
+  apiPromise: () => Promise.resolve(),
+  properties: {
+    type: 'primary',
+    size: 'mini'
+  },
+  callback: {
+    closeModal: true,
+    showTip: true,
+    refresh: true,
+    reset: true
+  }
+}
+export const DynamicFormOption = {
+  class: ['grid-col-24'],
+  // apiPromise: () => Promise.resolve(),
+  apiPromise: null,
 
-    actions: {
-      //  save:null,
-      cancel: {
-        actionType: 'close',
-        label: '取消'
-      }
+  formItemList: [],
+  formOption: {
+    ...formOption,
+    textModel: false
+  },
+  actions: {
+    save: deepMerge(submitActionOption, {
+      label: '保存'
+    }),
+    cancel: {
+      actionType: 'close',
+      label: '取消'
     }
-  
+  }
 }
+
 
 export const dialogFormOption = {
-  
-  container:"el-dialog",
-  properties:{
+  container: 'el-dialog',
+  properties: {
     title: '',
-    width: '70%',
+    width: '60%'
   },
   body: {
     props: formOption,
@@ -101,29 +133,14 @@ export const dialogFormOption = {
     data: {},
     formDataUpdateHandle (formVm, param) {},
     actions: {
-      save: {
-        component: 'el-button',
-        permission:"",
-        actionType: 'submit',
-        label: '保存',
-        isloadData: false,
-        apiPromise: ()=>Promise.resolve(),
-        properties: {
-          type: 'primary',
-          size:'mini'
-        },
-        callback: {
-          closeModal: true,
-          showTip: true,
-          refresh:true,
-        }
-      },
+      save: deepMerge(submitActionOption, {
+        label: '保存'
+      }),
       cancel: {
         component: 'el-button',
-        isloadData: false,
         properties: {
           type: 'default',
-          size:'small'
+          size: 'small'
         },
         actionType: 'close',
         label: '取消'
@@ -131,56 +148,78 @@ export const dialogFormOption = {
     }
   }
 }
-export const dialogPageActionOption={
+
+export const dialogPageActionOption = {
   component: 'el-button',
   label: '',
   actionType: 'dialogPage',
+  isLoadData: true,
+  sort: 100,
   properties: {
     type: 'default',
-    size:'small',
-    key: '' 
+    size: 'small',
+    key: ''
   },
-  permission:'',
+  permission: '',
   dialog: {
-    properties:{
-      title: '',
+    properties: {
+      title: ''
     },
-    container:"dy-page",
-    layout:'LayoutGrid',
+    container: 'dy-page',
+    layout: 'LayoutGrid',
     // layout:{
     //   name:'LayoutTabs',
     //   properties:{
     //       type:"card",
     //   }
     // },
-    body: [
-     
-    ]
+    body: []
   }
 }
 
-export const dialogFormActionOption={
+export const routerDialogPageActionOption = deepMerge(dialogPageActionOption, {
+  actionType: 'routerDialogPage',
+  routerAction: 'push',
+  router: '', // String  or function
+  sort: 100
+})
+
+export const dialogFormActionOption = {
   component: 'el-button',
   label: '',
   actionType: 'dialogForm',
-  permission:"",
-  isloadData: true,
+  permission: '',
+  isLoadData: true,
+  sort: 100,
   properties: {
     type: 'primary',
-    size:'small',
+    size: 'small',
     key: ''
   },
-  dialog: dialogFormOption,
+  dialog: dialogFormOption
 }
 
-export const requestApiActionOption={
+export const routerDialogFormActionOption = deepMerge(dialogFormActionOption, {
+  actionType: 'routerDialogForm',
+  routerAction: 'push',
+  router: '',
+  dialog: {
+    container: 'dy-page',
+    body: {
+      actions: null
+    }
+  }
+})
+
+export const requestApiActionOption = {
   component: 'el-button',
   label: '',
-  permission:"",
+  permission: '',
+  sort: 100,
   actionType: 'requestApi',
   properties: {
     type: 'default',
-    size:'small'
+    size: 'small'
   },
   popconfirm: {
     'confirm-button-text': '好的',
@@ -191,11 +230,132 @@ export const requestApiActionOption={
   apiPromise: () => Promise.resolve(),
   callback: {
     showTip: true,
-    refresh:true
+    refresh: true
   }
 }
-export default {
-  searchForm,tableOption,pagination,treeOption,formOption,DynamicForm,
-  dialogFormOption,dialogPageActionOption,dialogFormActionOption,requestApiActionOption
+
+export const downloadActionOption = {
+  component: 'el-button',
+  label: '',
+  permission: '',
+  sort: 100,
+  actionType: 'download',
+  properties: {
+    type: 'default',
+    size: 'small'
+  },
+
+  apiPromise: () => Promise.resolve(),
+  callback: {
+    showTip: true
+  }
 }
 
+export const dynamicCurdPageOptions = {
+  searchForm,
+  treeOption,
+  pagination,
+  searchFields: [],
+  tableFields: [],
+  topToolBar: {
+    create: deepMerge(dialogFormActionOption, {
+      label: '新增',
+      permission: '新增',
+      sort: 50,
+      isLoadData: false,
+      dialog: {
+        properties: {
+          title: '新增',
+          width: '60%'
+        }
+      }
+    }),
+    bulkdelete: deepMerge(requestApiActionOption, {
+      label: '批量删除',
+      permission: '批量删除',
+      popconfirm: {
+        title: '确定删除选择的信息吗？'
+      }
+    })
+  },
+  searchFields: [],
+  tableFields: [],
+  tableOption: {
+    ...tableOption,
+    'current-change': 'handleCurrentChange', // 事件 暂不支持
+    lineActions: {
+      update: deepMerge(dialogFormActionOption, {
+        label: '更新',
+        permission: '更新',
+        dialog: {
+          properties: {
+            title: '新增',
+            width: '60%'
+          }
+        }
+      }),
+      detail: deepMerge(dialogFormActionOption, {
+        label: '查看',
+        permission: '查看',
+        dialog: {
+          properties: {
+            title: '详情'
+          },
+          body: {
+            props: {
+              textModel: true
+            },
+            formItemList: [],
+            actions: {
+              save: null
+            }
+          }
+        }
+      }),
+      delete: deepMerge(requestApiActionOption, {
+        label: '删除',
+        permission: '删除'
+      })
+    }
+  }
+}
+export const dynamicCurdOption = {
+  fields: [],
+  entityLabel: '',
+  isDebuggerMode: false,
+
+  optionsProps: dynamicCurdPageOptions
+}
+
+export const routerActionOption = {
+  component: 'el-button',
+  label: '',
+  permission: '',
+  actionType: 'router',
+  sort: 100,
+  properties: {
+    type: 'default',
+    size: 'small'
+  },
+  router: '',
+  routerAction: 'push'
+}
+export default {
+  searchForm,
+  tableOption,
+  pagination,
+  treeOption,
+  formOption,
+  DynamicFormOption,
+  dialogFormOption,
+  dialogPageActionOption,
+  dialogFormActionOption,
+  requestApiActionOption,
+  dynamicCurdOption,
+  routerActionOption,
+  dynamicCurdPageOptions,
+  downloadActionOption,
+  routerDialogPageActionOption,
+  routerDialogFormActionOption,
+  submitActionOption
+}

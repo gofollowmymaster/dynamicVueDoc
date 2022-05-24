@@ -12,7 +12,8 @@
                   :autosize="item.autosize || false"
                   :rows="item.autosize ? '' : 4"
                   :resize="item.resize || 'none'"
-                  v-bind="item"
+                    show-word-limit
+                  v-bind="bindOptions"
                   v-if="!getTextModel"/>
         <div v-else :style="item.textStyle || {}" class="form-input-text">
             {{ val || '-' }}

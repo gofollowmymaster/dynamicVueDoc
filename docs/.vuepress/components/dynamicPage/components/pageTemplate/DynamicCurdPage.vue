@@ -1,16 +1,19 @@
 <template>
-  <div class=" hz-low-code flex flex-direction full-width">
-    <BrandBar>
-      <span slot="title">{{ entityLabel }}管理</span>
-    </BrandBar>
-    <main class="flex1">
-      <DynamicCurd :optionsProps="pageOptionsprops" :fields="fields"  :entityLabel="entityLabel"  :apiPromises="apiPromises" ></DynamicCurd>
-    </main>
+  <div class=" hz-low-code flex flex-direction full-width"  >
+    <dyBrandBar >
+      <span slot="title">{{ entityLabel }}</span>
+    </dyBrandBar>
+    <DynamicPageWrapper class="flex1 p12">
+      <DynamicDetailPage v-show="objId" :optionsProps="pageOptionsprops" :fields="fields"  :entityLabel="entityLabel" 
+       :apiPromises="apiPromises"  :formSections="formSections" :detailId="objId" :actionKey="action"></DynamicDetailPage>
+
+      <DynamicCurd v-if="!objId" :optionsProps="pageOptionsprops" :fields="fields"  :entityLabel="entityLabel" 
+       :apiPromises="apiPromises" :isDebuggerMode="isDebuggerMode" :mode="mode" :formSections="formSections" ></DynamicCurd>
+    </DynamicPageWrapper>
   </div>
 </template>
 <script>
  
-// import BrandBar from '@/components/content/BrandBar/BrandBar.vue'
 
 export default {
   name: 'DynamicCurdPage',
@@ -32,18 +35,45 @@ export default {
         return {}
       }
     },
-    entityLabel:String
+    entityLabel:String,
+    mode:{type:String,default:'dialog'},
+    isDebuggerMode:{
+      type:Boolean,
+      default:true
+    }
   },
   computed: {
     
   },
   data: function () {
     return {
-     
+        objId:'',
+        action:'detail'
     }
   },
-  components: {  },
-  methods: {}
+  created(){
+    this.$watch(
+      '$route',
+      (toParams, previousParams) => {
+        // 对路由变化做出响应...
+        this.getRouterIdInParams()
+      },{
+        immediate:true
+      }
+    )
+  },
+  
+  methods: {
+     getRouterIdInParams(){
+
+       debugger
+       this.objId=this.$route.params?.id||this.$route.query?.id
+       this.action=this.$route.params?.action||this.$route.query.action
+
+
+
+     }
+  }
 }
 </script>
 

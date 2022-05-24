@@ -1,7 +1,7 @@
 <template>
     <!-- 普通输入框 -->
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-input-box form-item-box">
         <el-input v-model.trim="val"
                  :disabled="getDisabled"

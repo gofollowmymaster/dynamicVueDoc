@@ -91,6 +91,7 @@ export default {
       debugger
       switch(this.drawType){
         case 'marker':
+          debugger
           return {position:this.elementdata}
         case 'polygon':
         case 'polyline':
@@ -152,16 +153,35 @@ export default {
          var drawObj = this.mouseTool[this.drawType]();
         AMap.event.addListener(this.mouseTool, "draw",  (e) =>{
           debugger
-          const path = e.obj.getPath();
+          let drawData
+           switch(this.drawType){
+              case 'marker':
+                drawData = e.obj.getPosition();
+                drawData=[drawData.getLng(),drawData.getLat(),]
+                break;
+              case 'polygon':
+              case 'polyline':
+                const path = e.obj.getPath();
+                drawData=[]
+                path.forEach((point) => {
+                  drawData.push([point.lng,point.lat]);
+                });
+                this.mouseTool.close(true);
 
-          const lnglatpoints = [];
-          path.forEach((point) => {
-            lnglatpoints.push([point.lng,point.lat]);
-          });
-          console.log(lnglatpoints );
-          this.mouseTool.close(true);
+                break;
+              case 'circle':
+              case 'ellipse':
+              case 'rectangle':
+                //todo 验证数据格式
+                  break;
 
-          this.$emit("change", lnglatpoints);
+                default:
+                throw '不支持的图形:'+this.drawType
+            }
+         
+ 
+
+          this.$emit("change", drawData);
         });
     }
   },

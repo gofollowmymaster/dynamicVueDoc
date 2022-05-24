@@ -1,16 +1,16 @@
 <template>
     <!-- 普通输入框 -->
     <div :style="item.style||{}"
-         :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+         :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
          class="form-input-box form-item-box">
         <el-radio-group v-model.trim="val"
                         :disabled="getDisabled"
                         @blur="e => onBlur(item, e)"
                         @focus="e => onFocus(item, e)"
-                        :clearable="true"
-                        v-bind="bindOptions"
+                        v-bind="item.groupProperties"
                         v-if="!getTextModel">
-            <el-radio v-for="opt in item.options" :key="opt.value" :label="opt.value">{{ opt.label }}</el-radio>
+            <component :is="bindOptions.button&&!bindOptions.border?'el-radio-button':'el-radio'"  v-for="opt in item.options" :key="opt.value" 
+            :label="opt.value"  v-bind="bindOptions">{{ opt.label }}</component>
         </el-radio-group>
         <div v-else :style="item.textStyle||{}" class="form-input-text">{{ textModelValue || '-' }}</div>
     </div>
@@ -36,38 +36,9 @@
                 return content && content.label || '';
             },
 
-            val: {
-                get () {
-                    return this.value;
-                },
-                set (v) {
-                    this.$emit('input', v);
-                    this._valueLink(v);
-                    // 只有非子表单的情况下，才会冒泡上去数据变更
-                    if (this.formItemType !== 'childForm') {
-                        this.statusChangeFn.valueUpdateEvent({
-                            [this.item.key]: v,
-                        });
-                    } else {
-                        // 如果是子表单的话，执行内置的变更
-                        this.childChangeData.valueUpdateEvent();
-                    }
-                }
-            },
+           
         },
-        watch: {
-            item: {
-                handler (n) {
-                    if (n.prefixMsg) {
-                        this.prependMsg = n.prefixMsg;
-                    }
-                    if (n.suffixMsg) {
-                        this.appendMsg = n.suffixMsg;
-                    }
-                },
-                immediate: true
-            }
-        }
+      
     };
 </script>
 

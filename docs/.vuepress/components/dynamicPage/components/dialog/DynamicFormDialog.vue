@@ -9,6 +9,7 @@
     >
       <section v-if="visible.value">
         <DynamicFormContent
+         class="dialog-height over-scroll "
           ref="DynamicFormContent"
           :data="body.data"
           :formItemList="body.formItemList"
@@ -17,10 +18,10 @@
         >
         </DynamicFormContent>
         <section
-          class="flex mt12 p12"
+          class="flex pt12"
           :class="{ 'align-right': container == 'dialog' }">
           <el-button
-            v-for="action in body.actions"
+            v-for="action in actionsOrdered"
             v-bind="action.properties"
             v-permission="action.permission"
             :key="action.label"
@@ -64,9 +65,16 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+        actionsOrdered(){
+      const actions=  Object.entries(this.body.actions).map(([key,value],index)=>{
+        return  {...value,actionKey:key}
+      }).filter(action=>action.actionType)
+        actions.sort((a,b)=>a.sort-b.sort)
+        return actions
+    }
+  },
   mounted () {
-    debugger
     console.log(this)
   },
   components: {},
@@ -82,9 +90,6 @@ export default {
         this.body.formDataUpdateHandle(formVm, param)
       }
     },
-    // refresh(){
-    //   this.$emit('formSubmited')
-    // }, 
     closeModal(){
       this.visible.value=false
     }
@@ -92,5 +97,7 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-
+ .dialog-height{
+   max-height: 72vh;
+ }
 </style>

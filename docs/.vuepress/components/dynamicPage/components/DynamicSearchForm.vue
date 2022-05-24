@@ -1,9 +1,10 @@
 <template>
   <main class="flex relative ">
-    <DynamicFormContent :formItemList="formFields" ref="searchForm" @formDataUpdated="change" :showTestTool="options.showTestTool" v-bind="options"  :formProperties="options.properties"   >
+    <DynamicFormContent :formItemList="formFields" ref="searchForm" @formDataUpdated="change" :showTestTool="options.showTestTool" 
+    v-bind="options"  :formProperties="options.properties"  :data="data" >
       <template  #actionBtnSlot>
         <section class="ml12 "  >
-          <el-button type="primary" size="small" @click="submit" v-if="options.trigger=='click'">搜索</el-button>
+          <el-button type="primary" size="small" @click="submit" v-if="options.trigger=='click'">{{options.searchLabel||'搜索'}}</el-button>
           <el-button @click="reset" size="small" v-if="options.resetable" >重置</el-button>
         </section>
       </template>
@@ -16,6 +17,12 @@ import { deepCopy ,appendToPreset,loadPresetConfig} from '../utils/tool';
 export default {
   name:'DymamicSearchForm',
   props: {
+    data:{
+      type:Object,
+      default(){
+        return {}
+      }
+    },
     fields: {
       type: Array,
       default: function () {
@@ -37,6 +44,7 @@ export default {
   },
   computed: {
     formFields(){
+
       const fieldsClone= deepCopy(this.fields)
       fieldsClone[0].children.push({
         type: 'slot',
@@ -44,7 +52,7 @@ export default {
         key: 'actionBtnSlot',
         label: '',
         wraperProperties: {
-          class: ['grid-col-6', 'grid-col-lg-4', 'grid-col-sm-6','grid-col-ss-8', 'grid-col-xs-12']
+          class:this.options.searchClasses
         }
       })
       return  fieldsClone
@@ -57,7 +65,6 @@ export default {
   },
   methods: {
     change(){
-      debugger
       if(this.options.trigger=='change'){
         this.submit()
       }

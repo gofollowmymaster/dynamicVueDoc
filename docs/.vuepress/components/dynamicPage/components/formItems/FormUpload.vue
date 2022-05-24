@@ -7,46 +7,64 @@
   >
     <el-upload
       v-if="!getTextModel"
-      :accept="accept"
       action=""
       :file-list="fileListInit"
+      :before-upload="handleBeforeUpload"
       :on-preview="handlePictureCardPreview"
       :on-remove="handleRemove"
       :on-success="handleSuccess"
       :on-error="handleError"
       v-bind="bindOptions"
-      :disabled="getDisabled"
-    >
-      <i v-if="bindOptions['list-type']=='picture-card'" class="el-icon-plus"></i>
-      <el-button v-else  size="small" >{{item.btn_text||'上传'}}</el-button>
+      :disabled="getDisabled"> 
+     <div v-if="bindOptions.drag">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div slot="tip" class="el-upload__tip">{{item.tip}}</div>
+      </div>
+      <div v-else>
+           <i v-if="bindOptions['list-type']=='picture-card'" class="el-icon-plus"></i>
+           <el-button v-else  size="small" >{{item.btn_text||'上传'}}</el-button>
+      </div>
       <div slot="tip" class="el-upload__tip">{{item.tip}}</div>
     </el-upload>
-    <el-dialog :visible.sync="dialogVisible"  :append-to-body="true">
-      <img width="100%" :src="dialogImageUrl" alt="" />
-    </el-dialog> 
-     <DynamicCurd v-if="bindOptions['list-type']=='table'||getTextModel" 
-        :style="{padding:0}"
-        :fields="fileFields"
-        :apiPromises="apiPromises"
-       :optionsProps="tableOptions" 
-        entityLabel="附件"
-        ></DynamicCurd>
+
+    <!-- 图片详情展示 -->
+    <section  v-if="getTextModel&&fileList.length&&accept=='img'"   >
+      <el-image  v-for="file in fileList" :key="file.fileUrl" class="mr12"
+        style="width: 100px; height: 100px"
+        :src="file.fileUrl" 
+        :preview-src-list="fileList.map(file=>file.fileUrl)">
+      </el-image>
+    </section>
+
+    <!-- 视屏详情展示 -->
+    <section  v-if="getTextModel&&fileList.length&&accept=='video'"   >
+      <video  v-for="file in fileList" :key="file.fileUrl" class="mr12"
+        style="width: 100px; height: 100px"
+        :src="file.fileUrl" >
+      </video>
+    </section>
+
+    <!-- 图片预览 -->
+    <el-dialog :visible.sync="dialogVisible" :append-to-body="true">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+     <!-- 文件详情展示 -->
+    <DynamicCurd v-if="bindOptions['list-type']=='table'||(getTextModel&&accept!='img'&&accept!='video')" 
+      :style="{padding:0}"
+      :fields="fileFields"
+      :apiPromises="apiPromises"
+      :optionsProps="tableOptions" 
+      entityLabel="附件"></DynamicCurd>
   </div>
 </template>
 
 <script>
 import FormMixin from "./mixin";
 import moment from 'moment'
-import {
-  buildFormFields,
-  buildTableFields,
-  deepMerge
-} from '../../utils/tool'
-
-import {
-  tableOption,
-} from '../../presetConfig'
-
+import { appendToPreset } from '../../utils/tool';
+const host=window._config?.staticHost
+ 
 const  fileFields=[
   {
     type:'index',
@@ -89,21 +107,24 @@ const  fileFields=[
       wraperProperties: {
         class: ['grid-col-24']
       },
-    }
-     
+    } 
   },
-  
 ]
-const formFields=buildFormFields( fileFields)
 
 function getAccepts(accept){
+
     switch(accept){
         case 'img':
             return 'image/*';
-        case 'word':
-            return '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-        case 'word':
-            return '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        case 'video':
+            return 'video/*';
+        case 'doc':
+            return `.doc,.docx,.xml,application/msword,
+            application/pdf,application/vnd.ms-excel,
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,`;
+        default :
+            return '*';
     } 
 }
 export default {
@@ -111,45 +132,55 @@ export default {
   mixins: [FormMixin],
   data() {
     const self=this
+    console.log('----this.downloadApi----',this.downloadApi)
     return {
-      accept:getAccepts(self.accept),
       dialogImageUrl: "",
       dialogVisible: false,
       fileFields,
+      imgPrevUrl:host,
       apiPromises:{
-          // create:oldtreeSaveApi,
         bulkdelete:(file)=> {
-                  const fileListNew=[]
-                  for(let fileItem in self.fileList){
-                    if(fileItem.fileId!==file.fileId){
-                      fileListNew.push(fileItem)
-                    }
-                  }
-                  self.handleRemove(file, fileListNew)
-                return Promise.resolve({})
-              },
+            const fileListNew=[]
+            for(let fileItem in self.fileList){
+              if(fileItem.fileId!==file.fileId){
+                fileListNew.push(fileItem)
+              }
+            }
+            self.handleRemove(file, fileListNew)
+          return Promise.resolve({})
+        },
         list:()=> Promise.resolve({list:self.fileList,totalCount:self.fileList.length}),
         detail: info=>Promise.resolve(info),
-        // update:oldtreeUpdateApi
       },
       tableOptions:{
         topToolBar: null,
         searchFields: null,
         tableOption: {
-          
+          hasCheckbox:false,
           lineActions: {
-            update:null 
+            update:null,
+            detail:null,
+            download:appendToPreset('downloadActionOption',{
+              apiPromise:this.item.downloadApi,
+              label:'下载'
+            }) 
           }
         },
         treeOption: null,
-} ,
-    fileListInit:[],
-    // fileList:[],
+      } ,
+      fileListInit:[],
     };
-
   },
   computed:{
-             // 扩展属性，直接将属性配置，传到表单组件内部（即 Element UI 上）
+     accept(){
+          let  accept=''
+          const listType=this.item.properties?.['list-type']||this.item['list-type']
+              if(['picture','picture-card'].includes(listType)){
+                accept= 'img'
+              }
+          return accept||this.item.properties?.accept||this.item.accept
+        },
+        // 扩展属性，直接将属性配置，传到表单组件内部（即 Element UI 上）
         // 忽略属性【key、size】
         bindOptions () {
             let obj = Object.assign({}, this.item);
@@ -159,9 +190,11 @@ export default {
             obj['http-request']=obj.apiPromise
             obj.multiple=obj.limit == 1 ? false : true
             obj.disabled= this.getTextModel?true:obj.disabled
-            // obj['list-type']= obj['list-type']
-            // :accept="item.accept"
-            obj.accept=getAccepts(obj.accept)
+            obj.accept=getAccepts(this.accept)
+
+            if(obj.drag){
+              obj['list-type']='text'
+            }
             delete obj.key;
             delete obj.size;
             delete obj.type;
@@ -176,34 +209,42 @@ export default {
         },
         val: {
             get() {
-                return this.value?.map(file=>file.fileId)||[];
+                return this.value?.map(file=>file.fileId||file.id)||[];
             },
-            
             set(v) {
                 this.$emit('input', v);
 
-                // 只有非子表单的情况下，才会冒泡上去数据变更
-                if (this.formItemType !== 'childForm') {
-                    this.statusChangeFn.valueUpdateEvent({
-                        [this.item.key]: v,
-                    });
-                } else {
-                    // 如果是子表单的话，执行内置的变更
-                    this.childChangeData.valueUpdateEvent();
-                }
+                this._valueLink(v);
+                this.statusChangeFn.valueUpdateEvent({
+                    [this.item.key]: v,
+                });
             }
         },
         fileList() {
-        return this.value?.filter(file=>file.fileId)||[];
-    },
-
+          return this.value?.filter(file=>file.fileId||file.id).map(file=>{
+            file.fileUrl=this.imgPrevUrl+file.fileUrl
+            file.uploadTime=file.createTime||file.upLoadTime
+            file.fileName=file.fileName||file.sourceName||file.saveName||file.name
+            file.fileId=file.fileId||file.id
+            return  file
+          })||[];
+        },
   },
   mounted(){
           
-        this.fileListInit= this.value?.filter(file=>file.fileId).map(file=>{
+        this.fileListInit= this.value?.filter(file=>file.fileId||file.id).map(file=>{
+
+          const fileUrl=this.imgPrevUrl+file.fileUrl.replace(/\\\\/g,'/')
+          debugger
+          console.log('----replace---', fileUrl)
+
           return {
-            fileUrl:file.fileUrl,
-            fileId:file.fileId,
+            url:fileUrl,
+            fileId:file.fileId||file.id,
+            name:file.fileName||file.sourceName||file.saveName||file.name,
+            fileSize: file.fileSize,
+            fileType: file.fileType,
+            uploadTime:file.createTime||file.upLoadTime,
           }
         })||[];
  
@@ -211,42 +252,40 @@ export default {
   },
   methods: {
     handleRemove(file, fileList) {
-      console.log(file, fileList);
       debugger
-      this.val = list.filter((unit) => unit.fileId)
+      this.val = this.value.filter((unit) => unit.uid!=file.uid&&unit.fileId!==file.fileId)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-        handleSuccess (res, file, fileList) {
-          debugger
-      // if (fileList.every((unit) => unit.status !== 'uploading')) {
-      //   this.closeLoading()
-      // }
+    handleSuccess (res, file, fileList) {
+
       if(!res)return      //有重复请求   OPTION?
-      const list = fileList.map((unit) => {
-        if (unit.response) {
-            let fileId,fileUrl,fileName,fileSize,uploadTime
+      if(!file.response)return      // 
+    
+      let fileId,fileUrl,fileName,fileSize,uploadTime,uid
 
-            fileId = unit.response.fileId
-            fileUrl = unit.response.fileUrl||unit.url
-            fileName = unit.raw.name
-            fileSize = unit.raw.size
-            uploadTime= moment(new Date()).format( 'YYYY-MM-DD HH:mm:SS')
-            return {
-          fileId,
-          fileUrl,
-          fileName,fileSize,uploadTime
-        }
-        }
-
-        return unit
+      fileId = file.response.fileId
+      fileUrl = file.response.fileUrl||file.url
+      fileName = file.raw.name
+      fileSize = file.raw.size
+      uploadTime= moment(new Date()).format( 'YYYY-MM-DD HH:mm:SS')
+      uid=file.uid
+      const current=this.value||[]
+      current.push({
+        fileId,
+        fileUrl,
+        fileName,fileSize,uploadTime,
+        uid
       })
-      this.val = list.filter((unit) => unit.fileId)
+      this.val=current
     },
     handleError(err){
       console.error(err)
+    },
+    handleBeforeUpload(){
+
     }
   },
 };

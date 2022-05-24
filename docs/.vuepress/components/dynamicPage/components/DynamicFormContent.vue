@@ -1,5 +1,5 @@
 <template>
-  <main class="dynamic-form">
+  <main class="dynamic-form" :class="{'form-text-mode':textModel}">
     <el-form
       v-bind="formProperties"
       :class="{ 'border-form': borderForm }"
@@ -15,25 +15,19 @@
         class="pb12"
       >
         <header
-          v-if="formSection.label"
-          class="block-nav flex justify-between "
-        >
+          v-if="formSection.label"   class="block-nav flex justify-between ">
           <span class="block-text">{{ formSection.label }}</span>
           <span
             class="block-fold-btn"
-            v-if="showFoldBtn &&borderForm&& !textModel && scanType === 'normal'"
+            v-if="showFoldBtn && !textModel "
             @click="foldBlock(formSection)"
           >
             {{ isBlocked(formSection) ? '展开' : '收起' }}
-            <i
-              :class="[
-                'el-icon-arrow-' + (isBlocked(formSection) ? 'down' : 'up')
-              ]"
-            ></i>
+            <i  :class="[   'el-icon-arrow-' + (isBlocked(formSection) ? 'down' : 'up') ]"></i>
           </span>
         </header>
-        <article class="block-content relative y0 ">
-          <section class="grid-wrap">
+        <article class="block-content grid-wrap relative   ">
+          <!-- <section class="grid-wrap "> -->
             <template v-for="formItem in formSection.children">
               <component
                 v-if="formItem.type == 'slot'"
@@ -42,6 +36,7 @@
                 :label="getFormItemLabel(formItem)"
                 v-bind="formItem.wraperProperties"
               >
+              
                 <slot :name="formItem.key"></slot>
               </component>
               <FormHide
@@ -54,7 +49,7 @@
                 v-else-if="!formItem.hidden"
                 :key="formItem.key"
                 v-bind="formItem.wraperProperties"
-                :rules="(!textModel)&&formItem.rules"
+                :rules="(!textModel)?formItem.rules:[]"
                 :label="getFormItemLabel(formItem)"
                 :prop="formItem.key"
               >
@@ -67,7 +62,7 @@
                 />
               </el-form-item>
             </template>
-          </section>
+          <!-- </section> -->
         </article>
       </main>
       </template>
@@ -91,7 +86,7 @@ export default {
     data: {
       type: Object,
       default: function () {
-        return {}
+        return {}  
       }
     },
     formProperties: {
@@ -148,7 +143,7 @@ export default {
   watch: {
     data: {
       handler (data) {
-        console.log('----this.data----' + JSON.stringify(data))
+        // console.log('----this.data----' + JSON.stringify(data))
         this.computeExpressions()
       },
       deep: true,
@@ -197,7 +192,7 @@ export default {
       const formItemListInit=this.getFormItemListInit()
        
       formItemListInit.forEach((formSection, index) => {
-          const reg = /\$\{(.+)?\}/
+          const reg = /#\{(.+)?\}/
         
          if (typeof formSection.hidden === 'string' && reg.test(formSection.hidden)) {
             this.formItemList[index].hidden =
@@ -208,7 +203,7 @@ export default {
               this.setSectionElementDisable(this.formItemList[index].children,disabled)
           }
 
-        (!this.textModel)&&formSection.children.forEach((item, innerIndex) => {
+          formSection.children.forEach((item, innerIndex) => {
             
           for (const key in item.properties) {
             const propertyValue = item.properties[key]
@@ -253,10 +248,10 @@ export default {
     transExpression (expression) {
       const instance = this.data
 
-      expression = expression.replace(/\$\{(.+?)\}/g, 'instance.$1')
+      expression = expression.replace(/#\{(.+?)\}/g, 'instance.$1')
       if(expression.indexOf('return')==-1){
           expression=    `return ${expression}`
-      }debugger
+      }
       const func = new Function('instance', expression)
       const res = func(instance)
       return res
@@ -274,7 +269,7 @@ export default {
     },
     // 更新数据
     updateFormData (data) {
-      debugger
+      
       Object.keys(data).forEach((key) => {
         this.$set(this.data, key, data[key])
       })
@@ -297,6 +292,7 @@ export default {
               if (formItem.type === 'child-form') {
                 childFormKeyList.push(formItem.key)
               }
+
             })
           }
         })
@@ -331,7 +327,10 @@ export default {
       const filteredData = {}
       this.formItemMap((formItem) => {
         if(formItem.type!=='slot'){
-          filteredData[formItem.key] = data[formItem.key]
+          filteredData[formItem.key] = data[formItem.key]??''
+          if(Array.isArray(data[formItem.key])){
+            filteredData[formItem.key]=data[formItem.key].filter(item=>item!==null&&item!==undefined)
+          }
         }
       })
       return filteredData
@@ -351,7 +350,6 @@ export default {
     // key：操作的 key
     // Required true，表示隐藏。而 false，表示取消隐藏
     setElementRequired (key, beRequired = true) {
-      debugger
       this.formItemMap((formItem) => {
         if (formItem.key == key) {
           let rules = formItem.rules
@@ -456,8 +454,7 @@ export default {
 
     // 获取 label
     getFormItemLabel (formItem) {
-      if (
-        this.textModel &&['left','right'].includes(this.formProperties['label-position'])) {
+      if (['left','right'].includes(this.formProperties['label-position'])&&formItem.label) {
         return formItem.label + ':'
       }
       return formItem.label
@@ -466,4 +463,9 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.form-text-mode {
+  --layout-row-gap:6px;
+  --layout-gap:0px;
+}
+</style>

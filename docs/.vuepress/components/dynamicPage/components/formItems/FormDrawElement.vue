@@ -2,7 +2,7 @@
   <!-- 普通输入框 -->
   <main
     :style="item.style || {}"
-    :class="`form-unqiue-${item.key} ${getTextModel ? '' : 'hz-untext-box'}`"
+    :class="`form-unqiue-${item.key} ${getTextModel ? 'hz-text-box' : 'hz-untext-box'}`"
     class="form-input-box form-item-box"
   >
   <div class='flex'>
@@ -17,12 +17,12 @@
       v-if="!getTextModel"
     >
     </el-input>
-    <div v-else :style="item.textStyle||{}" class="form-input-text">{{ value || '-' }}   </div>
-   <el-button  v-if="!getTextModel" @click="selectPoint" size="small" :disabled="getDisabled">选择</el-button>
+    <div v-else :style="item.textStyle||{}" class="form-input-text">{{ value.slice(0,20)+'...' || '-' }}   </div>
+   <el-button   @click="selectPoint" size="small" :disabled="getDisabled" class="ml10">{{!getTextModel?"选择":"查看"}}</el-button>
   </div>
     
     <DrawElementGis
-      v-if="!getTextModel"
+     
       v-model="val"
       :visible="visible"
       :zoom="zoom" 
@@ -70,6 +70,7 @@ export default {
         },
         set (lnglat) {
           this.$emit('input', JSON.stringify(lnglat));
+          this._valueLink(lnglat);
           
           // 只有非子表单的情况下，才会冒泡上去数据变更
           if (this.formItemType !== 'childForm') {

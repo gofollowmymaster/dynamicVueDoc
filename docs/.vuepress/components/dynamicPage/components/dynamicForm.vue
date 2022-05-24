@@ -8,6 +8,7 @@
             @formDataUpdated="formDataUpdated"
             v-bind="formOption">
           </DynamicFormContent>
+
          <DynamicActions
         :actions="actions"
         :actionData="{}"
@@ -48,6 +49,7 @@ export default {
     },
     apiPromise: {
       type: Function,
+      default: ()=>Promise.resolve(),
     },
     data:{
       type:Object,
@@ -66,18 +68,25 @@ export default {
         
       apiPromise(this.data)
         .then((data) => {
+          if(data instanceof Object )
            this.formData=data
         });
       }
       },
       deep:true,
       immediate:true
+    },
+    data:{
+      handler(data){
+        if(data instanceof Object )
+        this.formData=data
+      },
+      immediate:true,
     }
     
 
   },
   mounted(){
-    this.formData=this.data
   },
   components: { },
   methods: {

@@ -1,6 +1,6 @@
 <template>
   <div class="pie-container  ">
-         <v-chart class="chart" :option="lineChartOption" />
+         <v-chart class="chart" :option="lineChartOption" :autoresize="true"/>
   </div>
 </template>
 <script>
@@ -20,7 +20,7 @@ export default {
       }
     },
     title:String,
-    dataList:{
+    data:{
       type:Object,
       default(){
         return {}
@@ -35,10 +35,10 @@ export default {
   },
   computed:{
     lineChartOption(){
-      console.log('---Object.values(this.dataList).flat(2)--',Object.values(this.dataList).flat(2).map(item=>item.value).map(parseFloat))
-      const max = Math.max(...Object.values(this.dataList).flat(2).map(item=>item.value).map(parseFloat), 100)
+      console.log('---Object.values(this.data).flat(2)--',Object.values(this.data).flat(2).map(item=>item.value).map(parseFloat))
+      const max = Math.max(...Object.values(this.data).flat(2).map(item=>item.value).map(parseFloat), 20)
       
-      const xAxis = Object.values(this.dataList)[0].map(item => {
+      const xAxis = Object.values(this.data)[0]?.map(item => {
           return item.label
         })
       this.lineChartOptionTemplate.xAxis[0].data = xAxis
@@ -47,7 +47,7 @@ export default {
       let series=[]
       let index=0
       debugger
-      for(let seriesName in this.dataList){
+      for(let seriesName in this.data){
         const seriesData={
               name: seriesName,
               type: 'line',
@@ -55,7 +55,7 @@ export default {
               lineStyle: {
                 color: this.colorStyle[index][0]
               },
-              data: this.dataList[seriesName],
+              data: this.data[seriesName],
             }
             if(this.hasAreaStyle){
               seriesData.areaStyle={}

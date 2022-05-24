@@ -13,8 +13,7 @@ export default {
   data: function () {
     return {}
   },
-  computed: {
-     
+  computed: { 
   },
   watch: {
     

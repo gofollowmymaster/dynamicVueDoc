@@ -1,6 +1,6 @@
 <template>
     <main class=" ">
-        <template v-for="(item, index) in actionsOrderByKey">
+        <template v-for="(item, index) in actionsOrdered">
         <el-popconfirm
           class="ml6"
           v-if="item.popconfirm"
@@ -10,7 +10,7 @@
           <component
             slot="reference"
             :is="item.component"
-            v-permission="item.permission"
+            v-permission="item.permission||item.label"
             v-text="item.label"
             v-bind="item.properties"
           ></component>
@@ -49,11 +49,9 @@ export default {
     actionBarWraper:{
       type:[HTMLElement ,Object]
     }
-     
   },
   computed:{
-    actionsOrderByKey(){
-      debugger
+    actionsOrdered(){
       const actions=  Object.entries(this.actions).map(([key,value],index)=>{
         return  {...value,actionKey:key}
       })
@@ -63,20 +61,16 @@ export default {
   },
   
   methods: {
-     
-
     actionHandle(action){
-      let actionData=this.actionData
-      debugger
-      if(action.isloadData!==false&&isObjEmpty(actionData)){
+      let actionData=action.actionDataKey? this.actionData[action.actionDataKey]:this.actionData
+      if(action.isLoadData!==false&&isObjEmpty(actionData)){
            this.$message({ type: 'warning', message: '您没有选择任何数据' })
         return
       }
-      if(action.isloadData===false){
+      if(action.isLoadData===false){
         actionData=null
       }
       this.actionHandles(action,actionData)
-      
     },
   },
 };

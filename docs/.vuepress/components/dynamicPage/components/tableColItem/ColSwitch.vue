@@ -5,9 +5,7 @@
          class="table-col-box  "
          v-bind="bindOptions"
          v-model="rowData[field]"
-         @change="item.events.change(rowData,$event)"
-         >
-          
+         @change="item.events.change(rowData,$event)">
     </el-switch>
     </section>
 
@@ -20,7 +18,6 @@
         name: 'ColSwitch',
         mixins: [ TableColMixin ],
         computed: {
-            
         }
     };
 </script>
