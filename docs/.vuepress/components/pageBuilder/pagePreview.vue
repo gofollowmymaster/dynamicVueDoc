@@ -1,11 +1,13 @@
 <template>
-  <DynamicCurdPage
+  <component
+  v-if="component"
+    :is="component"
   class="page-wraper"
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
     :apiPromises="apiPromises"
-  ></DynamicCurdPage>
+  ></component>
 </template>
 <script>
 import { buildTableFields } from "../dynamicPage/utils/tool";
@@ -136,6 +138,7 @@ export default {
           },
         },
       },
+      component:''
     };
   },
   created() {
@@ -176,7 +179,7 @@ export default {
   },
   mounted(){
        import('../dynamicPage/components/pageTemplate/DynamicCurdPage').then(({default:DynamicCurdPage})=>{
-    Vue.use(pageBuilder)
+       this.component=DynamicCurdPage
   })
   },
   methods: {

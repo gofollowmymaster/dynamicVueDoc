@@ -21,6 +21,9 @@ module.exports = {
         { text: '操作', link: '/guide/actions/index' },
         { text: '样式', link: '/guide/layout' },
         { text: '示例', link: '/pageBuilder/index' },
+        { text: '示例2', link: '/pageBuilder/preview' },
+
+
 
       ],
       sidebar: {
