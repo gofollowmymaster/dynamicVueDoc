@@ -273,7 +273,7 @@ export function buildDetailFields (fields,formSections={}) {
   fields = deepCopy(fields)
   // debugger
   fields = fields
-    .filter((item) => ((item.formable || item.formOption)&&item.detailable!==false)||item.detailable===true||item.detailOption)
+    .filter((item) => ((item.formable || item.formOption)&&item.detailable!==false&&item.detailOption!==false)||item.detailable===true||item.detailOption)
     .map((item) => {
       let detailOption =  deepMerge(formOptionDefault, item.formOption, true)
       detailOption = deepMerge(detailOption, item.detailOption, true)

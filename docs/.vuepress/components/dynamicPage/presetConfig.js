@@ -1,8 +1,7 @@
-import { appendToPreset, deepMerge } from './utils/tool'
-// const isDebug = window?._config?.isDebug
-// const isDebug
-const showTestTool = process.env.NODE_ENV == 'development' ? true : false
-export const searchForm = {
+import {appendToPreset, deepMerge} from "./utils/tool"
+const isDebug=window._config?.isDebug
+const showTestTool=process.env.NODE_ENV == 'development'?true:isDebug
+export const searchOption = {
   properties: {
     'label-width': '80px',
     'label-position': 'right'
@@ -33,7 +32,7 @@ export const tableOption = {
     'empty-text': '暂无数据',
     align: 'center',
     'header-align': 'center',
-    'row-style': { height: '40px' },
+    'row-style': { height: '36px' },
     'row-key': 'id'
   },
   colOptions: {
@@ -42,7 +41,13 @@ export const tableOption = {
     'show-overflow-tooltip': true,
     align: 'center',
     'header-align': 'center'
-  }
+  },
+  // loadListApi: this.apiPromises.list,
+  // lineActions: {
+  //   update: updateOptions,
+  //   detail: detailOptions,
+  //   delete: deleteOptions
+  // }
 
   // style: "width: 100%",
 }
@@ -50,7 +55,7 @@ export const tableOption = {
 export const pagination = {
   small: false,
   'current-page': 1,
-  pageSize: 5,
+  pageSize: 10,
   layout: 'total,sizes, prev, pager, next, jumper',
   'hide-on-single-page': true,
   'page-sizes': [10, 20, 30, 40, 50]
@@ -90,7 +95,7 @@ export const submitActionOption = {
   apiPromise: () => Promise.resolve(),
   properties: {
     type: 'primary',
-    size: 'mini'
+    size: 'small'
   },
   callback: {
     closeModal: true,
@@ -206,7 +211,7 @@ export const routerDialogFormActionOption = deepMerge(dialogFormActionOption, {
   dialog: {
     container: 'dy-page',
     body: {
-      actions: null
+      actions: {}
     }
   }
 })
@@ -251,8 +256,12 @@ export const downloadActionOption = {
   }
 }
 
-export const dynamicCurdPageOptions = {
-  searchForm,
+
+ 
+
+
+export const dynamicCurdPageOptions={
+  searchOption,
   treeOption,
   pagination,
   searchFields: [],
@@ -280,7 +289,7 @@ export const dynamicCurdPageOptions = {
   },
   searchFields: [],
   tableFields: [],
-  tableOption: {
+  listOption: {
     ...tableOption,
     'current-change': 'handleCurrentChange', // 事件 暂不支持
     lineActions: {
@@ -341,21 +350,9 @@ export const routerActionOption = {
   routerAction: 'push'
 }
 export default {
-  searchForm,
-  tableOption,
-  pagination,
-  treeOption,
-  formOption,
-  DynamicFormOption,
-  dialogFormOption,
-  dialogPageActionOption,
-  dialogFormActionOption,
-  requestApiActionOption,
-  dynamicCurdOption,
-  routerActionOption,
-  dynamicCurdPageOptions,
-  downloadActionOption,
-  routerDialogPageActionOption,
-  routerDialogFormActionOption,
-  submitActionOption
+  searchOption,tableOption,pagination,treeOption,formOption,DynamicFormOption,
+  dialogFormOption,dialogPageActionOption,dialogFormActionOption,requestApiActionOption,
+  dynamicCurdOption,routerActionOption,dynamicCurdPageOptions,downloadActionOption,
+  routerDialogPageActionOption,routerDialogFormActionOption,submitActionOption
+
 }

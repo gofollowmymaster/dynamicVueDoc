@@ -14,7 +14,7 @@
     <DynamicSearchForm
       v-if="options.searchFields && options.searchFields.length"
       :fields="options.searchFields"
-      :options="options.searchForm"
+      :options="options.searchOption"
       @search="onSearch"
     ></DynamicSearchForm>
     
@@ -55,7 +55,7 @@ import {
   isEmpty,deepMerge
 } from '../../utils/tool'
 import {
-  searchForm,
+  searchOption,
   pagination,
   tableOption,
 } from '../../presetConfig'
@@ -128,7 +128,7 @@ export default {
       const tableFields = buildTableFields(this.fields)
 
       return deepMerge({
-          searchForm:{...searchForm,showTestTool:false},
+          searchOption:{...searchOption,showTestTool:false},
           pagination,
           searchFields,
           tableFields,

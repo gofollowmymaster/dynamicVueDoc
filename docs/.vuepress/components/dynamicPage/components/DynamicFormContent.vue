@@ -62,13 +62,13 @@
                 />
               </el-form-item>
             </template>
-          <!-- </section> -->
+
         </article>
       </main>
       </template>
     </el-form>
     <testTool
-      v-if="showTestTool && !data.id"
+      v-if="showTestTool"
       :fields="formItemList"
       refFormName="form"
     ></testTool>
@@ -259,7 +259,7 @@ export default {
     // 监听值更新
     valueUpdateEvent (params) {
       this.$emit('formDataUpdated', this, params)
-      this.formItemMap((formItem)=>{
+      this.formItemForEach((formItem)=>{
           formItem.formDataUpdateHandle&&formItem.formDataUpdateHandle(this.data[formItem.key],this.data)
       })
     },
@@ -325,7 +325,7 @@ export default {
     },
     filterData (data) {
       const filteredData = {}
-      this.formItemMap((formItem) => {
+      this.formItemForEach((formItem) => {
         if(formItem.type!=='slot'){
           filteredData[formItem.key] = data[formItem.key]??''
           if(Array.isArray(data[formItem.key])){
@@ -335,7 +335,7 @@ export default {
       })
       return filteredData
     },
-    formItemMap (func) {
+    formItemForEach (func) {
       for (const formSection of this.formItemList) {
         if (formSection.children && formSection.children.length > 0) {
           for (const formItem of formSection.children) {
@@ -350,7 +350,7 @@ export default {
     // key：操作的 key
     // Required true，表示隐藏。而 false，表示取消隐藏
     setElementRequired (key, beRequired = true) {
-      this.formItemMap((formItem) => {
+      this.formItemForEach((formItem) => {
         if (formItem.key == key) {
           let rules = formItem.rules
 
@@ -391,7 +391,7 @@ export default {
     // key：操作的 key
     // beDisable：必填，默认是 true，表示禁用。而 false，表示取消禁用
     setElementDisable (key, beDisable = true) {
-      this.formItemMap((formItem) => {
+      this.formItemForEach((formItem) => {
         if (formItem.key == key) {
           if (formItem.properties instanceof Object) {
             this.$set(formItem.properties, 'disabled', beDisable)
@@ -407,7 +407,7 @@ export default {
     // key：操作的 key
     // beHidden：必填，默认是 true，表示隐藏。而 false，表示取消隐藏
     setElementHidden (key, beHidden = true) {
-      this.formItemMap((formItem) => {
+      this.formItemForEach((formItem) => {
         if (formItem.key == key) {
           this.$set(formItem, 'hidden', beHidden)
           return true
@@ -418,7 +418,7 @@ export default {
     // 重置表单数据
     resetFields () {
       this.$refs.form.resetFields()
-      this.formItemMap((formItem) => {
+      this.formItemForEach((formItem) => {
         // 如果某一项是
         if (['FormChildForm','FormCurd'].includes(formItem.type)) {
           const a = this.$refs[formItem.key]

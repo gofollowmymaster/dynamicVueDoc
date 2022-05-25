@@ -52,10 +52,15 @@ export default {
   },
   computed:{
     actionsOrdered(){
-      const actions=  Object.entries(this.actions).map(([key,value],index)=>{
+      let actions=  Object.entries(this.actions).map(([key,value],index)=>{
         return  {...value,actionKey:key}
       })
-      actions.sort((a,b)=>a.sort-b.sort)
+      actions=actions.sort((a,b)=>a.sort-b.sort).filter((action)=>{
+        if(typeof action.isShow ==='function'){
+          return action.isShow(this.actionData)!==false
+        }
+        return true
+      })
       return actions
     }
   },

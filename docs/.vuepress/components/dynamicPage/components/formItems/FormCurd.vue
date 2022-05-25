@@ -9,19 +9,31 @@
       :fields="item.fields"
       :apiPromises="apiPromises"
       :entityLabel="item.entityLabel"
-      ref="dynamicCurd"
-    ></DynamicCurd>
+      ref="dynamicCurd"></DynamicCurd>
   </div>
 </template>
 
 <script>
 import { deepMerge } from '../../utils/tool'
 import FormMixin from './mixin'
+const textModeCurdOptions = {
+  searchOption: null,
+  topToolBar:null,
+  listOption:{
+    lineActions:null,
+    hasCheckbox:false,
+  },
+  treeOption: null
+}
 const defaultCurdOptions = {
-  searchForm: null,
+  searchOption: null,
   topToolBar: {
     bulkdelete: null,
     create: {
+      properties:{
+        type:'default',
+        size:'mini'
+      },
       dialog: {
         body: {
           actions: {
@@ -35,16 +47,24 @@ const defaultCurdOptions = {
       }
     }
   },
-  tableOption: {
+  listOption: {
     hasCheckbox: false,
     lineActions: {
       detail: null,
       delete: {
+             properties:{
+        type:'default',
+        size:'mini'
+      },
         callback: {
           showTip: false
         }
       },
       update: {
+             properties:{
+        type:'default',
+        size:'mini'
+      },
         dialog: {
           body: {
             actions: {
@@ -96,7 +116,12 @@ export default {
   },
   computed: {
     curdOptions () {
-      return deepMerge(defaultCurdOptions, this.item.options)
+      let defaultOptions=defaultCurdOptions
+      if(this.getTextModel){
+        defaultOptions=textModeCurdOptions
+        return deepMerge( this.item.options||{},defaultOptions)
+      }
+      return deepMerge(defaultOptions, this.item.options)
     },
     val: {
       get () {

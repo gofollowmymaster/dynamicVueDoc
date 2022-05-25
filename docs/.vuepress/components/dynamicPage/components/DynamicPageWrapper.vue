@@ -23,7 +23,8 @@ export default {
   provide () {
     return {
       setGlobalDialogForm: this.setCurrentDialogForm,
-      setGlobalDialogPage: this.setCurrentDialogPage
+      setGlobalDialogPage: this.setCurrentDialogPage,
+      isGlobalDialogFormActive:this.isGlobalDialogFormActive,
     }
   },
   mounted () {},
@@ -39,10 +40,14 @@ export default {
       this.currentDialogPage = currentDialogPage
     },
     close(){
-      this.currentDialogForm.visible = { value: false }
-      this.currentDialogPage.visible = { value: false }
-
-
+      if(this.currentDialogForm.visible.value){
+        this.currentDialogForm ={visible: { value: false }}
+        return 
+      }
+      this.currentDialogPage = {visible: { value: false }}
+    },
+    isGlobalDialogFormActive(){
+      return this.currentDialogForm.visible.value
     }
   }
 }

@@ -43,7 +43,7 @@ export default class dialogForm {
     }
     currentDialogForm.body.data = data
 
-    if (typeof this.vm.setGlobalDialogForm === 'function') {
+    if (typeof this.vm.setGlobalDialogForm === 'function' &&!this.vm.isGlobalDialogFormActive()) {
       this.vm.setGlobalDialogForm(currentDialogForm)
       return
     }

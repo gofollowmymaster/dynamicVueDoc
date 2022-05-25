@@ -45,6 +45,7 @@ const entityLabel = '****'
  
 const fields  =[
  { key: "keyWord", type: "FormInput", label: "关键字", searchable: true },
+  {key:'id'},
   {
     key: "sName",
     type: "FormInput",
@@ -133,7 +134,7 @@ return import("../.vuepress/components/vuePlugins/utils").then(module=>{
 }
 
  function tablkeinfoDetailApi (data) {
-  return Promise.resolve({})
+  return Promise.resolve(data)
 }
 
 </script>

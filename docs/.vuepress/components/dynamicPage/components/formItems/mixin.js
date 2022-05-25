@@ -5,7 +5,7 @@ export default {
       type: Object,
       default: () => ({})
     },
-    value: [String, Number, Array, Boolean],
+    value: [String, Number, Array, Boolean,Object],
     allDisabled: {
       type: Boolean,
       default: false
@@ -44,6 +44,8 @@ export default {
       delete obj.properties
       delete obj.options
       delete obj.groupProperties
+      delete obj.valueLink
+
       obj.maxlength= obj.maxlength||255
 
 

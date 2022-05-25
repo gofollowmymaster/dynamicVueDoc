@@ -3,7 +3,7 @@ import callbackActionHandles from './actions/callback.js'
 export default {
   props: {},
   computed: {},
-  inject: ['setGlobalDialogForm', 'setGlobalDialogPage'],
+  inject: ['setGlobalDialogForm', 'setGlobalDialogPage','isGlobalDialogFormActive'],
   methods: {
     actionHandles (action = {}, actionData = null) {
       debugger

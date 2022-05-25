@@ -7,19 +7,22 @@
             :formItemList="formItemList"
             @formDataUpdated="formDataUpdated"
             v-bind="formOption">
+             
+             <template v-for="slot in formSlots"    v-slot:[slot.key]   >
+                <slot :name="slot.key" :value="formData[slot.key]" ></slot>
+             </template>
           </DynamicFormContent>
-
          <DynamicActions
+         v-if="!formOption.textModel"
         :actions="actions"
-        :actionData="{}"
-      ></DynamicActions>
+        :actionData="{}"></DynamicActions>
     
     </main>
      
 </template>
 <script>
 import actionMixin from './actionMixin'
-
+import {JSONDeepCopy}  from '../utils/tool'
 export default {
   name:'DynamicForm',
   mixins:[actionMixin],
@@ -59,6 +62,13 @@ export default {
     }
   },
   computed: {
+    formSlots(){
+      return this.formItemFilter((item)=>{
+          return item.type=='slot'
+      }).reduce((prev,next)=>{
+        return prev.concat(next.children)
+      },[])
+    }
   },
   watch:{
     apiPromise:{
@@ -88,9 +98,24 @@ export default {
   },
   mounted(){
   },
-  components: { },
+  components: {
+
+   },
   methods: {
-     
+     formItemFilter (func) {
+      let formItemList=JSONDeepCopy(this.formItemList)
+       formItemList.forEach((formSection,section)=>{
+        if (formSection.children && formSection.children.length > 0) {
+           formSection.children.forEach((formItem,index)=>{
+             if(!func(formItem))delete  formItemList[section].children[index]
+           })
+           formItemList[section].children= formItemList[section].children.filter(item=>item)
+
+        }
+      })
+      formItemList=formItemList.filter(formSection=>formSection.children.length)
+      return formItemList
+    },
     reset() {
       this.$refs["DynamicFormContent"].resetFields();
     },

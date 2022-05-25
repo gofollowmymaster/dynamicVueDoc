@@ -80,9 +80,6 @@
 .dynamic-form .el-textarea__inner:focus {
   border-color: #abb3cc !important;
 }
-.dynamic-form .hz-untext-box {
-  height: 36px !important;
-}
 .dynamic-form .block-nav {
   position: relative;
   padding-top: 10px;

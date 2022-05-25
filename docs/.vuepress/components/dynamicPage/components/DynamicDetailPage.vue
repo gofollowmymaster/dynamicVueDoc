@@ -8,7 +8,6 @@ import {
   buildDetailFields,
 } from '../utils/tool'
 import {
-  tableOption,
   dialogFormActionOption,
 } from '../presetConfig'
 import actionMixin from './actionMixin'
@@ -57,7 +56,7 @@ export default {
     lineActions () {
        
       const pageActions=this.generatePageActionOptions('router')
-      const customLineActions=this.optionsProps.tableOption.lineActions||{}
+      const customLineActions=this.optionsProps.listOption.lineActions||{}
       const customTopActions=this.optionsProps.topToolBar
 
       const lineActions = deepMerge(   pageActions,
@@ -121,9 +120,9 @@ export default {
         action.dialog.properties.navType='router'
       }
       action.dialog.container='DyPage'
-      if(action.dialog.body?.actions){
-        action.dialog.body.actions={}
-      }
+      // if(action.dialog.body?.actions){
+      //   action.dialog.body.actions={}
+      // }
       this.actionHandles(action,actionData)
       this.pageOpened=true
     },

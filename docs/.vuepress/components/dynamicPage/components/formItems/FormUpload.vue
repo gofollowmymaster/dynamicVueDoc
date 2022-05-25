@@ -54,7 +54,7 @@
       :style="{padding:0}"
       :fields="fileFields"
       :apiPromises="apiPromises"
-      :optionsProps="tableOptions" 
+      :optionsProps="curdOptions" 
       entityLabel="附件"></DynamicCurd>
   </div>
 </template>
@@ -152,10 +152,10 @@ export default {
         list:()=> Promise.resolve({list:self.fileList,totalCount:self.fileList.length}),
         detail: info=>Promise.resolve(info),
       },
-      tableOptions:{
+      curdOptions:{
         topToolBar: null,
         searchFields: null,
-        tableOption: {
+        listOption: {
           hasCheckbox:false,
           lineActions: {
             update:null,

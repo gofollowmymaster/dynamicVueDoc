@@ -3,12 +3,11 @@
     <DynamicSearchForm
       v-if="options.searchFields && options.searchFields.length"
       :fields="options.searchFields" 
-      :options="options.searchForm"
+      :options="options.searchOption"
       @search="onSearch"
     ></DynamicSearchForm>
-    <section class="my12" v-if="!isEmpty(options.topToolBar)">
+    <section class="mb12" v-if="!isEmpty(options.topToolBar)">
       <DynamicActions
-
         :actions="options.topToolBar"
         :actionData="actionData"
         :actionBarWraper="$parent.$el"
@@ -30,7 +29,7 @@
         ]">
         <DynamicTable
           class="table-wraper flex1"
-          :table="options.tableOption"
+          :table="options.listOption"
           :columns="options.tableFields"
           :apiPromise="loadListApiPromise"
           @selection-change="selectChange"
@@ -61,7 +60,7 @@ import {
   generateDefaultValue,
 } from '../utils/tool'
 import {
-  searchForm,
+  searchOption,
   pagination,
   tableOption,
   treeOption,
@@ -125,7 +124,7 @@ export default {
 
       const optionsOrigin = deepMerge(
         {
-          searchForm,
+          searchOption,
           treeOption,
           pagination,
           topToolBar: {
@@ -134,7 +133,7 @@ export default {
           },
           searchFields,
           tableFields,
-          tableOption: {
+          listOption: {
             ...tableOption,
             loadListApi: this.apiPromises.list,
             lineActions: {
@@ -162,7 +161,7 @@ export default {
     loadListApiPromise () {
       const queryParams={...this.queryParams}
       delete queryParams.refreshKey
-      return this.options.tableOption
+      return this.options.listOption
         .loadListApi(queryParams)
         .then((data = {}) => {
           debugger
@@ -204,6 +203,7 @@ export default {
       })
     },
     onSearch (params) {
+      debugger
       this.searchParams = { ...this.searchParams, ...params }
     },
     refresh () {

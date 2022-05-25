@@ -1,5 +1,5 @@
 html {
-  font-size: calc(12 / 1380 * 100vw);
+  font-size: calc(12 / 1260 * 100vw);
   --col-num: 24;
   --layout-margin: 2.2rem;
   --layout-gap: 18px;

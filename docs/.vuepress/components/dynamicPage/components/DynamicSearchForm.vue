@@ -1,6 +1,6 @@
 <template>
-  <main class="flex relative ">
-    <DynamicFormContent :formItemList="formFields" ref="searchForm" @formDataUpdated="change" :showTestTool="options.showTestTool" 
+  <main class="flex relative search-container">
+    <DynamicFormContent :formItemList="formFields" ref="searchOption" @formDataUpdated="change" :showTestTool="options.showTestTool" 
     v-bind="options"  :formProperties="options.properties"  :data="data" >
       <template  #actionBtnSlot>
         <section class="ml12 "  >
@@ -32,7 +32,7 @@ export default {
     options: {
       type: Object,
       default: function () {
-        return loadPresetConfig('searchForm');
+        return loadPresetConfig('searchOption');
       },
     },
  
@@ -65,18 +65,19 @@ export default {
   },
   methods: {
     change(){
+      debugger
       if(this.options.trigger=='change'){
         this.submit()
       }
     },
     submit() {
-       const data=this.$refs["searchForm"].getData() 
+       const data=this.$refs["searchOption"].getData() 
        delete data.actionBtnSlot
        this.$emit('search',data)
     },
     reset() {
-      this.$refs["searchForm"].resetFields();
-      const data=this.$refs["searchForm"].getData()
+      this.$refs["searchOption"].resetFields();
+      const data=this.$refs["searchOption"].getData()
       delete data.actionBtnSlot
       this.$emit('search', data)
     },
@@ -84,5 +85,8 @@ export default {
 };
 </script>
 <style lang="css" scoped>
- 
+ .search-container {
+  --layout-row-gap:2px;
+  --layout-gap:2px;
+}
 </style>

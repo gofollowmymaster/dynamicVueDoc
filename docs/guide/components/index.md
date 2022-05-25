@@ -270,7 +270,7 @@ const fields  =[
 export default {
   data () {
     return {
-      searchOption:this.$appendToPreset('searchForm',{
+      searchOption:this.$appendToPreset('searchOption',{
          
       }),
       fields:this.$buildSearchFields(fields),
@@ -538,6 +538,7 @@ const entityLabel = '****'
  
 const fields  =[
  { key: "keyWord",  label: "关键字", searchable: true },
+  {key:'id'},
   {
     key: "sName",
     label: "姓名",
@@ -600,11 +601,13 @@ function mockApi (data) {
 
 |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
-| treeOption  | 筛选树配置 |Object| × | 预设 | 左侧筛选树配置 | 
-| listOption  | 列表配置 |Object |× | 预设| 列表配置 | 
-| searchOption  | 搜索栏配置 | Object | ×  | 预设 | 搜索栏配置 | 
-| pagination  | 分页 | Object |×  |  预设|  | 
-| topToolBar  | 工具栏 | Object |×  | 预设 |  | 
+| searchOption  | [搜索栏配置](#自定义搜索栏配置) | Object | ×  | 预设 | 搜索栏配置 | 
+| topToolBar  | [上方工具栏操作按钮](#工具栏) | Object |×  | 上方操作按钮 |  | 
+| listOption  | [列表配置](#列表配置) |Object |× | 预设| 列表配置 | 
+| treeOption  | [左侧筛选树配置](#左侧筛选树) |Object| × | 预设 |   | 
+| pagination  | [分页](#分页) | Object |×  |  分页配置|  | 
+
+
 
 
 ::: details   页面配置合并原则
@@ -704,6 +707,8 @@ function mockApi (data) {
 ```
 :::
 
+### 自定义搜索栏配置
+参考搜索栏组件配置：[Dynamic-Search](/guide/components/search)
 
 ### 自定义上方操作栏配置
 参考表单组件配置：[Dynamic-Action](/guide/actions/index)
@@ -711,14 +716,40 @@ function mockApi (data) {
 ### 自定义列表配置
 参考列表组件配置：[Dynamic-List/Table](/guide/components/list)
 
-### 自定义搜索栏配置
-参考搜索栏组件配置：[Dynamic-Search](/guide/components/search)
 
 ### 自定义查询树配置
-查询树
+
+#### 预设/默认配置
+```
+{
+  lazy: true,
+  'node-key': 'deptId',
+  props: {
+    label: 'deptName',
+    children: 'children',
+    isLeaf: 'leaf'
+  },
+  'current-node-key': null,
+  'highlight-current': true,
+  fieldName: 'test'
+}
+```
 
 ### 自定义分页配置
-分页
+
+
+#### 预设/默认配置
+```
+{
+  small: false,
+  'current-page': 1,
+  pageSize: 10,
+  layout: 'total,sizes, prev, pager, next, jumper',
+  'hide-on-single-page': true,
+  'page-sizes': [10, 20, 30, 40, 50]
+  // background:true
+}
+```
  
 ## Api配置
 >Api配置中包含增删改查相关Api函数，返回值均为Promise

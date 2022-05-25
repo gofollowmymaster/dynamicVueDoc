@@ -108,6 +108,7 @@ export default {
   },
   computed: {
     columnsComputed () {
+      debugger
       const columns = this.columns.map((item) => {
         return {
           ...item,
@@ -152,7 +153,10 @@ export default {
       handler (api) {
         if (api instanceof Promise) {
           api.then((dataList) => {
+                    if(Array.isArray(dataList)){
+
             this.tableData = dataList
+                    }
           })
         }
       },
@@ -181,7 +185,9 @@ export default {
     },
     data: {
       handler (data) {
-        this.tableData = data
+        if(Array.isArray(data)){
+          this.tableData = data
+        }
       },
       deep: true,
       immediate: true
