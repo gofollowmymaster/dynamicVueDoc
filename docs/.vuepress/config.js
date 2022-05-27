@@ -16,12 +16,11 @@ module.exports = {
       type: 'blog',
     //   logo: '/img/logo.png',
       nav: [
-        { text: '文档', link: '/guide/index' },
+        { text: '指南', link: '/guide/index' },
         { text: '组件', link: '/guide/components/index' },
         { text: '操作', link: '/guide/actions/index' },
         { text: '样式', link: '/guide/layout' },
         { text: '示例', link: '/pageBuilder/index' },
-        { text: '示例2', link: '/pageBuilder/preview' },
 
 
 

@@ -1,5 +1,5 @@
 html {
-  font-size: calc(12 / 1260 * 100vw);
+  font-size: 18px;
   --col-num: 24;
   --layout-margin: 2.2rem;
   --layout-gap: 18px;
@@ -5176,9 +5176,6 @@ html {
 .hz-low-code .dynamic-form .el-select .el-input.is-focus .el-input__inner,
 .hz-low-code .dynamic-form .el-textarea__inner:focus {
   border-color: #abb3cc !important;
-}
-.hz-low-code .dynamic-form .hz-untext-box {
-  height: 36px !important;
 }
 .hz-low-code .dynamic-form .block-nav {
   position: relative;

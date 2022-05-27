@@ -1,10 +1,10 @@
 import dynamicPage from "../dynamicPage/index.js"
 import permission from './permissionDirective.js'
 import resizeAble from './resizeAbleDirective.js'
-import {
-  buildFormFields,
-  appendToPreset
-} from '../dynamicPage/utils/tool'
+// import {
+//   buildFormFields,
+//   appendToPreset
+// } from '../dynamicPage/utils/tool'
 
 
 export default {

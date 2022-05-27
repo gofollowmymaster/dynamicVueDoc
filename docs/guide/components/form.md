@@ -43,10 +43,11 @@
 - 输入搜索下拉框  -- (todo)
 
   
- 
+## 表单交互
+- 方案一   被动式  模板语法/function
+- 方案二   主动式  valueLink
+<!-- - 方案三   监听全局事件 -->
 
-数据交互的两种方式: 模板语法 vs valueLink
-模板语法为数据驱动(计算属性)   valueLink(变动后hook)
 两者可以同时生效    但valueLink同时对该条数据配置值和其他状态时  会有问题
 
 
@@ -60,4 +61,3 @@
 
    
 
- [Akismet插件介绍](https://cn.bluehost.com/blog/wordpress/7397.html)

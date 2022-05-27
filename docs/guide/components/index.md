@@ -1,7 +1,7 @@
 ---
 pageClass:  wide-width-container
 ---
-# 增删改查--DynamicCurdPage
+# 增删改查模板
 
 props：
 |  键   | 意义  |类型| 必选  |类型  |默认值   |备注   |
