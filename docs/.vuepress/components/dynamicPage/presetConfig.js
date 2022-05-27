@@ -207,7 +207,6 @@ export const dialogFormActionOption = {
 export const routerDialogFormActionOption = deepMerge(dialogFormActionOption, {
   actionType: 'routerDialogForm',
   routerAction: 'push',
-  router: '',
   dialog: {
     container: 'dy-page',
     body: {
