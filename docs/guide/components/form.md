@@ -33,6 +33,7 @@
 - 日期时间输入框 -- [FormDateTime](./#FormDateTime) 
 - 普通数字输入框 -- [FormIntNumber](./#FormIntNumber) 
 - 数字输入框 ----- [FormDecimalNumber](./#FormDecimalNumber) 
+- 百分比输入框 ----- [FormRateInput](./#FormRateInput) 
 - 金额文本输入框  --  [FormMoneyInput](./#FormMoneyInput) 
 - 数值范围  -------  [FormNumberRange](./#FormNumberRange) 
 - 地图选点  ------- [FormSelectPoint](./#FormSelectPoint) 
@@ -41,6 +42,7 @@
 - 前端增删改查表单 -  [FormCurd](./#FormCurd) 
 - 文件上传 -------- [FormUpload](./#FormUpload) 
 - 输入搜索下拉框  -- (todo)
+- 多级联动           rodo
 
   
 ## 表单交互

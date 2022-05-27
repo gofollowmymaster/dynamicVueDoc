@@ -421,25 +421,49 @@ export default {
 ### 样式
 Dy-Vue 内置了自己的css样式,它是一种原子化CSS
 
+
+## 预定义配置
+::: tip 
+为了简化配置,快速上手.Dy-Vue 预定义了大量组建/操作配置可以满足大部分常规需求,不过您也可以自由的定义自己的配置,使用appendToPreset方法将会吧您自定义的配置与预定义配置深度合并
+:::
+
+|  配置名   | 含义  |  默认值 | 
+|  ----  | ----  | ----| ---- |
+| searchOption  | 搜索配置选项 |  [searchOption](./preset#搜索配置选项) |
+| listOption  | 列表选项配置 |  [listOption](./preset#列表选项配置)  |
+| DynamicFormOption  | 动态表单配置 |  [DynamicFormOption](./preset#动态表单配置)  | 
+| dialogFormOption  | 表单弹窗配置 |  [dialogFormOption](./preset#表单弹窗配置)  |
+| dialogFormActionOption  | 表单弹窗操作配置 |  [dialogFormActionOption](./preset#表单弹窗操作配置)  | 
+| dialogPageActionOption  | 内容弹窗操作配置 |  [dialogPageActionOption](./preset#内容弹窗操作配置)  | 
+| requestApiActionOption  | 请求操作配置 |  [requestApiActionOption](./preset#请求操作配置)  | 
+| requestApiActionOption  | 请求操作配置 |  [requestApiActionOption](./preset#请求操作配置)  | 
+| downloadActionOption  | 下载操作配置 |  [downloadActionOption](./preset#下载操作配置)  | 
+| submitActionOption  | 提交操作配置 |  [submitActionOption](./preset#提交操作配置)  | 
+| routerDialogFormActionOption  | 表单页面操作配置 |  [routerDialogFormActionOption](./preset#表单页面操作配置)  | 
+| routerDialogPageActionOption  | 内容页面操作配置 |  [routerDialogPageActionOption](./preset#内容页面操作配置)  |
+| routerActionOption  | 路由操作配置 |  [routerActionOption](./preset#路由操作配置)  |
+| pagination  | 分页配置  |  [pagination](./preset#分页配置) |
+| treeOptionp  | tree配置  |  [pagination](./preset#树配置) | 
+
 ## 全局Api
-###  组建搜索栏数据字段 buildSearchFields
+###  组建搜索栏数据字段 
 ``` js
 this.$buildSearchFields(fields)
 ```
-###  组建表格数据字段 buildTableFields
+###  组建表格数据字段 
 ``` js
 this.$buildTableFields(fields)
 ```
-###  组建表单数据字段 buildFormFields.
+###  组建表单数据字段 .
 ``` js
 this.$buildFormFields(fields)
 ``` 
-###  组建详情数据字段 buildDetailFields
+###  组建详情数据字段 
 ``` js
 this.$buildDetailFields(fields)
 ``` 
 
-###  预定义配置合并 appendToPreset
+###  预定义配置合并 
 为了简化配置,快速上手.Dy-Vue 预定义了大量组建/操作配置可以满足大部分常规需求,不过您也可以自由的定义自己的配置,使用appendToPreset方法将会吧您自定义的配置与预定义配置深度合并
 
 ``` js
@@ -447,26 +471,6 @@ this.$appendToPreset('formOption',{
          textModel:true
 })
 ```
-
-## 预定义配置
-
-|  配置名   | 含义  |  默认值 | 偏移类 |
-|  ----  | ----  | ----| ---- |
-| searchOption  | 搜索配置选项 |  [searchOption](./preset#搜索配置选项) |
-| listOption  | 列表选项配置 |  [listOption](./preset#列表选项配置)  |
-| DynamicFormOption  | 动态表单配置 |  [DynamicFormOption](./preset#动态表单配置)  | 
-| dialogFormOption  | 表单弹窗配置 |  [dialogFormOption](./preset#表单弹窗配置)  | grid-offset-sm-* |
-| dialogFormActionOption  | 表单弹窗操作配置 |  [dialogFormActionOption](./preset#表单弹窗操作配置)  | grid-offset-sm-* |
-| dialogPageActionOption  | 内容弹窗操作配置 |  [dialogPageActionOption](./preset#内容弹窗操作配置)  | grid-offset-sm-* |
-| requestApiActionOption  | 请求操作配置 |  [requestApiActionOption](./preset#请求操作配置)  | grid-offset-sm-* |
-| requestApiActionOption  | 请求操作配置 |  [requestApiActionOption](./preset#请求操作配置)  | grid-offset-sm-* |
-| downloadActionOption  | 下载操作配置 |  [downloadActionOption](./preset#下载操作配置)  | grid-offset-sm-* |
-| submitActionOption  | 提交操作配置 |  [submitActionOption](./preset#提交操作配置)  | grid-offset-sm-* |
-| routerDialogFormActionOption  | 表单页面操作配置 |  [routerDialogFormActionOption](./preset#表单页面操作配置)  | grid-offset-sm-* |
-| routerDialogPageActionOption  | 内容页面操作配置 |  [routerDialogPageActionOption](./preset#内容页面操作配置)  | grid-offset-sm-* |
-| routerActionOption  | 路由操作配置 |  [routerActionOption](./preset#路由操作配置)  | grid-offset-sm-* |
-| pagination  | 分页配置  |  [pagination](./preset#分页配置) | grid-offset-xs-* |
-| treeOptionp  | tree配置  |  [pagination](./preset#树配置) | grid-offset-pp-* |
 
 
  
