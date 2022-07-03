@@ -4,8 +4,9 @@
 import {
   buildFormFields,
   appendToPreset,buildSearchFields,buildTableFields,buildDetailFields
-} from './components/dynamicPage/utils/tool'
+} from 'dyvue2'
 
+import "dyvue2/lib/dyvue2.css"
 import 'element-ui/lib/theme-chalk/index.css';
 
 export default async ({
@@ -15,7 +16,7 @@ export default async ({
     siteData, // 站点元数据
     isServer // 当前应用配置是处于 服务端渲染 或 客户端
 }) => {
-  debugger
+   
   Vue.prototype.$buildFormFields=buildFormFields
   Vue.prototype.$buildSearchFields=buildSearchFields
   Vue.prototype.$buildTableFields=buildTableFields
@@ -25,6 +26,9 @@ export default async ({
   if (!isServer) {
     import('element-ui').then(({default:ElementUI})=>{
       Vue.use(ElementUI)
+    })
+    import('dyvue2').then(({default:dyPugin})=>{
+      Vue.use(dyPugin)
     })
     import('./components/vuePlugins/index.js').then(({default:dyPugin})=>{
       Vue.use(dyPugin)

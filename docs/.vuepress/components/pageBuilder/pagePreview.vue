@@ -1,16 +1,14 @@
 <template>
-  <component
-  v-if="component"
-    :is="component"
+  <DynamicCurdPage
+ 
   class="page-wraper"
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
     :apiPromises="apiPromises"
-  ></component>
+  ></DynamicCurdPage>
 </template>
 <script>
-import { buildTableFields } from "../dynamicPage/utils/tool";
 const entityLabel = "实体";
 
 import fields from "./fields.js";
@@ -43,9 +41,8 @@ function buildDynamicSelectOption(){
 
 import {
   buildFormFields,
-  appendToPreset,
   deepMerge,
-} from "../dynamicPage/utils/tool";
+} from "dyvue2";
 
 export default {
   name: "pagePreview",
@@ -77,12 +74,12 @@ export default {
         listOption: {
           lineActions: {
             detail: null,
-            aview: appendToPreset("dialogPageActionOption", {
+            aview:  {
+              actionType:'dialogPageActionOption',
               sort: 1,
               label: "查看",
               permission: "查看",
-              dialog: {
-                properties: {
+                containerProperties: {
                   title: "查看" + entityLabel,
                 },
                 layout: {
@@ -92,12 +89,12 @@ export default {
                   },
                 },
                 body: [
-                  appendToPreset("DynamicFormOption", {
+                  this.$appendToPreset("dynamicFormOption", {
                     label: "基本信息",
                     props: {
                       apiPromise: oldtreeDetailApi,
                       formOption: {
-                        formItemList: buildFormFields(this.fields),
+                        formItemList: this.$buildFormFields(this.fields),
                         borderForm: false,
                         formProperties: {
                           "label-position": "left",
@@ -105,12 +102,12 @@ export default {
                       },
                     },
                   }),
-                  appendToPreset("DynamicFormOption", {
+                  this.$appendToPreset("dynamicFormOption", {
                     label: "管理信息",
                     props: {
                       apiPromise: oldtreeDetailApi,
                       formOption: {
-                        formItemList: buildFormFields(this.fields),
+                        formItemList: this.$buildFormFields(this.fields),
                         borderForm: false,
                         formProperties: {
                           "label-position": "right",
@@ -134,7 +131,7 @@ export default {
                   },
                 ],
               },
-            }),
+        
           },
         },
       },
@@ -178,9 +175,10 @@ export default {
     });
   },
   mounted(){
-       import('../dynamicPage/components/pageTemplate/DynamicCurdPage').then(({default:DynamicCurdPage})=>{
-       this.component=DynamicCurdPage
-  })
+  //      import('dyvue2').then((DynamicCurdPage)=>{
+  //        debugger
+  //      this.component=DynamicCurdPage
+  // })
   },
   methods: {
     parseObjByEval(obj) {

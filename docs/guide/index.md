@@ -431,7 +431,7 @@ Dy-Vue 内置了自己的css样式,它是一种原子化CSS
 |  ----  | ----  | ----| ---- |
 | searchOption  | 搜索配置选项 |  [searchOption](./preset#搜索配置选项) |
 | listOption  | 列表选项配置 |  [listOption](./preset#列表选项配置)  |
-| DynamicFormOption  | 动态表单配置 |  [DynamicFormOption](./preset#动态表单配置)  | 
+| dynamicFormOption  | 动态表单配置 |  [DynamicFormOption](./preset#动态表单配置)  | 
 | dialogFormOption  | 表单弹窗配置 |  [dialogFormOption](./preset#表单弹窗配置)  |
 | dialogFormActionOption  | 表单弹窗操作配置 |  [dialogFormActionOption](./preset#表单弹窗操作配置)  | 
 | dialogPageActionOption  | 内容弹窗操作配置 |  [dialogPageActionOption](./preset#内容弹窗操作配置)  | 
