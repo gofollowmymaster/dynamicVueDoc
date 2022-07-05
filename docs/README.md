@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: https://artice-code-1258339218.cos.ap-beijing.myqcloud.com/vuepress/element-index.png
+heroImage: /dyvue.png
 heroText: Dynamic-Vue
 actionText: 开始使用->
 actionLink: /guide/index

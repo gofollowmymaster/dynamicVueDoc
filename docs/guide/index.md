@@ -30,6 +30,7 @@ pageClass:  wide-width-container
 ```html
 <template>
   <DynamicCurdPage
+  class="relative"
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
