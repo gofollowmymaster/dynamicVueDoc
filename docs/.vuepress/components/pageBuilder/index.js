@@ -11,7 +11,7 @@ files.keys().forEach((url) => {
  let fileDefault = files(url).default; //export default 文件内容
  components[urlKey] = fileDefault;
 });
-
+import MonacoEditor from 'vue-monaco-editor'
 
 export default {
  install(Vue) {
@@ -21,10 +21,11 @@ export default {
    for (let name in components) {
      Vue.component(name, components[name]);
    }
-  import('vue-monaco-editor').then(({default:MonacoEditor})=>{
+  // import('vue-monaco-editor').then(({default:MonacoEditor})=>{
+  //   debugger
     Vue.component('MonacoEditor', MonacoEditor);
 
-  })
+  // })
 
  },
 };

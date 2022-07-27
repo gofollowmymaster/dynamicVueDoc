@@ -1,11 +1,11 @@
 ---
 pageClass:  wide-width-container
 ---
-# 增删改查模板
+# 页面模板组件
 
 开箱即用的增删改查模板
 ::: tip 不止于此
-配合Dy-Vue的操作以及
+配合Dy-Vue的操作可实现多种功能复杂的交互页面
 :::
 |  键   | 意义  |类型| 必选  |类型  |默认值   |备注   |
 |  ----  | ----  |----  |----  |----  |----  |----  |----  |
@@ -16,7 +16,7 @@ pageClass:  wide-width-container
 
 
 ## 字段配置
-在搜索栏，列表，表单（新增、修改），详情场景中都会使用到字段信息，且通常情况下，字段是重叠的，所以Dy-Vue采用了一个字段列表来配置页面的字段。并通过相应的子项配置具体场景的特别配置信息，子项内的配置会覆盖通用配置
+在搜索栏、列表、表单（新增、修改）、详情场景中都有字段信息，且通常情况下，字段是重叠的，所以Dy-Vue采用了一个字段列表来配置页面的字段。并通过相应的子项配置具体场景的特别信息，子项内的配置会覆盖通用配置
  
 ### 基础通用配置  
 通用配置包括会在各种场景中公用的信息，具体信息包括：
@@ -32,22 +32,24 @@ pageClass:  wide-width-container
 | detailOption  | 详情配置 | Object |×  |{} |有值时会在详情中展示， 会在表单基础上叠加，只在详情中有与表单中不一样的情况才需要配置 | 
  
 
-### 字段表单配置子项 
-> 字段表单配置子项，是针对表单新增，修改，详情（detailOption为非false）有效。通过配置可以实现表单内数据回显、校验、交互、提交，等**交互功能**，也可以定义表单**样式、布局**；
+### 表单配置子项 
+> 表单配置子项，是对表单新增，修改，详情有效。通过配置可以实现表单内数据回显、校验、交互、提交，等**交互功能**，也可以定义表单**样式、布局**；
 > 表单组件中，字段顺序是按照，字段先后顺序排列；所以无需特别配置
 
  |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
 | rules  | 验证规则 | array |× |[] | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer |  
-| properties  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容联动    required、value可配置在其内 实现动态定义表单项值以及必填验证    | 
-| valueLink  | 表单联动配置 |Object |×  |{} |  表单联动配置 | 
+| expressProp  | 表单属性 | object |×  |{} | 是一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证   | 
+| changeHandle  | 表单联动配置 |Object |×  |{} |  表单联动配置 | 
 | defaultValue  | 默认值 |Object |×  |{} |  默认值 | 
 | hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
-| extra  | 额外信息 | string |×  |'' |额外的表单属性，会一通绑定到表单上 | 
+| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
+| extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
+
 
 ::: tip 字段表单配置说明
-字段表单配置较灵活，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在formOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、properties、valueLink、defaultValue，searchOption，listOption等配置后，绑定到表单组件。 
+字段表单配置较灵活，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在formOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、expressProp、changeHandle、defaultValue，searchOption，listOption等配置后，绑定到表单组件。 
 :::
 
 ::: demo
@@ -74,17 +76,18 @@ const fields  =[
     formOption: {                  
       wraperProperties:{    //会传入elment 表单组件FormItem的参数props
         style: {},
-        class: ['grid-col-24'],
       },
       rules: [                  //表单验证验证规则
-       'required'  ,      //系统预置规则包括    required email url integer
+       'required'  ,      //系统预置规则包括 required email url integer    可以配置正则和element UI 支持的验证对象
       ],
-      properties: {    //会传入elment 表单组件本身  支持表达式语法
+      expressProp: {    //支持表达式语法的属性  最终ui合并到与rules同级
         disabled: '#{status}==1',
         readOnly: '#{status}==3',
         required:'#{status}==2',
-        clearable:true
       },
+      extra:{
+        clearable:true
+      }
     },
   },
   {
@@ -92,7 +95,7 @@ const fields  =[
     type: "FormSelect",
     label: '多选框',
     formSection: "基础信息",      
-    options: [          //select radio 相关组件有必填options信息
+    options: [          //select radio checkbox 相关组件有必填options信息
       {
         value: "1",
         label: "选我会给设置姓名disabled",
@@ -107,21 +110,11 @@ const fields  =[
       },
     ],
     formOption: {
-        valueLink: {    // 实现事件式数据联动
-          '@*any*@':[          //为任何值 对address字段的操作
-            {
-              linkKey: "address",
-              linkValue: function (data) {
-                return '地址'+data
-              },
-            },
-             {
-              linkKey: "name",
-              linkValue: function (data) {
-                return '姓名'+data
-              },
-            },
-          ],
+        changeHandle(value,vm) {    // 实现事件式数据联动
+              vm.updateFormData({
+                'address':'地址-'+value,
+                name:'姓名'+value
+              })
         },
     },
   },
@@ -136,9 +129,9 @@ const fields  =[
     label: "邮箱",
     formSection: "职业信息",      
     formOption: {
-         rules: [                  //表单验证验证规则
+         rules: [    //表单验证验证规则
         'email',    //系统预置规则包括    required email url integer
-       {                        //自定义规则
+       {    //自定义规则
             message: '请输入***',
             trigger: 'blur',
             required: true
@@ -169,14 +162,13 @@ export default {
   data () {
     return {
       formOption:this.$appendToPreset('formOption',{
-         
+         'label-width':'100px'
       }),
       formItemList:this.$buildFormFields(fields),
-      actions:{
-        save:{
-          
-        }
-      }
+      actions: this.$generateActionOption({
+        actionType:'submit',
+        apiPromise:Promise.resolve({msg:'操作成功',code:200})
+      })
     }
   }
 }
@@ -187,21 +179,22 @@ export default {
 
 ### 搜索栏配置子项 
 > 搜索栏， 实质也是表单，所以理论上凡是表单配置子项都可以无缝配置在搜索栏子项中。
-> 不过常态下搜索栏无需验证，表单项间无交互，所以rules，valueLink，hidden通常是无需配置的，总之搜索栏配置是表单配置的子集
+> 不过常态下搜索栏无需验证，表单项间无交互，所以rules，expressProp、 hidden等通常是无需配置的，总之搜索栏配置是表单配置的子集
 >  默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
 
 
 |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| properties  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容联动    required、value可配置在其内 实现动态定义表单项值以及必填验证    | 
 | defaultValue  | 默认值 |Object |×  |{} |  默认值 | 
 | sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
+| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
 | extra  | 额外信息 | string |×  |'' |额外的表单属性，会一通绑定到表单上 | 
 
 
+
 ::: tip 字段搜索栏配置说明
-和字段表单配置一样，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在searchOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、properties、valueLink、defaultValue，searchOption，listOption等配置后，绑定到搜索表单组件。 
+和字段表单配置一样，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在searchOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、expressProp、defaultValue，searchOption，listOption等配置后，绑定到搜索表单组件。 
 :::
 
 ::: demo
@@ -227,11 +220,11 @@ const fields  =[
     searchOption: {                  
       wraperProperties:{    //会传入elment 表单组件FormItem的参数props
         style: {},
-        class: ['grid-col-8'],
       },
-      properties: {    //会传入elment 表单组件本身  支持表达式语法
+      extra: {    //会传入elment 表单组件本身  支持表达式语法
         clearable:true
       },
+      span:8
     },
   },
   
@@ -296,7 +289,10 @@ export default {
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | template  | 默认值 |function |×  |{} |  默认返回原始值，可返回字符串或对象  | 
 | sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
+| colProperties  | 表格属性 | integer | ×  |{} |  element Ui table 组件支持的其他属性都可配置在内 | 
+
  
+> 自定义组件相关属性可直接放在与sort平级
 
 ::: demo
 ```html
@@ -320,7 +316,11 @@ const fields  =[
     type: "FormInput",           
     label: "姓名",           
     tableOption: {                  
-        sort:2
+        sort:2,
+        colProperties:{
+          width:90,
+          sortable:true,
+        }
     },
   },
   

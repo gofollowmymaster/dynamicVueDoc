@@ -1,4 +1,26 @@
 # 预定义配置信息
+::: tip 
+为了简化配置,快速上手.Dy-Vue 预定义了大量组建/操作配置可以满足大部分常规需求,不过您也可以自由的定义自己的配置,使用appendToPreset方法将会吧您自定义的配置与预定义配置深度合并
+:::
+
+| 配置名 | 含义 | 默认值 |
+| ------ | ---- | ------ |
+| searchOption                 | 搜索配置选项     | [searchOption](./preset#搜索配置选项)                     |
+| listOption                   | 列表选项配置     | [listOption](./preset#列表选项配置)                       |
+| dynamicFormOption            | 动态表单配置     | [DynamicFormOption](./preset#动态表单配置)                |
+| dialogFormOption             | 表单弹窗配置     | [dialogFormOption](./preset#表单弹窗配置)                 |
+| dialogFormActionOption       | 表单弹窗操作配置 | [dialogFormActionOption](./preset#表单弹窗操作配置)       |
+| dialogPageActionOption       | 内容弹窗操作配置 | [dialogPageActionOption](./preset#内容弹窗操作配置)       |
+| requestApiActionOption       | 请求操作配置     | [requestApiActionOption](./preset#请求操作配置)           |
+| requestApiActionOption       | 请求操作配置     | [requestApiActionOption](./preset#请求操作配置)           |
+| downloadActionOption         | 下载操作配置     | [downloadActionOption](./preset#下载操作配置)             |
+| submitActionOption           | 提交操作配置     | [submitActionOption](./preset#提交操作配置)               |
+| routerDialogFormActionOption | 表单页面操作配置 | [routerDialogFormActionOption](./preset#表单页面操作配置) |
+| routerDialogPageActionOption | 内容页面操作配置 | [routerDialogPageActionOption](./preset#内容页面操作配置) |
+| routerActionOption           | 路由操作配置     | [routerActionOption](./preset#路由操作配置)               |
+| pagination                   | 分页配置         | [pagination](./preset#分页配置)                           |
+| treeOptionp                  | tree配置         | [pagination](./preset#树配置)                             |
+
 ## 配置详情
 ### 搜索配置选项
 ``` json

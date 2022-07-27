@@ -52,16 +52,14 @@ export default [
 		"key": "keyWord",
 		"type": "FormInput",
 		"label": "关键字",
-		"searchable": true
+		"searchOption": true
 	},
 	{
 		"key": "sciName",
 		"type": "FormInput",
 		"label": "学名",
 		"formOption": {
-			"properties": {
-				"disabled": true
-			}
+			"disabled": true
 		},
 		"tableOption": {
 			"sort": 2
@@ -72,9 +70,7 @@ export default [
 		"type": "FormInput",
 		"label": "拉丁学名",
 		"formOption": {
-			"properties": {
-				"disabled": true
-			}
+			"disabled": true
 		}
 	},
 	{
@@ -107,15 +103,11 @@ export default [
 			"sort": 3
 		},
 		"formOption": {
-      
-			"valueLink": {
-				"@*any*@": [
-					{
-						"linkKey": "ownership2",
-						"linkValue": function linkValue(data) {          console.log('-------data-------', data);          return data + 1;        },
-						"linkDisable": false
-					}
-				]
+			"changehandle":(data,vm)=> {
+				debugger
+				vm.updateFormData({
+					ownership2:data + 1
+				})
 			}
 		}
 	},
@@ -132,19 +124,20 @@ export default [
 				"value": 2,
 				"label": "22"
 			},
-      {
+      		{
 				"value": 3,
 				"label": "33"
 			},
-      {
+      		{
 				"value": 4,
 				"label": "44"
 			}
 		],
 		"formOption": {
-    	"properties":{
-      "value": "2*(${ownership}||0)"  }
-    },
+			"expressProp":{
+				"value": "2*(${ownership}||0)" 
+			}
+    	},
 		"tableOption": {
 			"sort": 3
 		}
@@ -153,16 +146,18 @@ export default [
 		"key": "ownership2",
 		"type": "FormDynamicSelect",
 		"label": "属性2",
-    "formSection":"權益信息",
+    	"formSection":"權益信息",
 		"options": {
 			"key": "id",
 			"value": "value",
 			"label": "label",
-			"apiPromise": function apiPromise() {      debugger;     return Promise.resolve([{        value: 1,        label: '11',        id: 1      }, {        value: 2,        label: '22',        id: 2      }]);    }
+			"apiPromise": function apiPromise() {      
+				    return Promise.resolve([{ value: 1,  label: '11',   id: 1  },
+					 {  value: 2,  label: '22',  id: 2}]);    }
 		},
 		"tableOption": {
 			"sort": 3
 		},
-		"formable": true
+		"formOption": true
 	}
 ];

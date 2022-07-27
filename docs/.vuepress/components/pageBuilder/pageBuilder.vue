@@ -222,7 +222,7 @@ export default {
 .frame-container {
   background: #f3f4fa;
 }
-.page-container /deep/ .CodeMirror-sizer{
+.page-container /deep/ .codemirror-sizer{
   box-sizing: border-box;
 }
 .resize {
