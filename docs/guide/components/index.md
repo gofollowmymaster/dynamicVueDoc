@@ -9,7 +9,7 @@ pageClass:  wide-width-container
 :::
 |  键   | 意义  |类型| 必选  |类型  |默认值   |备注   |
 |  ----  | ----  |----  |----  |----  |----  |----  |----  |
-| fields  | 字段列表 |array| √ | array | [] |   | 
+| fields  | 字段配置 |array| √ | array | [] |   | 
 | pageOption  | 页面配置 |Object|√  | Object | {} |   | 
 | apiPromises  | 增删改查Api |Object|√  | Object | {} |  成员包括 create delete update list detail | 
 | entityLabel  | 页面名称 |string|√  |String|  '' |   | 
@@ -389,16 +389,17 @@ export default {
 
 ### 详情配置子项 
 
-> 详情配置子项，本质上也是表单组件渲染，可通过配置表单展示模式，将表单展示为更界面友好的详情页，详情页面无需验证，valueLink交互，这些配置没有意义 
-> 字段详情配置子项，通常无需配置，Dy-Vue会默认使用formOption配置，  特许场景下支持detailOption自定义配置，detailOption中配置将覆盖formOption配置  
+> 详情配置子项，本质上也是表单组件渲染，可通过配置表单展示模式，将表单展示为更界面友好的详情页，详情页面无需验证，changeHandle交互，这些配置没有意义， 字段详情配置子项，通常无需配置。
+> Dy-Vue会默认使用formOption配置，formOption不满足需求时，支持detailOption自定义配置，detailOption中配置将覆盖formOption配置  
 > 默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
 
  |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| properties  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容联动    required、value可配置在其内 实现动态定义表单项值以及必填验证    | 
-| hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
+| expressProp  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容动态展示，规则和表单相同     | 
 | sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
+| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
+| extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
 
 
 ::: demo
@@ -426,7 +427,6 @@ const fields  =[
     formOption: {                  
       wraperProperties:{    //会传入elment 表单组件FormItem的参数props
         style: {},
-        class: ['grid-col-24'],
       },
     },
   },
@@ -458,7 +458,7 @@ const fields  =[
     label: "公司名称",
     formSection: "职业信息",      
     formOption: {
-      properties: {    //会传入elment 表单组件本身  支持表达式语法
+      expressProp: {    //会传入elment 表单组件本身  支持表达式语法
         value: '${status}==3?"333":"222"',
       },
     },
@@ -484,6 +484,7 @@ const fields  =[
     label: "公司地址",   
     formSection: "职业信息",      
     formOption: {
+      span:24
     },
   }, 
 ]
@@ -552,14 +553,14 @@ const fields  =[
   {
     key: "latinSciName",
     label: "外号",
-    tableable:true,
+    tableOption:true,
     formOption: {
     },
   },
   {
     key: "originalNumber",
     label: "原编号",   
-    tableable:true,
+    tableOption:true,
     formOption: {
     },
   }, 
@@ -614,14 +615,14 @@ function mockApi (data) {
 
 
 ::: details   页面配置合并原则
-1. 用户配置与预设配置数据类型（对象、数组） ，不相同时会丢弃用户配置，使用预设配置，
-2. 两者都为对象，会继续进行深度递归合并
-3. 两者都为数组  （-鼓励使用对象-）
+1. 用户配置与预设配置数据类型（对象、数组)不相同时会丢弃用户配置，使用预设配置，
+2. 若为对象，会继续进行深度递归合并
+3. 用户配置为null、undefined  会删除预设配置项 
+4. 用户新增配置项，会合并到预设配置中
+5. 其他情况，用户配置覆盖预设配置
+6. 为数组  （-鼓励使用对象-）
   - 若预设配置成员都为基本类型，用户配置覆盖预设配置
   - 若预设配置成员包含非基本类型，会合并两者（很少发生）
-4. 用户配置为null、undefined  会删除预设配置项 
-5. 用户新增配置项，会合并到预设配置中
-6. 其他情况，用户配置覆盖预设配置
 :::
 
 ::: demo 用户配置示例
@@ -655,17 +656,14 @@ const fields  =[
   {
     key: "latinSciName",
     label: "外号",
-    tableable:true,
+    tableOption:true,
     formOption: {
-      wraperProperties:{
-        class:['grid-col-24']    //覆盖预设配置分栏展示表单项
-      }
     },
   },
   {
     key: "originalNumber",
     label: "原编号",   
-    tableable:true,
+    tableOption:true,
     formOption: {
     },
   }, 
@@ -766,7 +764,7 @@ function mockApi (data) {
 | update  | 修改 | function |×  | 同上 |  | 
 | delete  | 删除 | function |×  | 同上 | 未配置delete项是会尝试使用bulkdelete  | 
 
-## 页面名称-entityLabel
+## 页面名称
 >默认、预设情况下 新增/修改/详情 标题会依据页面名称自动生成，若需要自定义可在页面配置中配置以覆盖预设的标题
 
      
