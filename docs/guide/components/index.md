@@ -7,12 +7,12 @@ pageClass:  wide-width-container
 ::: tip 不止于此
 配合Dy-Vue的操作可实现多种功能复杂的交互页面
 :::
-|  键   | 意义  |类型| 必选  |类型  |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  |----  |----  |
-| fields  | 字段配置 |array| √ | array | [] |   | 
-| pageOption  | 页面配置 |Object|√  | Object | {} |   | 
-| apiPromises  | 增删改查Api |Object|√  | Object | {} |  成员包括 create delete update list detail | 
-| entityLabel  | 页面名称 |string|√  |String|  '' |   | 
+|  键   | 意义  |类型| 必选  |默认值   |备注   |
+|  ----  | ----  |----  |----   |----  |----  |----  |
+| fields  | 字段配置 |array| √   | [] |   | 
+| pageOption  | 页面配置 |Object|√  | {} |   | 
+| apiPromises  | 增删改查Api |Object|√   | {} |  成员包括 create delete update list detail | 
+| entityLabel  | 页面名称 |string|√  |  '' |   | 
 
 
 ## 字段配置
@@ -36,6 +36,7 @@ pageClass:  wide-width-container
 > 表单配置子项，是对表单新增，修改，详情有效。通过配置可以实现表单内数据回显、校验、交互、提交，等**交互功能**，也可以定义表单**样式、布局**；
 > 表单组件中，字段顺序是按照，字段先后顺序排列；所以无需特别配置
 
+> 表单配置子项信息参考 [表单配置](./form.md)
  |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
@@ -47,10 +48,7 @@ pageClass:  wide-width-container
 | span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
 | extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
 
-
-::: tip 字段表单配置说明
-字段表单配置较灵活，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在formOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、expressProp、changeHandle、defaultValue，searchOption，listOption等配置后，绑定到表单组件。 
-:::
+ 
 
 ::: demo
 ``` html

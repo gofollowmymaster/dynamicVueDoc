@@ -1,4 +1,6 @@
-
+---
+pageClass:  wide-width-container
+---
 # 动态表单
 ::: tip
 表单是管理页面开发中的重点，也是最繁琐的部分，功能各异的表单项重复出现在项目的各个角落，表单项间相互依赖关系（交互联动）千变万化，
@@ -36,7 +38,7 @@
 - 日期时间输入框 ----- [FormDateTime](./#FormDateTime) 
 - 日期时间范围输入框 -- [FormDateTime](./#FormDateTimeRange) 
 - 普通数字输入框 ----- [FormIntNumber](./#FormIntNumber) 
-- 浮点数字输入框 ----- [FormDecimalNumber](./#FormDecimalNumber) 
+- 浮点数字输入框 ----- [FormNumberPlus](./#FormNumberPlus) 
 - 百分比输入框 ------- [FormRateInput](./#FormRateInput) 
 - 金额文本输入框  ---  [FormMoneyInput](./#FormMoneyInput) 
 - 数值范围  --------  [FormNumberRange](./#FormNumberRange) 
@@ -91,13 +93,520 @@
 ``` js
    formVm.resetFields()
 ```
+
+::: 配置分类
+表单配置信息分两类：
+1. 通用配置  对各类表单组件都生效的配置
+2. 组件配置  各表单组件特有的配置信息 
+:::
+## 表单通用配置
+通用配置对各类表单组件都生效
+
+ |  键   | 意义  |类型| 必选  |默认值  |备注   
+|  ----  | ----  |----  |----  |----  |----  |----  |
+| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
+| rules  | 验证规则 | array |× |[] | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer |  
+| expressProp  | 表单属性 | object |×  |{} | 是一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证   | 
+| changeHandle  | 表单联动配置 |Object |×  |{} |  表单联动配置 | 
+| defaultValue  | 默认值 |Any |×  | null |    | 
+| hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
+| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
+| extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
+
+
+::: tip 字段表单配置说明
+字段表单配置较灵活，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在formOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、expressProp、changeHandle、defaultValue，searchOption，listOption等配置后，绑定到表单组件。 
+表单组件配置参考 [表单项配置](./#表单项配置)
+:::
+
+::: demo
+``` html
+<template>
+<ClientOnly>
+
+  <DynamicForm
+    class="relative"
+    :formOption="formOption"
+    :formItemList="formItemList"
+    :actions="actions"
+  ></DynamicForm>
+</ClientOnly>
+  
+</template>
+<script>
+const fields  =[
+  {
+    key: "name",                  
+    type: "FormInput",           
+    label: "姓名",           
+    formSection: "基础信息",      
+    formOption: {                  
+      wraperProperties:{    //会传入elment 表单组件el-form-item的参数props
+        style: {},
+      },
+      rules: [                  //表单验证验证规则
+       'required'  ,      //系统预置规则包括 required email url integer    可以配置正则和element UI 支持的验证对象
+      ],
+      expressProp: {    //支持表达式语法的属性  最终ui合并到与rules同级
+        disabled: '#{status}==1',
+        readOnly: '#{status}==3',
+        required:'#{status}==2',
+      },
+      extra:{
+        clearable:true   
+      }
+    },
+  },
+  {
+    key: "status",
+    type: "FormSelect",
+    label: '选择框',
+    formSection: "基础信息",      
+    options: [          //select radio checkbox 相关组件有必填options信息
+      {
+        value: "1",
+        label: "选我会给设置姓名disabled",
+      },
+      {
+        value: "2",
+        label: "选我会设置姓名必填",
+      },
+      {
+        value: "3",
+        label: "选我会设置姓名只读",
+      },
+    ],
+    formOption: {
+        changeHandle(value,vm) {    // 实现事件式数据联动
+              vm.updateFormData({
+                'address':'地址-'+value,
+                name:'姓名'+value
+              })
+        },
+    },
+  },
+   {
+    key: "cName",
+    label: "公司名称",
+    formSection: "职业信息",      
+    formOption: {},
+  },
+  {
+    key: "email",
+    label: "邮箱",
+    formSection: "职业信息",      
+    formOption: {
+         rules: [    //表单验证验证规则
+        'email',    //系统预置规则包括    required email url integer
+       {    //自定义规则
+            message: '请输入***',
+            trigger: 'blur',
+            required: true
+       }
+      ],
+    },
+  },
+    {
+    key: "phone",
+    label: "公司电话",   
+    formSection: "职业信息",      
+    formOption: {
+      rules:[
+         /^[1-9]\d{5}(?!\d)$/,     //正则表单式验证
+      ]
+    },
+  }, 
+  {
+    key: "tip",
+    label: "", 
+    type:'FormText',  
+    formSection: "职业信息",      
+    formOption: {
+       content:'这是一段描述文字',
+       wraperProperties:{
+          'label-width':'0px'
+       }
+    },
+  }, 
+  {
+     key :'price',
+     type:'FormNumberRange',
+     label:'价格区间',
+     formSection: "职业信息",      
+      formOption: {
+        
+      },
+  },
+    
+]
  
 
+export default {
+  data () {
+    return {
+      formOption:this.$appendToPreset('formOption',{
+         'label-width':'100px'
+      }),
+      formItemList:this.$buildFormFields(fields),
+      actions: this.$generateActionOption({
+        actionType:'submit',
+        apiPromise:Promise.resolve({msg:'操作成功',code:200})
+      })
+    }
+  }
+}
+ 
+</script>
+```
+:::
+## 表单项配置
 
 ### FormInput
+支持elementUi el-input组件所有属性
 ### FormTextarea
+支持elementUi el-input组件所有属性
 ### FormSelect
 ### FormMulSelect
+
+### FormCascader  
+
+### FormSwitch    
+
+### FormRadio   
+ 
+|  键   | 意义  |类型| 必选   |默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| groupProperties  | 分组属性 |Object|×   |  {}  | 支持 el-radio-group组件所有属性   | 
+| itemProperties  | 单项属性 |Object|× |  {}  | 支持 el-radio/el-radio-button 组件所有属性 |
+| buttom  | 是否按钮形式 |Boolean|× |  false  | 为true时渲染el-radio-button false渲染el-radio-button |
+  
+
+
+### FormCheckbox  
+
+|  键   | 意义  |类型| 必选   |默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| groupProperties  | 分组属性 |Object|×   |  {}  | 支持 el-checkbox-group组件所有属性   | 
+| itemProperties  | 单项属性 |Object|× |  {}  | 支持 el-checkbox/el-checkbox-button 组件所有属性 |
+| buttom  | 是否按钮形式 |Boolean|× |  false  | 为true时渲染el-checkbox-button false渲染el-checkbox |
+  
+### FormRichEditor
+
+|  键   | 意义  |类型| 必选   |默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| plugins  | 插件列表 |Object|×   |  'preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap nonbreaking insertdatetime advlist lists wordcount autosave autoresize' |   | 
+| toolbar  | 工具条 |Object|× |    |  |
+  
+
+
+### FormDate 
+el-date-picker   type="date"  value-format="yyyy-MM-dd"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormDateRange  
+  el-date-picker   type="daterange"  value-format="yyyy-MM-dd"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormDateTime 
+  el-date-picker   type="datetime"  value-format="yyyy-MM-dd HH:mm:ss"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormDateTimeRange 
+  el-date-picker   type="datetimerange"  value-format="yyyy-MM-dd HH:mm:ss"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormNumber  
+  同el-input type="number"    额外添加了两个属性（slot）
+|  键   | 意义  |类型| 必选   |默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| prefix  | 前置符号 |string|× |    |  |
+| suffix  | 后置符号 |string|× |    |  |
+### FormNumberPlus 
+   同el-input type="number"  额外加强了相关功能
+  自动千分位，支持整数限制、非负数限制、小数点后自动补零、前方添加特殊符号（比如￥），后方添加特殊符号
+
+|  键   | 意义  |类型| 必选   |默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| positive  | 是否禁止输入负号 |boolean| ×   | false |   | 
+| onlyInt  | 是否禁止输入小数点 |boolean| ×   | 750 |   | 
+| zeroPadding  | 自动补零到指定位数 |number|×   |   |   | 
+| decimalLimit  | 最大小数位数 |number|× |    | 最大小数位数，小数位数超过这个长度的部分，将被自动截掉 |
+| prefix  | 前置符号 |string|× |    |  |
+| suffix  | 后置符号 |string|× |    |  |
+
+  
+
+### FormRateInput 
+百分比的数字输入框，存储/提交的时候，给的是转换后的真实小数。例如 50% 提交的值是 0.5。
+
+### FormNumberRange 
+  配置同  [FormNumber](./#FormNumber)
+### FormSlider 
+ 同 elementUi el-slider
+### FormColorPicker  
+ 同 elementUi el-color-picker  
+ ### FormUpload 
+基于ElementUi el-upload 封装，配置属性参考el-upload 。 额外作了拓展/优化配置
+
+1. 上传动作强制使用apiPromise（http-request） 配置 ，建议全局定义上传行为，需要适配上传以及犯规结果参数
+2. 简化accept 参数  支持doc、img、video以及自定义参数
+3.  list-type  添加 table 类型
+4.  list-type 为table 是 添加downloadApi 参数
+ 
+
+### FormTreeSelect 
+支持el-tree 所有属性
+### FormText 
+纯文本，不可编辑，用于某些特定的场景
+特有参数  content   文本内容
+### FormHide 
+常用于更新、修改表单  提交id。该类型不会展示在界面中，但会提交数据
+### FormCurd 
+  表格形式的子表单
+
+   |  键   | 意义  |类型| 必选   |默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| fields  | 字段列表 |array| √   | [] | 配置规则同[页面模板组件](./index.md)  | 
+| options  | 选项 |object| √   | {} |  配置规则同[页面模板组件](./index.md)    | 
+| entityLabel  | 子表单名称 |string|×   |   |   | 
+ 
+  
+### FormTableEditable 
+  配置同  [FormCurd](./#FormCurd) 
+   不支持验证,不支持expressProp
+### FormTableEditable 
+  支持验证
+|  键   | 意义  |类型| 必选   | 默认值   |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
+| fields  | 字段列表 |array| √   | [] | 配置规则同[页面模板组件](./index.md)  | 
+  
+
+  ::: demo
+``` html
+<template>
+<ClientOnly>
+  <DynamicForm
+    class="relative"
+    :formOption="formOption"
+    :formItemList="formItemList"
+    :actions="actions"
+  ></DynamicForm>
+</ClientOnly>
+  
+</template>
+<script>
+   
+
+const eduListFields = [
+   
+    {
+        key: 'treeStreetType',
+        type: 'FormSelect',
+        label: '单位',
+        tableOption: {
+
+        },
+        options: [
+            {
+                value: '1',
+                label: '株'
+            },
+            {
+                value: '2',
+                label: '平方'
+            }
+        ],
+        formOption: {
+            span: 8,
+            rules: ['required']
+        }
+    },
+    {
+        key: 'treeStreetContext',
+        type: 'FormInput',
+        label: '备注',
+        tableOption: true,
+        formOption: {
+            span: 8,
+            rules: ['required']
+        }
+    }
+]
+ const eduListOption = {
+    topToolBar: {
+        bulkdelete: null,
+        create: {
+            saveAtion: {
+                callback: {
+                    showTip: false
+                }
+            }
+        }
+    },
+    tableOption: {
+        hasCheckbox: false,
+        lineActions: {
+            detail: null,
+            delete: {
+                callback: {
+                    showTip: false
+                }
+            },
+            update: {
+                saveAtion: {
+                    callback: {
+                        showTip: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+//没有联动
+const eduListTableFields = [
+    {
+        type: 'FormText',
+        label: 'id',
+        key: 'id',
+        tableOption: {}
+    },
+    {
+        key: 'treeId',
+        type: 'FormInput',
+        label: '类别',
+
+        tableOption: {
+            sort: 2,
+            key: 'treeName'
+        },
+        formOption: {
+        }
+    },
+    {
+        key: 'treeStreetQuantity',
+        type: 'FormNumber',
+        label: '数量',
+        tableOption: {
+            label: '设备数量',
+            sort: 3
+        },
+        formOption: {
+        }
+    },
+    {
+        key: 'treeStreetType',
+        type: 'FormSelect',
+        label: '单位',
+        tableOption: {
+        },
+        options: [
+            {
+                value: '1',
+                label: '台'
+            },
+            {
+                value: '2',
+                label: '平方'
+            }
+        ],
+        formOption: {
+        }
+    },
+    {
+        key: 'time',
+        type: 'FormDateTime',
+        label: '时间',
+        tableOption: {},
+        formOption: {
+        }
+    },
+    {
+        key: 'treeStreetContext',
+        type: 'FormInput',
+        label: '备注',
+        tableOption: {},
+        formOption: {
+            disabled:true,
+        }
+    }
+
+]
+ const eduListTableOption = {
+    hasCheckbox: false
+}
+
+const fields  =[
+  {
+    key: "email",
+    label: "邮箱",
+    formSection: "职业信息",      
+    formOption: {
+         rules: [    //表单验证验证规则
+        'email',    //系统预置规则包括    required email url integer
+       {    //自定义规则
+            message: '请输入***',
+            trigger: 'blur',
+            required: true
+       }
+      ],
+    },
+  },
+    {
+      key: 'eduList',
+      label: '',
+      type: 'FormChildrenForm',
+      formSection: '教育信息',
+      formOption: {
+        span: 24,
+        wraperProperties: {
+          'label-width': '0px'
+        },
+          fields: eduListFields,
+          options: eduListOption,
+          entityLabel: '教育经历',
+                      defaultValue: [
+                {
+                    id: 1,
+                    treeId: 2014,
+                    treeStreetQuantity: 15,
+                    treeStreetType: '1',
+                    treeStreetContext: '实打实大所多撒'
+                },
+                {
+                    id: 2,
+                    treeId: 2014,
+                    treeStreetQuantity: 15,
+                    treeStreetType: '1',
+                    treeStreetContext: '实打实大所多撒'
+                }
+            ]
+      }
+    },
+]
+
+export default {
+  data () {
+     debugger
+
+    return {
+      formOption:this.$appendToPreset('formOption',{
+         'label-width':'100px'
+      }),
+      formItemList:this.$buildFormFields(fields),
+      actions: this.$generateActionOption({
+        actionType:'submit',
+        apiPromise:Promise.resolve({msg:'操作成功',code:200})
+      })
+    }
+  }
+}
+ 
+</script>
+```
+:::
+
+## 模板项目中附带的表单组件  
+- 地图选点  --------- [FormSelectPoint](./#FormSelectPoint) 
+- 地图划区  --------- [FormDrawElement](./#FormDrawElement) 
+- 字典下拉多选框  --  [FormDynamicSelect](./#FormDynamicSelect)  
+- 输入搜索下拉框  -- (todo)
 
    
 
