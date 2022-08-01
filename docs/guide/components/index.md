@@ -37,19 +37,20 @@ pageClass:  wide-width-container
 > 表单组件中，字段顺序是按照，字段先后顺序排列；所以无需特别配置
 
 > 表单配置子项信息参考 [表单配置](./form.md)
- |  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
+> 
+ |  键   | 意义  |类型| 必选  |默认值  |备注   |
+|  ----  | ----  |----  |----  |----  |----  | 
 | wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| rules  | 验证规则 | array |× |[] | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer |  
-| expressProp  | 表单属性 | object |×  |{} | 是一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证   | 
+| rules  | 验证规则 | array |× |[] | 成员可为字符串、正则、对象。字符串是系统预定义的验证规则 包括required、email、url、integer |  
+| expressProp  | 表单属性 | object |×  |{} | 一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性，如 disabled，hidden等。额外支持required、value 实现动态表单项值以及必填验证   | 
 | changeHandle  | 表单联动配置 |Object |×  |{} |  表单联动配置 | 
 | defaultValue  | 默认值 |Object |×  |{} |  默认值 | 
 | hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
-| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
-| extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
+| col  | 占位列数 | string |×  |'' |默认2列 可动态配置 | 
+| extra  | 其他组件属性 | object |×  |{} | 各表单组件特有属性建议配置在extra内，Dyvue最终会将其解构到配置项（所以将其配置到与父级也有效） | 
 
  
-
+  
 ::: demo
 ``` html
 <template>

@@ -94,24 +94,38 @@ pageClass:  wide-width-container
    formVm.resetFields()
 ```
 
-::: 配置分类
-表单配置信息分两类：
-1. 通用配置  对各类表单组件都生效的配置
-2. 组件配置  各表单组件特有的配置信息 
-:::
-## 表单通用配置
+## 表单配置
+表单配置信息分两部分：
+1. 表单整体配置
+2. 表单字段配置
+      - 通用配置  对各类表单组件都生效的配置
+      - 组件配置  各表单组件特有的配置信息 
+### 表单整体配置
+表单整体配置均有默认值，可以不用配置。
+ | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+ | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+ | colNum             | 列数 | integer | ×    | 2     |          |
+ | formProperties | 表单属性 | object | ×    | {}     |  支持el-form  所有属性    |
+ | borderForm       | 是否带边框           | boolean  | ×    | false    |   |
+ | showFoldBtn      | 是否展示目录按钮           | boolean | ×    | false     |  |
+ | label-width     | label宽度       | string | ×    | 130px     |  会覆盖formProperties内的label-width  |
+ | label-position     | label 位置             | string    | ×    | right   |    会覆盖formProperties内的label-position   |
+ | pageLabelWidth           | 页面表单label宽度           | string    | ×    |  160px      |   会覆盖页面表单formProperties内的label-width   |
+
+
+## 表单字段通用配置
 通用配置对各类表单组件都生效
 
- |  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| rules  | 验证规则 | array |× |[] | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer |  
-| expressProp  | 表单属性 | object |×  |{} | 是一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证   | 
-| changeHandle  | 表单联动配置 |Object |×  |{} |  表单联动配置 | 
-| defaultValue  | 默认值 |Any |×  | null |    | 
-| hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
-| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
-| extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
+ | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+ | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+ | wraperProperties | 表单项包裹容器属性 | object | ×    | {}     | 包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件     |
+ | rules            | 验证规则           | array  | ×    | []     | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer        |
+ | expressProp      | 表单属性           | object | ×    | {}     | 是一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证 |
+ | changeHandle     | 表单联动配置       | Object | ×    | {}     | 表单联动配置     |
+ | defaultValue     | 默认值             | Any    | ×    | null   |                           |
+ | hidden           | 是否显示           | reg    | ×    |        | 控制该表单的显隐，支持表达式语法       |
+ | col             | 占据的列数 | integer | ×    | ''     |  默认一共两列          |
+ | extra            | 其他组件属性       | object | ×    | {}     | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） |
 
 
 ::: tip 字段表单配置说明
@@ -274,28 +288,28 @@ export default {
 
 ### FormRadio   
  
-|  键   | 意义  |类型| 必选   |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| groupProperties  | 分组属性 |Object|×   |  {}  | 支持 el-radio-group组件所有属性   | 
-| itemProperties  | 单项属性 |Object|× |  {}  | 支持 el-radio/el-radio-button 组件所有属性 |
-| buttom  | 是否按钮形式 |Boolean|× |  false  | 为true时渲染el-radio-button false渲染el-radio-button |
+| 键              | 意义         | 类型    | 必选 | 默认值 | 备注                                                 |
+| --------------- | ------------ | ------- | ---- | ------ | ---------------------------------------------------|
+| groupProperties | 分组属性     | Object  | ×    | {}     | 支持 el-radio-group组件所有属性                      |
+| itemProperties  | 单项属性     | Object  | ×    | {}     | 支持 el-radio/el-radio-button 组件所有属性           |
+| buttom          | 是否按钮形式 | Boolean | ×    | false  | 为true时渲染el-radio-button false渲染el-radio-button |
   
 
 
 ### FormCheckbox  
 
-|  键   | 意义  |类型| 必选   |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| groupProperties  | 分组属性 |Object|×   |  {}  | 支持 el-checkbox-group组件所有属性   | 
-| itemProperties  | 单项属性 |Object|× |  {}  | 支持 el-checkbox/el-checkbox-button 组件所有属性 |
-| buttom  | 是否按钮形式 |Boolean|× |  false  | 为true时渲染el-checkbox-button false渲染el-checkbox |
+| 键              | 意义         | 类型    | 必选 | 默认值 | 备注                                                |
+| --------------- | ------------ | ------- | ---- | ------ | --------------------------------------------------- |
+| groupProperties | 分组属性     | Object  | ×    | {}     | 支持 el-checkbox-group组件所有属性                  |
+| itemProperties  | 单项属性     | Object  | ×    | {}     | 支持 el-checkbox/el-checkbox-button 组件所有属性    |
+| buttom          | 是否按钮形式 | Boolean | ×    | false  | 为true时渲染el-checkbox-button false渲染el-checkbox |
   
 ### FormRichEditor
 
-|  键   | 意义  |类型| 必选   |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| plugins  | 插件列表 |Object|×   |  'preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap nonbreaking insertdatetime advlist lists wordcount autosave autoresize' |   | 
-| toolbar  | 工具条 |Object|× |    |  |
+| 键      | 意义     | 类型   | 必选 | 默认值                                                                                                                                                                                                             | 备注 |
+| ------- | -------- | ------ | ---- | ---------------- | ---- |
+| plugins | 插件列表 | Object | ×    |                   |      |
+| toolbar | 工具条   | Object | ×    |                   |      |
   
 
 
@@ -313,22 +327,22 @@ el-date-picker   type="date"  value-format="yyyy-MM-dd"
 支持 el-date-picker 组件除type、value-format外所有属性
 ### FormNumber  
   同el-input type="number"    额外添加了两个属性（slot）
-|  键   | 意义  |类型| 必选   |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| prefix  | 前置符号 |string|× |    |  |
-| suffix  | 后置符号 |string|× |    |  |
+| 键     | 意义     | 类型   | 必选 | 默认值 | 备注 |
+| ------ | -------- | ------ | ---- | ------ | ---- |
+| prefix | 前置符号 | string | ×    |        |      |
+| suffix | 后置符号 | string | ×    |        |      |
 ### FormNumberPlus 
    同el-input type="number"  额外加强了相关功能
   自动千分位，支持整数限制、非负数限制、小数点后自动补零、前方添加特殊符号（比如￥），后方添加特殊符号
 
-|  键   | 意义  |类型| 必选   |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| positive  | 是否禁止输入负号 |boolean| ×   | false |   | 
-| onlyInt  | 是否禁止输入小数点 |boolean| ×   | 750 |   | 
-| zeroPadding  | 自动补零到指定位数 |number|×   |   |   | 
-| decimalLimit  | 最大小数位数 |number|× |    | 最大小数位数，小数位数超过这个长度的部分，将被自动截掉 |
-| prefix  | 前置符号 |string|× |    |  |
-| suffix  | 后置符号 |string|× |    |  |
+| 键           | 意义               | 类型    | 必选 | 默认值 | 备注                                                   |
+| ------------ | ------------------ | ------- | ---- | ------ | ------------------------------------------------------ |
+| positive     | 是否禁止输入负号   | boolean | ×    | false  |                                                        |
+| onlyInt      | 是否禁止输入小数点 | boolean | ×    | 750    |                                                        |
+| zeroPadding  | 自动补零到指定位数 | number  | ×    |        |                                                        |
+| decimalLimit | 最大小数位数       | number  | ×    |        | 最大小数位数，小数位数超过这个长度的部分，将被自动截掉 |
+| prefix       | 前置符号           | string  | ×    |        |                                                        |
+| suffix       | 后置符号           | string  | ×    |        |                                                        |
 
   
 
@@ -360,11 +374,11 @@ el-date-picker   type="date"  value-format="yyyy-MM-dd"
 ### FormCurd 
   表格形式的子表单
 
-   |  键   | 意义  |类型| 必选   |默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| fields  | 字段列表 |array| √   | [] | 配置规则同[页面模板组件](./index.md)  | 
-| options  | 选项 |object| √   | {} |  配置规则同[页面模板组件](./index.md)    | 
-| entityLabel  | 子表单名称 |string|×   |   |   | 
+   | 键          | 意义       | 类型   | 必选 | 默认值 | 备注                                 |
+   | ----------- | ---------- | ------ | ---- | ------ | ------------------------------------ |
+   | fields      | 字段列表   | array  | √    | []     | 配置规则同[页面模板组件](./index.md) |
+   | options     | 选项       | object | √    | {}     | 配置规则同[页面模板组件](./index.md) |
+   | entityLabel | 子表单名称 | string | ×    |        |                                      |
  
   
 ### FormTableEditable 
@@ -372,9 +386,9 @@ el-date-picker   type="date"  value-format="yyyy-MM-dd"
    不支持验证,不支持expressProp
 ### FormTableEditable 
   支持验证
-|  键   | 意义  |类型| 必选   | 默认值   |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| fields  | 字段列表 |array| √   | [] | 配置规则同[页面模板组件](./index.md)  | 
+| 键     | 意义     | 类型  | 必选 | 默认值 | 备注                                 |
+| ------ | -------- | ----- | ---- | ------ | ------------------------------------ |
+| fields | 字段列表 | array | √    | []     | 配置规则同[页面模板组件](./index.md) |
   
 
   ::: demo
@@ -413,7 +427,7 @@ const eduListFields = [
             }
         ],
         formOption: {
-            span: 8,
+            col: 5,
             rules: ['required']
         }
     },
@@ -423,7 +437,17 @@ const eduListFields = [
         label: '备注',
         tableOption: true,
         formOption: {
-            span: 8,
+            col: 5,
+            rules: ['required']
+        }
+    },
+        {
+        key: 'color',
+        type: 'FormColorPicker',
+        label: '颜色',
+        tableOption: true,
+        formOption: {
+            col: 5,
             rules: ['required']
         }
     }
@@ -432,11 +456,12 @@ const eduListFields = [
     topToolBar: {
         bulkdelete: null,
         create: {
-            saveAtion: {
-                callback: {
-                    showTip: false
-                }
-            }
+          colNum:1,
+          saveAtion: {
+              callback: {
+                  showTip: false
+              }
+          }
         }
     },
     tableOption: {
@@ -449,6 +474,7 @@ const eduListFields = [
                 }
             },
             update: {
+                colNum:1,
                 saveAtion: {
                     callback: {
                         showTip: false
@@ -549,34 +575,70 @@ const fields  =[
     },
   },
     {
-      key: 'eduList',
+      key: 'children-form',
       label: '',
       type: 'FormChildrenForm',
-      formSection: '教育信息',
+      formSection: '子表单',
       formOption: {
-        span: 24,
+        col: 5,
         wraperProperties: {
           'label-width': '0px'
         },
           fields: eduListFields,
-          options: eduListOption,
-          entityLabel: '教育经历',
+          entityLabel: '子表单',
                       defaultValue: [
                 {
                     id: 1,
-                    treeId: 2014,
-                    treeStreetQuantity: 15,
                     treeStreetType: '1',
-                    treeStreetContext: '实打实大所多撒'
+                    treeStreetContext: '实打实大所多撒',
+                    color:"blue"
                 },
-                {
-                    id: 2,
-                    treeId: 2014,
-                    treeStreetQuantity: 15,
-                    treeStreetType: '1',
-                    treeStreetContext: '实打实大所多撒'
-                }
             ]
+      }
+    },
+    {
+      key: 'curd',
+      label: '',
+      type: 'FormCurd',
+      formSection: '表格子表单',
+      formOption: {
+        col: 5,
+        wraperProperties: {
+          'label-width': '0px'
+        },
+        fields: eduListFields,
+        options: eduListOption,
+        entityLabel: '表格子表单',
+        defaultValue: [
+            {
+              id: 1,
+              treeStreetType: '1',
+              treeStreetContext: '实打实大所多撒',
+              color:"blue"
+            },
+        ]
+      }
+    },
+    {
+      key: 'tableeditable',
+      label: '',
+      type: 'FormTableEditable',
+      formSection: '可编辑表格',
+      formOption: {
+        col: 5,
+        wraperProperties: {
+          'label-width': '0px'
+        },
+        fields: eduListTableFields,
+        options: eduListOption,
+        entityLabel: '可编辑表格',
+        defaultValue: [
+          {
+            id: 1,
+            treeStreetType: '1',
+            color:"blue"
+          },
+        ]
       }
     },
 ]
@@ -587,7 +649,9 @@ export default {
 
     return {
       formOption:this.$appendToPreset('formOption',{
-         'label-width':'100px'
+         'label-width':'100px',
+          borderForm: false,
+          showFoldBtn: true,
       }),
       formItemList:this.$buildFormFields(fields),
       actions: this.$generateActionOption({
