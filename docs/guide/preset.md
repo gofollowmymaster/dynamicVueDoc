@@ -61,7 +61,7 @@
       borderForm: false,
       showFoldBtn: true,
       showTestTool:true,
-      textModel:false
+      textMode:false
     },
   actions: {
     save:{

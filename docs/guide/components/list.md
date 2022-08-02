@@ -1,67 +1,58 @@
 # 动态列表
  >列表当前支持table形式展示，
 
+## 功能特点
 
-
-| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
-| --- | ---- | ---- | ---- | ------ | ---- |----|
-| hasCheckbox | 是否可选择                    | boolean | ×    | true   |                                  |
-| properties  | 绑定到列表组件（table）的属性 | Object  | ×    |        | 参考列表组件属性（el-table）  暂不支持动态响应   |
-| colOptions  | 列默认配置                    | boolean | ×    | true   | 会与字段列表配置子项合并绑定到列 |
-| loadListApi  | 列表数据加载方法                    | function | ×    |    | 返回一个[加载数据的Promise](#加载返回数据格式) |
-| lineActions  | 列表数据操作栏                    | object | ×    |  默认 修改、查看、删除操作   | [操作配置](../actions) |
-
-
-
+- 通过 json 数据来生成表格；
+- 通过 data 数据给表格每个元素赋值；
+- 通过loadListApi 加载异步数据；
+- 天然支持多种行操作；
+- 表单支持分块显示，支持单区块收起、展开；
+- 二次开发自定义表格元素难度极低；
  
-## 默认配置
-```
-{
-  hasCheckbox: true,
-  properties: {
-    stripe: true,
-    border: true,
-    'row-class-name': '',
-    'highlight-current-row': true,
-    selectable: true,
-    expand: true,
-    'show-header': true,
-    'empty-text': '暂无数据',
-    align: 'center',
-    'header-align': 'center',
-    'row-style': { height: '40px' },
-    'row-key': 'id'      //主键id   数据表主键非id时  需要特别指定  
-  },
-  colOptions: {
-    // width:120,
-    minWidth: 60,
-    'show-overflow-tooltip': true,
-    align: 'center',
-    'header-align': 'center'
-  }
 
-  // style: "width: 100%",
-}
-```
+
+## 表格整体配置
+| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
+| --- | ---- | ---- | ---- | ------ | ---- | 
+| hasCheckbox | 是否可选择                    | boolean | ×    | true   |                                  |
+| indexCol | 索引列                    | Object | ×    | 参默认配置   |                                  |
+| properties  | 绑定到列表组件（table）的属性 | Object  | ×    |  参默认配置      | 参考列表组件属性（el-table）  暂不支持动态响应   |
+| colOptions  | 列默认配置                    | Object | ×    | 参默认配置   | 会与字段列表配置子项合并绑定到列 |
+| loadListApi  | 列表数据加载方法                    | function | ×    |    | 返回一个[加载数据的Promise](#加载返回数据格式) |
+| actionColWidth  | 操作列宽度                    | number | ×    |   按钮数量*60   |  |
+| actionBtnType  | 操作按钮类型                    | string | ×    |  text   |  |
+
+
+## 表格字段通用配置
+通用配置对各类表单组件都生效
+
+ | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+ | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+ | label | 表格列标签名 | string | √    |      |       |
+ | labelTip | 表格列标签名提示文字 | string | ×    |      |       |
+ | type | 表格列类型 | string | ×    |  FormInput    |       |
+ | key | 表格列字段名 | string | √    |      |   不能重复    |
+ | sort | 顺序号 | number | ×    | 100    |  从小到大     |
+ | template      | 自定义展示内容           | function | ×    |       | 通常表格展示内容是对应列的值，在一些特定情况下需要转换时可使用template |
+ | colProperties     |  绑定到列（el-table-column）的属性       | Object | ×    | {}     |       |
+ | style     |  自定义样式             | Any    | ×     | {}   |                           |
+ | events           | 事件           | object    | ×    |        |        |
+ | component             | 自定义表格单元组件 | string | ×    | ''     |   需全局注册的组件        |
+ 
 
 ## 示例
 ::: demo   列表配置示例
 ```html
 <template>
 <ClientOnly>
-  
-
-  
-  <DynamicCurdPage
-    :entityLabel="entityLabel"
-    :fields="fields"
-    :pageOptionsprops="pageOptions"
-    :apiPromises="apiPromises"
-  ></DynamicCurdPage>
+  <DynamicTable
+    :columns="fields"
+    :table="tableOptions"
+    :apiPromise="loadListApi()"
+  ></DynamicTable>
   <div>
-     <span >切换配置：  </span>
-   <el-switch v-model="mode"  active-value="no"  inactive-value="default" />  
-  
+   
    </div>
 </ClientOnly>
   
@@ -69,13 +60,10 @@
 <script>
 
 const fields  =[
-  {key:'id'},
-
   {
     key: "name",                  
     type: "FormInput",           
     label: "姓名",           
-    tableOption:true
   },
   
   {
@@ -96,70 +84,73 @@ const fields  =[
         label: "33",
       },
     ],
-    searchOption: {
-      sort:1
-    },
-    tableOption:true
-
   },
    {
     key: "cName",
     label: "公司名称",
-    tableOption:true
   },
   {
     key: "email",
     label: "邮箱",
-    searchOption: true,
-    tableOption:true
-
   },
-   
 ]
 
 export default {
   data () {
+    debugger
+    const formFields=this.$buildFormFields(fields)
     return {
       fields,
-      mode:'default',
-      entityLabel:'人员',
       // Api配置
-      apiPromises:{
-        create:mockApi,
-        bulkdelete:mockApi,
-        list:tableinfoListApi,
-        detail:mockApi,
-        update:mockApi
-      },
-    }
-  },
-  computed:{
-    pageOptions(){
-      return {
-        listOption:this.$appendToPreset('tableOption',this.mode=='default'?{}:{
+      loadListApi:tableinfoListApi,
+      tableOptions:this.$appendToPreset('tableOption',this.mode=='default'?{}:{
         hasCheckbox: false,
-       
         colOptions: {
           minWidth: 60,
           'show-overflow-tooltip': false,
+        },
+        lineActions:{
+          update:{
+            actionType:'dialogFormAction',
+            formItemList:formFields,
+            colNum:1,
+            label:'修改',
+             containerProperties: {
+                title: '修改信息',
+                width: '40%'
+            },
+          },
+          detail:{
+            actionType:'dialogFormAction',
+            textMode:true,
+            formItemList:formFields,
+            colNum:1,
+            label:'查看',
+             containerProperties: {
+                title: '查看信息',
+                width: '40%'
+            },
+          }
         }
       }),
-      treeOption:null}
     }
   },
+  computed:{
+  },
   methods:{
- 
   }
 }
 //----------------------Api-------------------
 function tableinfoListApi (params) {
   return import("../../.vuepress/components/vuePlugins/utils").then(module=>{
-      return Promise.resolve(module.apiListMock(fields,5));
+    debugger
+      return Promise.resolve(module.apiListMock(fields,5)).then((res)=>{
+          debugger
+          return res.list
+      });
   })
 }
-function mockApi (data) {
-  return Promise.resolve({})
-}
+ 
  
 </script>
 ```

@@ -492,7 +492,7 @@ export default {
   data () {
     return {
       formOption:this.$appendToPreset('formOption',{
-         textModel:true
+         textMode:true
       }),
       formItemList:this.$buildFormFields(fields),
       data:{

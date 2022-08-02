@@ -96,10 +96,10 @@ pageClass:  wide-width-container
 
 ## 表单配置
 表单配置信息分两部分：
-1. 表单整体配置
-2. 表单字段配置
-      - 通用配置  对各类表单组件都生效的配置
-      - 组件配置  各表单组件特有的配置信息 
+1. **1.表单整体配置**
+2. **2.表单字段配置**
+    1. 表单字段通用配置---  对各类表单组件都生效的配置
+    2. 表单字段组件配置---  各表单组件特有的配置信息 
 ### 表单整体配置
 表单整体配置均有默认值，可以不用配置。
  | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
@@ -118,6 +118,10 @@ pageClass:  wide-width-container
 
  | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
  | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+ | label | 表单项标签名 | string | √    |      |       |
+ | labelTip | 表单项标签名提示文字 | string | ×    |      |       |
+ | type | 表单项类型 | string | ×    |  FormInput    |       |
+ | key | 表单项字段名 | string | √    |      |   不能重复    |
  | wraperProperties | 表单项包裹容器属性 | object | ×    | {}     | 包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件     |
  | rules            | 验证规则           | array  | ×    | []     | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer        |
  | expressProp      | 表单属性           | object | ×    | {}     | 是一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证 |
