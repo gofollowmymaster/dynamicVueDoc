@@ -74,7 +74,7 @@ const fields  =[
   },
     {
     key: "age",
-    type: "FormIntNumber",
+    type: "FormNumber",
     label: "年龄",   
     tableOption:true,
     formOption:true,
@@ -176,23 +176,23 @@ Dy-Vue提供了丰富多样的交互类型，合理配置能实现功能复杂�
 :::
 #### 数据源Api示例
 ``` js
-planProjectSaveApi (params) {
+apiSaveApi (params) {
   //处理请求数据
   params.deptId=params.deptId[0]?.id
   params.approveFileIds=Array.isArray(params.approveFileIds)?params.approveFileIds.map(item=>item.fileId):[]
   params.admId=params.admId[0]?.id
   return request({
     ...defaultConfig,
-    url: '/project/library/save',
+    url: '/api/save',
     data: params,
   })
 }
 
-export function planProjectDetailApi (params) {
+export function apiDetailApi (params) {
      
   return request({
     ...defaultConfig,
-    url: '/project/library/update',
+    url: '/api/update',
     data: params,
   }).then((res)=>{
      //处理返回数据
@@ -205,9 +205,9 @@ export function planProjectDetailApi (params) {
 ### 扩展组件
 Dy-Vue 预制了大量[常用组件](./components)，可以满足管理页面中多数需求，但一些特定场景您仍然可以根据需求开发自定义组件
 支持的使用场景:
-1. [自定义表单组件](./components/custom#自定义表单组件)       
-2. [自定义表格单元组件](./components/custom#自定义表格单元组件) 
-3. [自定义页面内容组件](./components/custom#自定义页面内容组件) 
+1. [自定义表单组件](./components/form#自定义表单组件)       
+2. [自定义表格单元组件](./components/list#自定义表格列组件) 
+<!-- 3. [自定义页面内容组件](./components/custom#自定义页面内容组件)  -->
  
 
 

@@ -37,8 +37,8 @@ pageClass:  wide-width-container
 - 日期范围输入框 ----- [FormDateRange](./#FormDateRange) 
 - 日期时间输入框 ----- [FormDateTime](./#FormDateTime) 
 - 日期时间范围输入框 -- [FormDateTime](./#FormDateTimeRange) 
-- 普通数字输入框 ----- [FormIntNumber](./#FormIntNumber) 
-- 浮点数字输入框 ----- [FormNumberPlus](./#FormNumberPlus) 
+- 普通数字输入框 ----- [FormNumber](./#FormNumber) 
+- 扩展数字输入框 ----- [FormNumberPlus](./#FormNumberPlus) 
 - 百分比输入框 ------- [FormRateInput](./#FormRateInput) 
 - 金额文本输入框  ---  [FormMoneyInput](./#FormMoneyInput) 
 - 数值范围  --------  [FormNumberRange](./#FormNumberRange) 
@@ -94,12 +94,14 @@ pageClass:  wide-width-container
    formVm.resetFields()
 ```
 
-## 表单配置
-表单配置信息分两部分：
-1. **1.表单整体配置**
-2. **2.表单字段配置**
-    1. 表单字段通用配置---  对各类表单组件都生效的配置
-    2. 表单字段组件配置---  各表单组件特有的配置信息 
+ 
+## 组件参数
+| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
+| --- | ---- | ---- | ---- | ------ | ---- | 
+| formOption | 表单整体配置                    | Object | ×    |  参默认配置   |   配置项参考[表单整体配置](#表单整体配置)  |
+| formItemList | 表单字段                    | Array | √    |  []   |  配置项参考[表单字段配置](#表单字段配置)   |
+| actions  | 操作                    | Array | ×     |     |      |
+ 
 ### 表单整体配置
 表单整体配置均有默认值，可以不用配置。
  | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
@@ -111,9 +113,14 @@ pageClass:  wide-width-container
  | label-width     | label宽度       | string | ×    | 130px     |  会覆盖formProperties内的label-width  |
  | label-position     | label 位置             | string    | ×    | right   |    会覆盖formProperties内的label-position   |
  | pageLabelWidth           | 页面表单label宽度           | string    | ×    |  160px      |   会覆盖页面表单formProperties内的label-width   |
+ | textMode           | 是否文本模式           | boolean    | ×    |  false      |   为false 是就是[详情](./detail.md)  |
 
 
-## 表单字段通用配置
+## 表单字段配置
+**表单字段配置分两部分**
+    1. 表单字段通用配置---  对各类表单组件都生效的配置
+    2. 表单字段组件配置---  各表单组件特有的配置信息  通常配置在extra中
+
 通用配置对各类表单组件都生效
 
  | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
@@ -196,10 +203,10 @@ const fields  =[
     ],
     formOption: {
         changeHandle(value,vm) {    // 实现事件式数据联动
-              vm.updateFormData({
-                'address':'地址-'+value,
-                name:'姓名'+value
-              })
+          vm.updateFormData({
+            'address':'地址-'+value,
+            name:'姓名'+value
+          })
         },
     },
   },
@@ -340,7 +347,7 @@ el-date-picker   type="date"  value-format="yyyy-MM-dd"
   自动千分位，支持整数限制、非负数限制、小数点后自动补零、前方添加特殊符号（比如￥），后方添加特殊符号
 
 | 键           | 意义               | 类型    | 必选 | 默认值 | 备注                                                   |
-| ------------ | ------------------ | ------- | ---- | ------ | ------------------------------------------------------ |
+| ------------ | ------------------ | ------- | ---- | ------ |  ----------------------- |
 | positive     | 是否禁止输入负号   | boolean | ×    | false  |                                                        |
 | onlyInt      | 是否禁止输入小数点 | boolean | ×    | 750    |                                                        |
 | zeroPadding  | 自动补零到指定位数 | number  | ×    |        |                                                        |
@@ -675,6 +682,69 @@ export default {
 - 地图划区  --------- [FormDrawElement](./#FormDrawElement) 
 - 字典下拉多选框  --  [FormDynamicSelect](./#FormDynamicSelect)  
 - 输入搜索下拉框  -- (todo)
+
+## 自定义表单组件
+自定义表单组件的开发十分简单，DyVue提供了**通用表单混入**--`FormMixin`,在您的表单组件中引入该mixin，就可使用DyVue提供的多个表单Api
+
+### props
+| 键     | 意义     | 类型  |  默认值 | 备注                                 |
+| ------ | -------- | ----- | ---- | ------ | ------------------------------------ |
+| value | 表单项值 | any |        |  |
+| item | 表单字段配置 | string |        |  |
+
+### computed
+| 键     | 意义     | 类型  |   默认值 | 备注                                 |
+| ------ | -------- | ----- | ---- | ------ | ------------------------------------ |
+| isTextMode | 是否文本模式 | boolean |  false     |  |
+| isDisabled | 是否禁用 | boolean |    false     |  |
+| placeholder | placeholder | string |      |  |
+| bindOptions | 所有组件参数 | string |       | 建议通过v-bind 绑定到组件  |
+| val | 表单项展示值 | any |        | 用于展示，设置值  |
+
+ 
+``` html
+<template>
+    <!-- 普通输入框 -->
+    <section>
+        <el-switch
+            v-if="!isTextMode"
+            v-model="val"
+            v-bind="bindOptions"
+            :disabled="isDisabled"
+        />
+        <div v-else :style="item.textStyle || {}" class="form-input-text">
+            {{ textModeValue || '-' }}
+        </div>
+    </section>
+</template>
+
+<script>
+import {FormMixin} from 'dyvue2'
+
+export default {
+    name: 'FormSwitch',
+    mixins: [FormMixin],
+    data() {
+        return {}
+    },
+    computed: {
+        textModeValue() {
+            return this.val === this.bindOptions['active-value'] ? this.bindOptions['active-text'] : this.bindOptions['inactive-text']
+        }
+    }
+}
+</script>
+
+```
+ 
+
+
+
+
+
+  
+
+
 
    
 

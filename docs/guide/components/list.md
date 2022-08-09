@@ -7,25 +7,31 @@
 - 通过 data 数据给表格每个元素赋值；
 - 通过loadListApi 加载异步数据；
 - 天然支持多种行操作；
-- 表单支持分块显示，支持单区块收起、展开；
 - 二次开发自定义表格元素难度极低；
+
+## 组件参数
+| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
+| --- | ---- | ---- | ---- | ------ | ---- | 
+| table | 表格整体配置                    | Object | ×    |  参默认配置   |   配置项参考[表格整体配置](#表格整体配置)  |
+| columns | 表格列                    | Array | √    |  []   |  配置项参考[表格字段配置](#表格字段配置)   |
+| apiPromise  | 列表数据Api                    | Function | √     |     |  接收参数对象， 处理后返回列表数据 返回数据结构参[加载返回数据格式](#加载返回数据格式)   |
  
+
 
 
 ## 表格整体配置
 | 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
 | --- | ---- | ---- | ---- | ------ | ---- | 
-| hasCheckbox | 是否可选择                    | boolean | ×    | true   |                                  |
-| indexCol | 索引列                    | Object | ×    | 参默认配置   |                                  |
+| hasCheckbox | 是否可选择                    | boolean | ×    | true   |     |
+| indexCol | 索引列                    | Object | ×    | 参默认配置   |             |
 | properties  | 绑定到列表组件（table）的属性 | Object  | ×    |  参默认配置      | 参考列表组件属性（el-table）  暂不支持动态响应   |
 | colOptions  | 列默认配置                    | Object | ×    | 参默认配置   | 会与字段列表配置子项合并绑定到列 |
 | loadListApi  | 列表数据加载方法                    | function | ×    |    | 返回一个[加载数据的Promise](#加载返回数据格式) |
 | actionColWidth  | 操作列宽度                    | number | ×    |   按钮数量*60   |  |
 | actionBtnType  | 操作按钮类型                    | string | ×    |  text   |  |
 
-
-## 表格字段通用配置
-通用配置对各类表单组件都生效
+## 表格字段配置
+通用配置对各类表格组件都生效
 
  | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
  | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
@@ -103,7 +109,7 @@ export default {
       fields,
       // Api配置
       loadListApi:tableinfoListApi,
-      tableOptions:this.$appendToPreset('tableOption',this.mode=='default'?{}:{
+      tableOptions: {
         hasCheckbox: false,
         colOptions: {
           minWidth: 60,
@@ -132,7 +138,7 @@ export default {
             },
           }
         }
-      }),
+      },
     }
   },
   computed:{
@@ -174,5 +180,49 @@ function tableinfoListApi (params) {
   }],
   totalCount:20
 }
+```
+
+## 组件事件
+支持elementUi el-table 所有属性，dyVue会通过 `v-on="$listeners"`形式绑定到 el-table
+
+
+
+## 自定义表格列组件
+自定义表格列组件的开发十分简单，DyVue提供了**通用表格混入**--`TableColMixin`,在您的表格组件中引入该mixin，就可使用DyVue提供的多个表格Api
+
+### props
+| 键     | 意义     | 类型  |  默认值 | 备注                                 |
+| ------ | -------- | ----- | ---- | ------ | ------------------------------------ |
+| rowData | 表格行数据 | Object |        |  |
+| colOptions | 表格字段配置 | Object |        |  |
+
+### computed
+| 键     | 意义     | 类型  |   默认值 | 备注                                 |
+| ------ | -------- | ----- | ---- | ------ | ------------------------------------ |
+| bindOptions | 所有组件参数 | string |       | 删除了部分属性（如 type）的colOptions， 建议通过v-bind 绑定到组件  |
+<!-- | bindEvents | 所有组件事件 | any |        | 实际是 colOptions.events  | -->
+
+ 
+``` html
+<template>
+    <section>
+        <el-switch v-model="rowData[colOptions.key]"
+                   :style="colOptions.style||{}"
+                   v-bind="bindOptions"
+        />
+    </section>
+</template>
+
+<script>
+import { TableColMixin } from 'dyvue2'
+
+export default {
+    name: 'ColSwitch',
+    mixins: [TableColMixin],
+    computed: {
+    }
+}
+</script>
+
 ```
  
