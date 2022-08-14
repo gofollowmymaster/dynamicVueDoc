@@ -1,6 +1,6 @@
 <template>
   <DynamicCurdPage
- 
+    v-if="isLoaded"
   class="page-wraper"
     :entityLabel="entityLabel"
     :fields="fields"
@@ -51,6 +51,7 @@ export default {
   },
   data() {
     return {
+      isLoaded:false,
       // form字段
       fields,
       entityLabel,
@@ -179,6 +180,9 @@ export default {
   //        debugger
   //      this.component=DynamicCurdPage
   // })
+  setTimeout(()=>{
+    this.isLoaded=true
+  },1000)
   },
   methods: {
     parseObjByEval(obj) {
