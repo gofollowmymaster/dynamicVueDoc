@@ -81,7 +81,7 @@ export default [
 	},
 	{
 		"key": "investNumber",
-		"type": "FormIntNumber",
+		"type": "FormNumber",
 		"label": "调查顺序号",
 		"formOption": {}
 	},

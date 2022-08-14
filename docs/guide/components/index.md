@@ -3,7 +3,7 @@ pageClass:  wide-width-container
 ---
 # 页面模板组件
 
-开箱即用的增删改查模板
+开箱即用的表格页面模板组件，它是表单组件，搜索栏组件，表格组件，操作组件及其他自定义组件的组合使用模板。为了便于使用，预定义了增删改查功能所需相关配置
 ::: tip 不止于此
 配合Dy-Vue的操作可实现多种功能复杂的交互页面
 :::
@@ -34,10 +34,10 @@ pageClass:  wide-width-container
 
 ### 表单配置子项 
 > 表单配置子项，是对表单新增，修改，详情有效。通过配置可以实现表单内数据回显、校验、交互、提交，等**交互功能**，也可以定义表单**样式、布局**；
+> 表单配置子项是通用配置外 [表单配置](./form.md)特有的配置项
 > 表单组件中，字段顺序是按照，字段先后顺序排列；所以无需特别配置
 
-> 表单配置子项信息参考 [表单配置](./form.md)
-> 
+
  |  键   | 意义  |类型| 必选  |默认值  |备注   |
 |  ----  | ----  |----  |----  |----  |----  | 
 | wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
@@ -605,21 +605,62 @@ function mockApi (data) {
 |  键   | 意义  |类型| 必选  |默认值  |备注   
 |  ----  | ----  |----  |----  |----  |----  |----  |
 | searchOption  | [搜索栏配置](#自定义搜索栏配置) | Object | ×  | 预设 | 搜索栏配置 | 
-| topToolBar  | [上方工具栏操作按钮](#工具栏) | Object |×  | 上方操作按钮 |  | 
-| listOption  | [列表配置](#列表配置) |Object |× | 预设| 列表配置 | 
+| topToolBar  | [上方工具栏操作按钮](#自定义上方操作栏配置) | Object |×  | 上方操作按钮 |  | 
+| listOption  | [列表配置](#自定义列表配置) |Object |× | 预设| 列表配置 | 
 | treeOption  | [左侧筛选树配置](#左侧筛选树) |Object| × | 预设 |   | 
-| pagination  | [分页](#分页) | Object |×  |  分页配置|  | 
+| pagination  | [分页](#自定义分页配置) | Object |×  |  分页配置|  | 
 
 
+### 页面模板预定义配置（CURD）
+增删改查（CURD）实际上是5（批量删除+1）个[操作](../actions/index.md),他们分别被放在topToolBar和listOption.lineActions中，它们的键名是固定的
+- create  新增    (操作类型默认 [表单弹窗](./../actions/index.md#表单弹窗))
+- bulkdelete 批量删除  (操作类型默认 [接口请求](./../actions/index.md#接口请求))
+- update  修改    (操作类型默认 [表单弹窗](./../actions/index.md#表单弹窗))
+- detail  详情    (操作类型默认 [表单弹窗](./../actions/index.md#表单弹窗))
+- delete 删除  (操作类型默认 [接口请求](./../actions/index.md#接口请求))
+
+默认情况下您不需要进行任何相关配置，就可实现增删改查功能
+当您在的需求中只有部分功能，
+- 如没有批量删除时只需要配置` bulkdelete:null `
+- 如修改弹窗标题时只需要配置` title:'****' `
+
+dyVue会将您的配置和预定义配置进行合并
+
+``` js
+{
+  topToolBar:{
+    create:{
+        title:'添加信息'    //更改默认弹窗标题
+    },
+    bulkdelete:null    //删除批量删除按钮
+  },
+  listOption:{
+    lineActions：{
+      update: {
+        colNum:1  //更改默认弹窗布局为一列
+      },
+      detail: {
+        container:'drawer'  //更改默认弹窗容器为抽屉
+      },
+      //delete 操作保持默认配置  
+    }
+     
+  }
+}
+
+```
 
 
 ::: details   页面配置合并原则
 1. 用户配置与预设配置数据类型（对象、数组)不相同时会丢弃用户配置，使用预设配置，
-2. 若为对象，会继续进行深度递归合并
+2. 若为都对象，会继续进行深度递归合并
 3. 用户配置为null、undefined  会删除预设配置项 
 4. 用户新增配置项，会合并到预设配置中
-5. 其他情况，用户配置覆盖预设配置
-6. 为数组  （-鼓励使用对象-）
+5. 用户没有配置对应项会使用预定义配置 
+6. 其他情况，用户配置覆盖预设配置
+
+
+7. 为数组  （-鼓励使用对象-）
   - 若预设配置成员都为基本类型，用户配置覆盖预设配置
   - 若预设配置成员包含非基本类型，会合并两者（很少发生）
 :::
@@ -707,6 +748,8 @@ function mockApi (data) {
 ```
 :::
 
+ 
+
 ### 自定义搜索栏配置
 参考搜索栏组件配置：[Dynamic-Search](/guide/components/search)
 
@@ -750,6 +793,23 @@ function mockApi (data) {
   // background:true
 }
 ```
+
+### 表格上方插槽
+插槽采用配置形式，配置项包括`component`和`properties`
+`component`为已经全局注册的组件名，`properties`为绑定到组件中的属性
+```
+ tableUp:{
+    component:'DyTmpl',
+    properties:{
+      tmpl:'总数量:<span class="text-blue py4 px4">#{num}</span>,总数量1:<span class="text-red py4 px4">#{num1}</span>',
+      data:{
+        num:123254,
+        num1:5546
+      }
+    }
+  },
+
+ ```
  
 ## Api配置
 >Api配置中包含增删改查相关Api函数，返回值均为Promise

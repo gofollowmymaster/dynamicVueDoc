@@ -161,12 +161,12 @@ export default {
       const fieldsContent=[{
         key:'keyword',
         label:'关键字',
-        searchable:true,
+        searchOption:true,
       },{
         key:'index',
         type:'index',
         label:'序号',
-        tableable:true
+        tableOption:true
       }]
       
       let index=0

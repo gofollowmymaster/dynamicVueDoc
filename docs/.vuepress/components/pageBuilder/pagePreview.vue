@@ -1,8 +1,8 @@
 <template>
   <DynamicCurdPage
-    v-if="isLoaded"
+  
     style="margin-left:16px;margin-right:16px;width:auto" 
-  class="page-wraper"
+    class="page-wraper"
     :entityLabel="entityLabel"
     :fields="fields"
     :pageOptionsprops="pageOptions"
@@ -15,6 +15,7 @@ const entityLabel = "实体";
 import fields from "./fields.js";
 import { mockDyFields } from "../vuePlugins/utils";
 import Mock from "mockjs";
+import pageOptions from  "./pageConfig.js"
 
 
 
@@ -51,6 +52,7 @@ export default {
     // CurdPage
   },
   data() {
+    const formFields= this.$buildFormFields( fields)
     return {
       isLoaded:false,
       // form字段
@@ -84,39 +86,42 @@ export default {
                 containerProperties: {
                   title: "查看" + entityLabel,
                 },
-                layout: {
-                  name: "LayoutTabs",
-                  properties: {
-                    type: "card",
-                  },
+                layout:  "LayoutTabs",
+                layoutProperties: {
+                  type: "card",
                 },
+              
                 body: [
-                  this.$appendToPreset("dynamicFormOption", {
+                   {
+                      component: 'DynamicForm',
                     label: "基本信息",
-                    props: {
+                    props:  this.$appendToPreset("dynamicFormOption", {
                       apiPromise: oldtreeDetailApi,
+                        formItemList: formFields,
+
                       formOption: {
-                        formItemList: this.$buildFormFields(this.fields),
                         borderForm: false,
                         formProperties: {
                           "label-position": "left",
                         },
                       },
-                    },
-                  }),
-                  this.$appendToPreset("dynamicFormOption", {
+                    }),
+                  },
+                  {
+                     component: 'DynamicForm',
                     label: "管理信息",
-                    props: {
+                    props: this.$appendToPreset("dynamicFormOption", {
                       apiPromise: oldtreeDetailApi,
+                        formItemList: formFields,
+
                       formOption: {
-                        formItemList: this.$buildFormFields(this.fields),
-                        borderForm: false,
+                        borderForm: true,
                         formProperties: {
                           "label-position": "right",
                         },
                       },
-                    },
-                  }),
+                    }),
+                  },
 
                   {
                     component: "div",
@@ -175,15 +180,13 @@ export default {
         self.$forceUpdate();
       }
     });
+
   },
   mounted(){
-  //      import('dyvue2').then((DynamicCurdPage)=>{
-  //        debugger
-  //      this.component=DynamicCurdPage
-  // })
-  setTimeout(()=>{
-    this.isLoaded=true
-  },1000)
+      this.pageOptions = deepMerge(
+            this.pageOptions,
+            pageOptions
+      );
   },
   methods: {
     parseObjByEval(obj) {
@@ -223,4 +226,5 @@ export default {
 <style lang="css" scoped>
 .page-wraper{
   position: relative;
-}</style>
+}
+</style>

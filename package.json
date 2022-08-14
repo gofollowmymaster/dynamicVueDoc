@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "async-validator": "^1.11.5",
-    "dyvue2": "^0.0.80",
-    "element-ui": "^2.15.8",
+    "dyvue2": "^0.0.82",
+    "element-ui": "^2.14.0",
     "mockjs": "^1.1.0",
     "moment": "^2.29.3",
     "uppercamelcase": "^3.0.0",
