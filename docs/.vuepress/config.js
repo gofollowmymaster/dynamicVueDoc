@@ -34,11 +34,11 @@ module.exports = {
           'detail'   /* /foo/two.html */
         ],
   
-        '/guide/actions/': [
-          '',      /* /bar/ */
-          'requestApi', /* /bar/three.html */
-          'router'   /* /bar/four.html */
-        ],
+        // '/guide/actions/': [
+        //   '',      /* /bar/ */
+        //   'requestApi', /* /bar/three.html */
+        //   'router'   /* /bar/four.html */
+        // ],
   
         // fallback
         // '/': [

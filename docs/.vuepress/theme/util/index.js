@@ -9,11 +9,12 @@ export function normalize (path) {
     .replace(extRE, '')
 }
 
-export function getHash (path) {
+export function getHash (path='') {
   const match = path.match(hashRE)
   if (match) {
     return match[0]
   }
+  return ''
 }
 
 export function isExternal (path) {

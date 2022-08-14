@@ -3,7 +3,7 @@
  
 import {
   buildFormFields,
-  appendToPreset,buildSearchFields,buildTableFields,buildDetailFields
+  appendToPreset,buildSearchFields,buildTableFields,buildDetailFields,generateActionOption
 } from 'dyvue2'
 
 import "dyvue2/lib/dyvue2.css"
@@ -45,6 +45,8 @@ export default async ({
   Vue.prototype.$buildTableFields=buildTableFields
   Vue.prototype.$buildDetailFields=buildDetailFields
   Vue.prototype.$appendToPreset=appendToPreset
+  Vue.prototype.$generateActionOption=generateActionOption  
+
 
   if (!isServer) {
     import('element-ui').then(({default:ElementUI})=>{

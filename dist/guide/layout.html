@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>栅格系统使用文档 | Dynamic-Vue</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    
+    <meta name="description" content="前端开发利器,数据驱动视图,高效低代码搬砖">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/dy-vue2/assets/css/0.styles.6895152d.css" as="style"><link rel="preload" href="/dy-vue2/assets/js/app.02b862fe.js" as="script"><link rel="preload" href="/dy-vue2/assets/js/6.f2b6e195.js" as="script"><link rel="preload" href="/dy-vue2/assets/js/26.bf342f1b.js" as="script"><link rel="prefetch" href="/dy-vue2/assets/js/1.dda31806.js"><link rel="prefetch" href="/dy-vue2/assets/js/10.6f606f08.js"><link rel="prefetch" href="/dy-vue2/assets/js/11.9a853c7b.js"><link rel="prefetch" href="/dy-vue2/assets/js/12.3f8ce8dd.js"><link rel="prefetch" href="/dy-vue2/assets/js/13.9a88cc29.js"><link rel="prefetch" href="/dy-vue2/assets/js/14.c39be8d9.js"><link rel="prefetch" href="/dy-vue2/assets/js/15.70c85302.js"><link rel="prefetch" href="/dy-vue2/assets/js/16.0e8ebb10.js"><link rel="prefetch" href="/dy-vue2/assets/js/17.c2fc0de4.js"><link rel="prefetch" href="/dy-vue2/assets/js/18.36433836.js"><link rel="prefetch" href="/dy-vue2/assets/js/19.20a786f2.js"><link rel="prefetch" href="/dy-vue2/assets/js/2.9ef741c6.js"><link rel="prefetch" href="/dy-vue2/assets/js/20.d7c34ea1.js"><link rel="prefetch" href="/dy-vue2/assets/js/21.3de92acc.js"><link rel="prefetch" href="/dy-vue2/assets/js/22.049c3385.js"><link rel="prefetch" href="/dy-vue2/assets/js/23.16851338.js"><link rel="prefetch" href="/dy-vue2/assets/js/24.6a63a1fa.js"><link rel="prefetch" href="/dy-vue2/assets/js/25.f0468e15.js"><link rel="prefetch" href="/dy-vue2/assets/js/27.25b382d8.js"><link rel="prefetch" href="/dy-vue2/assets/js/28.26293de8.js"><link rel="prefetch" href="/dy-vue2/assets/js/29.239f057e.js"><link rel="prefetch" href="/dy-vue2/assets/js/3.d9f5d0c0.js"><link rel="prefetch" href="/dy-vue2/assets/js/5.cb79e1e2.js"><link rel="prefetch" href="/dy-vue2/assets/js/7.93ae355b.js"><link rel="prefetch" href="/dy-vue2/assets/js/8.fdf025c7.js"><link rel="prefetch" href="/dy-vue2/assets/js/9.69dcfee6.js">
+    <link rel="stylesheet" href="/dy-vue2/assets/css/0.styles.6895152d.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container hz-low-code no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/dy-vue2/" class="home-link router-link-active"><!----> <span class="site-name">Dynamic-Vue</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/dy-vue2/guide/index.html" class="nav-link">
+  指南
+</a></div><div class="nav-item"><a href="/dy-vue2/guide/components/index.html" class="nav-link">
+  组件
+</a></div><div class="nav-item"><a href="/dy-vue2/guide/actions/index.html" class="nav-link">
+  操作
+</a></div><div class="nav-item"><a href="/dy-vue2/guide/layout.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  样式
+</a></div><div class="nav-item"><a href="/dy-vue2/pageBuilder/index.html" class="nav-link">
+  示例
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/dy-vue2/guide/index.html" class="nav-link">
+  指南
+</a></div><div class="nav-item"><a href="/dy-vue2/guide/components/index.html" class="nav-link">
+  组件
+</a></div><div class="nav-item"><a href="/dy-vue2/guide/actions/index.html" class="nav-link">
+  操作
+</a></div><div class="nav-item"><a href="/dy-vue2/guide/layout.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  样式
+</a></div><div class="nav-item"><a href="/dy-vue2/pageBuilder/index.html" class="nav-link">
+  示例
+</a></div> <!----></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="栅格系统使用文档"><a href="#栅格系统使用文档" class="header-anchor">#</a> 栅格系统使用文档</h1> <h2 id="技术支持"><a href="#技术支持" class="header-anchor">#</a> 技术支持</h2> <ul><li>基于CSS3 Grid布局实现。主要使用到的css属性包括：grid-template-columns grid-template-rows  grid-gap grid-column-start  grid-column-end justify-self。</li> <li>使用css变量 实现自定义间隙，响应式定义栅格列数
+</li></ul> <h2 id="功能描述"><a href="#功能描述" class="header-anchor">#</a> 功能描述</h2> <ul><li>支持不同设备列数响应式适配（24列）</li> <li>支持自定义间隙</li> <li>支持偏移</li> <li>支持珊格内元素对齐</li> <li>响应式屏幕支持</li></ul> <table><thead><tr><th>标签</th> <th>尺寸</th> <th>列类</th> <th>偏移类</th></tr></thead> <tbody><tr><td>md</td> <td>1367 ~ 1679 (Regular)</td> <td>grid-col-md-*</td> <td>grid-offset-md-*</td></tr> <tr><td>sm</td> <td>1194 ~ 1367</td> <td>grid-col-sm-*</td> <td>grid-offset-sm-*</td></tr> <tr><td>xs</td> <td>768 ~ 1367</td> <td>grid-col-xs-*</td> <td>grid-offset-xs-*</td></tr> <tr><td>pp</td> <td>768 &lt;</td> <td>grid-col-pp-*</td> <td>grid-offset-pp-*</td></tr></tbody></table> <h2 id="使用姿势"><a href="#使用姿势" class="header-anchor">#</a> 使用姿势</h2> <ol><li>布局容器          .grid-wrap</li> <li>列容器          .grid-col-*  必须为grid-ro类w的子元素</li> <li>自适应          .grid-col-lg-*  必须为grid-row类的子元素</li> <li>偏移            .grid-offset-lg-*  必须为grid-row类的子元素</li> <li>栅格内元素对齐    .grid-grid-*   必须和grid-row类 同时使用</li> <li>调整栅格间隙      style=&quot;--layout-gap:1px&quot; 必须和grid-row类 同时使用</li> <li>响应式整栅格间隙   style=&quot;--layout-lg-gap:5px;--layout-md-gap:4px;--layout-sm-gap:3px&quot; 必须和grid-row grid-customer-gap 类 同时使用</li></ol></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">5/27/2022, 1:15:32 PM</span></div></footer> <!----> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/dy-vue2/assets/js/app.02b862fe.js" defer></script><script src="/dy-vue2/assets/js/6.f2b6e195.js" defer></script><script src="/dy-vue2/assets/js/26.bf342f1b.js" defer></script>
+  </body>
+</html>

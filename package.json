@@ -19,11 +19,10 @@
   },
   "dependencies": {
     "async-validator": "^1.11.5",
-    "dyvue2": "^0.0.76",
+    "dyvue2": "^0.0.79",
     "element-ui": "^2.15.8",
     "mockjs": "^1.1.0",
     "moment": "^2.29.3",
-    "qrcodejs2": "^0.0.2",
     "uppercamelcase": "^3.0.0",
     "vue-monaco-editor": "0.0.19",
     "vuepress-plugin-demo-container": "^0.2.0"
