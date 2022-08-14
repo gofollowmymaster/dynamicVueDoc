@@ -7,7 +7,7 @@ import {
 } from 'dyvue2'
 import dyvue2  from 'dyvue2'
 import dyPugin  from './components/vuePlugins/index.js'
-import pageBuilder  from './components/pageBuilder/index'
+import pageBuilder  from './components/pageBuilder/index.js'
 import ElementUI from 'element-ui'
 import dyconfig  from './dyconfig'
 

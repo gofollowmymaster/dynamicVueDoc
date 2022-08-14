@@ -1,6 +1,7 @@
 <template>
   <DynamicCurdPage
     v-if="isLoaded"
+    style="margin-left:16px;margin-right:16px;width:auto" 
   class="page-wraper"
     :entityLabel="entityLabel"
     :fields="fields"
