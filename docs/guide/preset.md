@@ -13,9 +13,12 @@
 | formOption                  | 表单配置         | [formOption](./preset#表单配置)                             |
 | popTipOptions                  | 操作气泡提醒         | [pagination](./preset#操作气泡提醒配置)                             |
 | msgBoxTipOptions                  | 操作消息提醒         | [msgBoxTipOptions](./preset#操作消息提醒配置)             |
+| drawerProperties                  | 默认抽屉属性         | [drawerProperties](./preset#默认抽屉属性)             |
+| dialogProperties                  | 默认弹窗属性         | [dialogProperties](./preset#默认弹窗属性)             |
+
+
 | actionTip                  | 操作提醒方式         |     可选 pop msg          |
 | baseFormSectionName                  | 基础表单区块信息名         |       基础信息       |
-| dialogWidth                  | 弹窗默认宽度         |   50%         |
 | btnSize                  | 按钮尺寸         |  small            |
 | isDebug                  | 是否调试模式（快速填充表单）         |  true            |
 | mainKey                  | 数据主键         |  id            |
@@ -128,7 +131,7 @@
 
 ```
 ### 动态表单配置
-``` json
+``` js
 {
   class: ['grid-col-24'],
   // apiPromise: () => Promise.resolve(),
@@ -224,5 +227,44 @@
     type: 'warning',
     lockScroll: true
 }
+```
+
+### 默认抽屉属性
+``` js
+{
+    size:'40%',
+    fullscreen:false,
+    top:'15vh',
+    modal:true,
+    'modal-append-to-body':true,
+    'append-to-body':false,
+    'lock-scroll':false,
+    'wrapperClosable':true,
+    'close-on-press-escape':true,
+    'show-close':true,
+    'center':false,
+    'destroy-on-close':false,
+    direction:'rtl',
+    withHeader:true
+
+}
+```
+### 默认弹窗属性
+``` js
+{
+    width:'40%',
+    fullscreen:false,
+    top:'15vh',
+    modal:true,
+    'modal-append-to-body':true,
+    'append-to-body':false,
+    'lock-scroll':true,
+    'close-on-click-modal':false,
+    'close-on-press-escape':true,
+    'show-close':true,
+    'center':false,
+    'destroy-on-close':false,
+}
+
 ```
  

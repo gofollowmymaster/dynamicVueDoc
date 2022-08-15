@@ -262,6 +262,9 @@ this.$dynamicBus
 this.$appendToPreset(options)
 ``` 
 
+## 生成测试数据
+
+DyVue 支持一键填充测试数据，这在大表单中尤其有用，开发调试时免去了反复填写表单的过程，提升开发效率
  
 ## 开发计划
 待补充
