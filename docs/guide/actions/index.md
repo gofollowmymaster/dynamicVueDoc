@@ -33,8 +33,8 @@ pageClass:  wide-width-container
 ## 组件参数
 | 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
 | --- | ---- | ---- | ---- | ------ | ---- | 
-| actions | 操作列表                    | Array | ×    |  []   |   配置项参考[操作配置](#操作配置)  |
-| action-data | 操作数据                    | Object | √    |  {}   |  将要传递给操作的数据，支持传多组数据，在操作中通过actionDataKey制定传入操作的数据   |
+| actions | 操作列表                    | Array | √    |  []   |   配置项参考[操作配置](#操作配置)  |
+| actionData | 操作数据                    | Object | √    |  {}   |  将要传递给操作的数据，支持传多组数据，在操作中通过actionDataKey制定传入操作的数据   |
  
 ## 操作配置
 和表单配置类似操作配置也分为通用配置和具体操作特有配置
@@ -49,9 +49,9 @@ pageClass:  wide-width-container
 | permission |  权限标识,会传递给 `v-permission` 指令                 | string | ×    |  ''   |    为空时，会蒋label传递给 `v-permission`     |
 | sort | 顺序                   | number | ×    |  100   |   会按照`sort`值 升序排列    |
 | isShow | 是否展示                   | Function/boolean | ×    |  true   |   为function时会接受`actionData` 要求返回`boolean`    |
-| isLoadData | 是否加载数据（actionData）                    | boolean | ×    |  true   |       |
-| dataAdapter | 数据适配方法                    | function | ×    |      |       |
+| isLoadData | 是否加载数据（actionData）                    | boolean | ×    |  true   |   是否使用 `actionData` 中的数据    |
 | actionDataKey | actionData中有多组数据时， 操作数据的键                | string | ×    |  undefined   |         |
+| dataAdapter | 数据适配方法                    | function | ×    |      |   会对`actionData` 或 `apiPromise`返回数据进行处理     |      
 | actionPopComponent | 操作气泡提示组件            | string | ×    |  popConfirm   |         |
 | actionPopProperties | 操作气泡提示组件参数                 | Object | ×    |  {}   |     所有属性将绑定到操作气泡提示组件中    |
 | msgBox | 操作提示消息            | Object | ×    |  参 msgBox[默认配置]()   |    属性同el-message-box 组件     |
