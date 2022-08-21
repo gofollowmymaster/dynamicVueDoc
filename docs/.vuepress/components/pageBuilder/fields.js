@@ -1,26 +1,6 @@
 // import { buildDynamicSelectOption,elementUploadFileApi } from "../api/global.js";
 // import request from '../api/request'
-
-// export function selectDictDataInfoApi(params) {
-//   return request({
-//     url: '/sys/dict/data/selectDictDataInfo?'+qs.stringify(params),
-//     refuseToken: false,
-//     json: false,
-//     method:'get'
-//   })
-// }
-
-
-// export function buildDynamicSelectOption(dictType){
-//   return {
-//     key: 'id',
-//     value: 'dictValue',
-//     label: 'dictLabel',
-//     apiPromise: () => {
-//       return selectDictDataInfoApi({ dictType }).then((res) => res.data || [])
-//     }
-//   }
-// }
+ 
 
 export function buildDynamicSelectOption(dictType){
 
@@ -47,7 +27,7 @@ export function buildDynamicSelectOption(dictType){
 
 
 
-export default [
+export default `[
 	{
 		"key": "keyWord",
 		"type": "FormInput",
@@ -103,7 +83,7 @@ export default [
 			"sort": 3
 		},
 		"formOption": {
-			"changehandle":(data,vm)=> {
+			"changeHandle":(data,vm)=> {
 				debugger
 				vm.updateFormData({
 					ownership2:data + 1
@@ -135,7 +115,7 @@ export default [
 		],
 		"formOption": {
 			"expressProp":{
-				"value": "2*(${ownership}||0)" 
+				"value": "2*(#{ownership}||0)" 
 			}
     	},
 		"tableOption": {
@@ -144,20 +124,30 @@ export default [
 	},
 	{
 		"key": "ownership2",
-		"type": "FormDynamicSelect",
+		"type": "FormRadio",
 		"label": "属性2",
     	"formSection":"權益信息",
-		"options": {
-			"key": "id",
-			"value": "value",
-			"label": "label",
-			"apiPromise": function apiPromise() {      
-				    return Promise.resolve([{ value: 1,  label: '11',   id: 1  },
-					 {  value: 2,  label: '22',  id: 2}]);    }
-		},
+		"options": [
+			{
+				"value": 1,
+				"label": "11"
+			},
+			{
+				"value": 2,
+				"label": "22"
+			},
+      		{
+				"value": 3,
+				"label": "33"
+			},
+      		{
+				"value": 4,
+				"label": "44"
+			}
+		],
 		"tableOption": {
 			"sort": 3
 		},
 		"formOption": true
 	}
-];
+]`;

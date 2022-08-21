@@ -63,7 +63,7 @@ export const tableOption = {
     indexCol: {
         width: 48,
         fixed: 'left',
-        label: '序号',
+        label: '序号'
     }
 }
 
@@ -97,8 +97,10 @@ export const formOption = {
     //   'label-position': 'right',
     //   // size:'medium'
     // },
-    // borderForm: false,
+    borderForm: true,
     // showFoldBtn: true,
+    colNum:1,
+    testTool: true
 
 }
 
@@ -122,10 +124,44 @@ export const msgBoxTipOptions = {
     lockScroll: true
 }
 
+export const drawerProperties = {
+    size: '40%',
+    modal: true,
+    'modal-append-to-body': true,
+    'append-to-body': false,
+    'lock-scroll': false,
+    'wrapperClosable': true,
+    'close-on-press-escape': true,
+    'show-close': true,
+    'center': false,
+    'destroy-on-close': false,
+    direction: 'rtl',
+    withHeader: true
+
+}
+export const dialogProperties = {
+    width: '40%',
+    fullscreen: false,
+    top: '15vh',
+    modal: true,
+    'modal-append-to-body': true,
+    'append-to-body': false,
+    'lock-scroll': true,
+    'close-on-click-modal': false,
+    'close-on-press-escape': true,
+    'show-close': true,
+    'center': false,
+    'destroy-on-close': false
+}
+export const pageProperties = {
+   
+}
+
 export default {
 
     baseFormSectionName: '基本信息',
     actionTip: 'msg',
+    btnSize: 'mini',
     isDebug,
     tinymceLanguageUrl: '/dyvue2-admin/static/tinymce/langs/zh_CN.js',
     tinymceSkinUrl: '/dyvue2-admin/static/tinymce/skins/ui/oxide',
@@ -135,12 +171,16 @@ export default {
     tandiMapKey,
     amapStyleConfig,
     regionCode: '500103000000',
-    defaultDialogMode: 'dialog',
+    defaultDialogActionMode: 'dialog',
+    defaultContainerType: 'el-dialog',
     searchOption,
     tableOption,
     pagination,
     treeOption,
     formOption,
     popTipOptions,
-    msgBoxTipOptions
+    msgBoxTipOptions,
+    drawerProperties,
+    dialogProperties,
+    pageProperties
 }

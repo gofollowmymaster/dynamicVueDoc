@@ -306,3 +306,24 @@ export function  apiListMock(fields,num=10){
   })
 }
 
+
+export function parseObject(obj) {
+  let res;
+  try {
+    res = JSON.parse(obj, (k, v) => {
+      if (typeof v === "string" && v.startsWith("function")) {
+        return window.eval("(" + v + ")");
+      }
+      return v;
+    });
+  } catch (er) {
+    try{
+    res= eval(obj)
+    }catch(err){
+      console.error(err);
+    }
+    
+  }
+  return res;
+}
+

@@ -286,14 +286,22 @@ export default {
 > 内容弹窗操作的 container 为 `dy-page` 时，会自动转为 路由到内容页面操作
 
 ::: tip 提示
- *路由到内容页面* 配置与*内容弹窗* 配置唯一的不通是新增了一个routerAction配置项 指定路由方式 如 push replace
+ *路由到内容页面* 配置与*内容弹窗* 配置唯一的不通是新增了`routerAction`和`router`配置项  
 :::
+| 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+| ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+| routerAction | 路由跳转方式              |  string | ×     |  push  |  可选 replace、push    |
+| router | 路由参数方法                   |  Function | ×    |  null  |  可返回自定义跳转 路径`path` 和 `query`    |
 ### 路由到表单页面
 > 该操作会打开一个包裹在dy-page的弹窗表单,并改变路由
 > 表单弹窗操作的 container 为 `dy-page` 时，会自动转为 路由到表单页面操作
 ::: tip 提示
- *路由到表单页面* 配置与*表单页面* 配置唯一的不通是新增了一个routerAction配置项 指定路由方式 如 `push` `replace`
+  *路由到内容页面* 配置与*内容弹窗* 配置唯一的不通是新增了`routerAction`和`router`配置项  
 :::
+| 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+| ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+| routerAction | 路由跳转方式              |  string | ×     |  push  |  可选 replace、push    |
+| router | 路由参数方法                   |  Function | ×    |  null  |  可返回自定义跳转 路径`path` 和 `query`    |
 
 ### 接口请求
 该操作会发起一次请求, 需添加一个apiPromise 参数，默认会发起refresh、showTip 回调

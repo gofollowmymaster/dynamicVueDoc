@@ -30,7 +30,7 @@ export default {
         const resizeLeft = resize.offsetLeft;
         // 鼠标拖动事件
         document.onmousemove = function(e) {
-          debugger
+           
           const moveX = e.clientX;
           let moveLen = resizeLeft + (moveX - startX);
           const maxT = box.clientWidth - resize.offsetWidth; // 容器宽度 - 左边区域的宽度 = 右边区域的宽度

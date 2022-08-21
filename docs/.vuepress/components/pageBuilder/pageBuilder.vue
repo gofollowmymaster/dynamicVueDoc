@@ -51,10 +51,10 @@ import pageConfig from "./pageConfig.js";
 function    stringifyObj(json){
   return JSON.stringify(json, (k,v)=>{
         if(typeof v =='function'){
-          return v.toString()
+          return v.toString().slice(0,-1)
         }
         return v
-      }, "\t")
+      })
 }
 
 export default {
@@ -63,9 +63,9 @@ export default {
   data() {
     return {
       // form字段
-      fieldsContent: stringifyObj(fields),
+      fieldsContent:  (fields),
       // 页面配置
-      pageConfig:stringifyObj(pageConfig),
+      pageConfig:(pageConfig),
       current:'1',
       editorOptions:{
         selectOnLineNumbers: false,
@@ -140,6 +140,7 @@ export default {
       )
     },
     onfieldsContentChange(editor){
+      debugger
       const content =editor.getValue()
       this.$refs.previewIframe.contentWindow.postMessage(
         { origin: "jsEditor", type: "fields", content },
@@ -149,6 +150,7 @@ export default {
     onpageConfigChange(editor){
       debugger
         const pageConfig =editor.getValue()
+        this.pageConfig=pageConfig
         this.$refs.previewIframe.contentWindow.postMessage(
           { origin: "jsEditor", type: "page", content: pageConfig },
           "*"

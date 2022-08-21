@@ -1,6 +1,6 @@
 <template>
   <DynamicCurdPage
-  
+    :key="pageKey"
     style="margin-left:16px;margin-right:16px;width:auto" 
     class="page-wraper"
     :entityLabel="entityLabel"
@@ -13,10 +13,12 @@
 const entityLabel = "实体";
 
 import fields from "./fields.js";
-import { mockDyFields } from "../vuePlugins/utils";
+
+import { mockDyFields ,  } from "../vuePlugins/utils";
 import Mock from "mockjs";
 import pageOptions from  "./pageConfig.js"
 
+import { buildFormFields ,deepMerge ,appendToPreset} from  "dyvue2"
 
 
  
@@ -35,16 +37,25 @@ function oldtreeDeleteApi(ids) {
 }
 
 function oldtreeDetailApi(data) {
-  return Promise.resolve(Mock.mock(mockDyFields(buildFormFields(fields))));
+  debugger
+  return Promise.resolve(Mock.mock(mockDyFields(parseObject(fields))));
 }
 function buildDynamicSelectOption(){
    return {}
 }
 
-import {
-  buildFormFields,
-  deepMerge,
-} from "dyvue2";
+ 
+
+    function  parseObject(content){
+      try{
+       return  eval(content)
+      }catch(err){
+        console.error(err)
+      }
+    }
+
+    var formFields=  buildFormFields( parseObject(fields))
+
 
 export default {
   name: "pagePreview",
@@ -52,11 +63,11 @@ export default {
     // CurdPage
   },
   data() {
-    const formFields= this.$buildFormFields( fields)
     return {
+      pageKey:new Date().getTime(),
       isLoaded:false,
       // form字段
-      fields,
+      fields:parseObject(fields),
       entityLabel,
       // 页面配置
       apiPromises: {
@@ -75,109 +86,52 @@ export default {
       },
       // 页面配置
       pageOptions: {
-        listOption: {
-          lineActions: {
-            detail: null,
-            aview:  {
-              actionType:'dialogPageActionOption',
-              sort: 1,
-              label: "查看",
-              permission: "查看",
-                containerProperties: {
-                  title: "查看" + entityLabel,
-                },
-                layout:  "LayoutTabs",
-                layoutProperties: {
-                  type: "card",
-                },
-              
-                body: [
-                   {
-                      component: 'DynamicForm',
-                    label: "基本信息",
-                    props:  this.$appendToPreset("dynamicFormOption", {
-                      apiPromise: oldtreeDetailApi,
-                        formItemList: formFields,
 
-                      formOption: {
-                        borderForm: false,
-                        formProperties: {
-                          "label-position": "left",
-                        },
-                      },
-                    }),
-                  },
-                  {
-                     component: 'DynamicForm',
-                    label: "管理信息",
-                    props: this.$appendToPreset("dynamicFormOption", {
-                      apiPromise: oldtreeDetailApi,
-                        formItemList: formFields,
-
-                      formOption: {
-                        borderForm: true,
-                        formProperties: {
-                          "label-position": "right",
-                        },
-                      },
-                    }),
-                  },
-
-                  {
-                    component: "div",
-                    name: "@object@",
-                    label: "信息详情3",
-                    children: [
-                      {
-                        component: "DyTmpl",
-                        props: {
-                          tmpl: "test",
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
-        
-          },
-        },
+         
       },
       component:''
     };
   },
   created() {
     const self = this;
+    // const 
     window.addEventListener("message", (ev, data) => {
       if (
         ev.origin.indexOf(location.hostname) > -1 &&
         ev.data.origin == "jsEditor"
       ) {
-        // try {
-        //   if (ev.data.type == "fields") {
-        //     self.fields = self.parseObjByEval(ev.data.content);
-        //   }
-        //   if (ev.data.type == "page") {
-        //     self.pageOptions = deepMerge(
-        //       self.pageOptions,
-        //       self.parseObjByEval(ev.data.content)
-        //     );
-        //   }
-        // } catch (err) {
-        //   console.error(err);
+   
+        debugger
+        let contentParsed
 
-         const contentParsed= self.parseObject(ev.data.content)
+        try{
+          contentParsed=  eval(ev.data.content)
+        }catch(err){
+          console.error(err)
+        }
+
         if(!contentParsed)return 
 
         if (ev.data.type == "fields") {
+          try{
+            contentParsed=  eval(ev.data.content)
+          }catch(err){
+            console.error(err)
+          }
+
           self.fields = contentParsed;
+
+          this.onPageOptionChange(self.pageOptionsCache)
+
+
         }
         if (ev.data.type == "page") {
-          self.pageOptions = deepMerge(
-            self.pageOptions,
-            contentParsed
-          );
+          this.onPageOptionChange(ev.data.content)
+
+
         }
-        self.$forceUpdate();
+        self.pageKey= new Date().getTime()
+
       }
     });
 
@@ -185,10 +139,25 @@ export default {
   mounted(){
       this.pageOptions = deepMerge(
             this.pageOptions,
-            pageOptions
+            parseObject(pageOptions)
       );
   },
   methods: {
+    onPageOptionChange(content){
+        let contentParsed
+
+        try{
+            formFields=  buildFormFields( this.fields)
+            console.log('--formFields1--',formFields)
+            contentParsed=  eval(content)
+            console.log('--contentParsed--',contentParsed)
+        }catch(err){
+          console.error(err)
+        }
+
+        this.pageOptions =contentParsed;
+        this.pageOptionsCache =content
+    },
     parseObjByEval(obj) {
       return eval(obj);
     },
@@ -201,25 +170,7 @@ export default {
       });
       },
    
-    parseObject(obj) {
-      let res;
-      try {
-        res = JSON.parse(obj, (k, v) => {
-          if (typeof v === "string" && v.startsWith("function")) {
-            return window.eval("(" + v + ")");
-          }
-          return v;
-        });
-      } catch (er) {
-        try{
-        res= eval(obj)
-        }catch(err){
-          console.error(err);
-        }
-        
-      }
-      return res;
-    },
+   
   },
 };
 </script>
