@@ -1,19 +1,25 @@
  
-export default `({
+export default `
+ const title='chakan';
+
+ //以下为配置
+  ( 
+    {
+      apiPromises:{
+        create: saveApi,
+        bulkdelete: deleteApi,
+
+        detail: detailApi,
+        update: updateApi,
+      },
+      pageOptions:{
   "searchOption":{},
  
     "topToolBar":{
       
     },
     "tableUp":{
-      "component":"DyTmpl",
-      "properties":{
-        "tmpl":"总数量:<span class='text-blue py4 px4'>#{num}</span>,总数量1:<span class='text-red py4 px4'>#{num1}</span>",
-        "data":{
-         "num":123254,
-          "num1":5546,
-        }
-      }
+     
     },
     
    "listOption": {
@@ -25,7 +31,7 @@ export default `({
         "label": "查看",
         "permission": "查看",
         "containerProperties": {
-          "title": "查看",
+          "title": title,
         },
         "layout":  "LayoutTabs",
         "layoutProperties": {
@@ -37,14 +43,14 @@ export default `({
               "component": 'DynamicForm',
             "label": "基本信息",
             "props":  {
-              "apiPromise": oldtreeDetailApi,
+              "apiPromise": detailApi,
                 "formItemList": formFields,
   
               "formOption": {
                 textMode:true,
                 "borderForm": false,
                 "formProperties": {
-                  "label-position": "left",
+                  "label-position": "right",
                 },
               },
             },
@@ -53,7 +59,7 @@ export default `({
               "component": 'DynamicForm',
             "label": "管理信息",
             "props":   {
-              "apiPromise": oldtreeDetailApi,
+              "apiPromise": detailApi,
                 "formItemList": formFields,
   
               "formOption": {
@@ -85,7 +91,7 @@ export default `({
   }
 
  
-
+}
 
 })`;
 

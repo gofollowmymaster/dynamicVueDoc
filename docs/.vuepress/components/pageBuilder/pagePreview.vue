@@ -15,34 +15,33 @@ const entityLabel = "实体";
 import fields from "./fields.js";
 
 import { mockDyFields ,  } from "../vuePlugins/utils";
-import Mock from "mockjs";
-import pageOptions from  "./pageConfig.js"
+import mock from "mockjs";
 
 import { buildFormFields ,deepMerge ,appendToPreset} from  "dyvue2"
+import pageConfig from  "./pageConfig.js"
 
-
+var Mock = mock
+var MockDyFields =  mockDyFields
  
 
-function oldtreeUpdateApi(params) {
+function updateApi(params) {
   return Promise.resolve({});
 }
 
-function oldtreeSaveApi(params) {
+function saveApi(params) {
   return Promise.resolve({});
 }
 
-function oldtreeDeleteApi(ids) {
+function deleteApi(ids) {
   ids = Array.isArray(ids) ? ids.join(",") : ids;
   return Promise.resolve({});
 }
 
-function oldtreeDetailApi(data) {
+function detailApi(data) {
   debugger
-  return Promise.resolve(Mock.mock(mockDyFields(parseObject(fields))));
+  return Promise.resolve(Mock.mock(MockDyFields(parseObject(fields))));
 }
-function buildDynamicSelectOption(){
-   return {}
-}
+ 
 
  
 
@@ -71,25 +70,24 @@ export default {
       entityLabel,
       // 页面配置
       apiPromises: {
-        create: oldtreeSaveApi,
-        bulkdelete: oldtreeDeleteApi,
+        create: saveApi,
+        bulkdelete: deleteApi,
         list:   (params)=> {
           return Promise.resolve(
             Mock.mock({
-              "list|10": [mockDyFields(this.fields)],
+              "list|10": [MockDyFields(this.fields)],
               totalCount: 20,
             })
           );
         },
         // detail: oldtreeDetailApi,
-        update: oldtreeUpdateApi,
+        update: updateApi,
       },
       // 页面配置
       pageOptions: {
 
          
       },
-      component:''
     };
   },
   created() {
@@ -121,7 +119,7 @@ export default {
 
           self.fields = contentParsed;
 
-          this.onPageOptionChange(self.pageOptionsCache)
+         self.pageOptionsCache&& this.onPageOptionChange(self.pageOptionsCache)
 
 
         }
@@ -137,10 +135,18 @@ export default {
 
   },
   mounted(){
+       let contentParsed
+     try{
+       contentParsed= eval(pageConfig)
+      }catch(err){
+        console.error(err)
+      }
+
+      let {pageOptions,apiPromises }=  contentParsed
       this.pageOptions = deepMerge(
-            this.pageOptions,
-            parseObject(pageOptions)
+            this.pageOptions, pageOptions
       );
+      this.apiPromises= deepMerge(this.apiPromises,apiPromises)
   },
   methods: {
     onPageOptionChange(content){
@@ -154,8 +160,11 @@ export default {
         }catch(err){
           console.error(err)
         }
+        let {pageOptions,apiPromises }=  contentParsed
 
-        this.pageOptions =contentParsed;
+        this.pageOptions =pageOptions;
+        this.apiPromises= deepMerge(this.apiPromises,apiPromises)
+
         this.pageOptionsCache =content
     },
     parseObjByEval(obj) {

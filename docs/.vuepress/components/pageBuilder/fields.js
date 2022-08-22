@@ -35,37 +35,6 @@ export default `[
 		"searchOption": true
 	},
 	{
-		"key": "sciName",
-		"type": "FormInput",
-		"label": "学名",
-		"formOption": {
-			"disabled": true
-		},
-		"tableOption": {
-			"sort": 2
-		}
-	},
-	{
-		"key": "latinSciName",
-		"type": "FormInput",
-		"label": "拉丁学名",
-		"formOption": {
-			"disabled": true
-		}
-	},
-	{
-		"key": "originalTreeNumber",
-		"type": "FormInput",
-		"label": "原实体编号",
-		"formOption": {}
-	},
-	{
-		"key": "investNumber",
-		"type": "FormNumber",
-		"label": "调查顺序号",
-		"formOption": {}
-	},
-	{
 		"key": "ownership",
 		"type": "FormSelect",
 		"options": [
@@ -76,7 +45,11 @@ export default `[
 			{
 				"value": 2,
 				"label": "22"
-			}
+			},
+			{
+				"value": 3,
+				"label": "33"
+			},
 		],
 		"label": "属性",
 		"tableOption": {
@@ -92,8 +65,31 @@ export default `[
 		}
 	},
 	{
+		"key": "sciName",
+		"type": "FormInput",
+		"label": "学名",
+		"formOption": {
+			"expressProp":{
+				"disabled": "#{ownership}==1" 
+			}
+		},
+		"tableOption": {
+			"sort": 2
+		}
+	},
+	{
+		"key": "latinSciName",
+		"type": "FormInput",
+		"label": "拉丁学名",
+		"formOption": {
+			"expressProp":{
+				"required": "#{ownership}==2" 
+			}
+		}
+	},
+	{
 		"key": "ownership1",
-		"type": "FormSelect",
+		"type": "FormInput",
 		"label": "属性1",
 		"options": [
 			{
@@ -115,7 +111,7 @@ export default `[
 		],
 		"formOption": {
 			"expressProp":{
-				"value": "2*(#{ownership}||0)" 
+				"value": "2*(#{ownership}||0) +''+ (#{sciName}||'')" 
 			}
     	},
 		"tableOption": {
@@ -123,10 +119,21 @@ export default `[
 		}
 	},
 	{
+		"key": "investNumber",
+		"type": "FormNumber",
+		"label": "调查顺序号",
+		formSection:"其他信息",
+		"formOption": {
+			"expressProp":{
+				"hidden": "#{ownership}!=3" 
+			}
+		}
+	},
+	{
 		"key": "ownership2",
 		"type": "FormRadio",
 		"label": "属性2",
-    	"formSection":"權益信息",
+		formSection:"其他信息",
 		"options": [
 			{
 				"value": 1,

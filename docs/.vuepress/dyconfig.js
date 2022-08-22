@@ -97,10 +97,11 @@ export const formOption = {
     //   'label-position': 'right',
     //   // size:'medium'
     // },
-    borderForm: true,
+    borderForm: false,
     // showFoldBtn: true,
     colNum:1,
-    testTool: true
+    testTool: true,
+    'label-position': 'right',
 
 }
 
