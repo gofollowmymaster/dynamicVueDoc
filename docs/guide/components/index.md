@@ -1,56 +1,177 @@
 ---
 pageClass:  wide-width-container
 ---
-# 页面模板组件
-
-开箱即用的表格页面模板组件，它是表单组件，搜索栏组件，表格组件，操作组件及其他自定义组件的组合使用模板。为了便于使用，预定义了增删改查功能所需相关配置
-::: tip 不止于此
-配合Dy-Vue的操作可实现多种功能复杂的交互页面
+# 动态表单
+::: tip
+表单是管理页面开发中的重点，也是最繁琐的部分，功能各异的表单项重复出现在项目的各个角落，表单项间相互依赖关系（交互联动）千变万化，
+为了快速开发表单，各厂同学都有下足了工夫，动态表单项目不断推出。对此DyVue在前人的肩膀上也提供了自己的方案，相较而言，DyVue的动态表单方案上手简单，功能健全，预设了大量开箱即用的表单组件，并支持便捷的开发集成自定义组件。
+能够轻松的构建复杂业务逻辑的表单
 :::
-|  键   | 意义  |类型| 必选  |默认值   |备注   |
-|  ----  | ----  |----  |----   |----  |----  |----  |
-| fields  | 字段配置 |array| √   | [] |   | 
-| pageOption  | 页面配置 |Object|√  | {} |   | 
-| apiPromises  | 增删改查Api |Object|√   | {} |  成员包括 create delete update list detail | 
-| entityLabel  | 页面名称 |string|√  |  '' |   | 
+## 功能特点
+
+- 通过 json 数据来生成表单；
+- 通过 data 数据给表单每个元素赋值；
+- 支持设置表单多列,单列,自适应布局；
+- 支持数据新增,修改,详情展示（切换为纯文本显示模式）；
+- 支持多种方式实现表单数据联动 1.表达式语法   2.changeHandle
+- 支持表单校验，预制了常见验证规则，配置简洁；
+- 表单支持分块显示，支持单区块收起、展开；
+- 二次开发自定义表单元素难度极低；
+- 自动测试（批量填充数据）
+- 支持将表单显示模式切换：**长表单**/带 tab 切换的短表单； 
 
 
-## 字段配置
-在搜索栏、列表、表单（新增、修改）、详情场景中都有字段信息，且通常情况下，字段是重叠的，所以Dy-Vue采用了一个字段列表来配置页面的字段。并通过相应的子项配置具体场景的特别信息，子项内的配置会覆盖通用配置
- 
-### 基础通用配置  
-通用配置包括会在各种场景中公用的信息，具体信息包括：
-|  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| key  | 字段名 | string |√ | - |formSection |  
-| label  | 中文名 | string |× |'' |  |  
-| type  | 表单组件名 | string |×  |FormInput | 支持的[表单组件](./form.html#表单组件)  | 
-| formSection  | 表单区块 | string |×  |'' |按区块展示在表单、详情中 | 
-| formOption  | 表单配置 |Object |×  |{} |有值时会在表单中展示 | 
-| searchOption  | 搜索栏配置 | Object|×  |{} |有值时会在搜索栏中展示 | 
-| listOption  | 列表配置 | Object|×  |{} |有值时会在列表中展示 |  
-| detailOption  | 详情配置 | Object |×  |{} |有值时会在详情中展示， 会在表单基础上叠加，只在详情中有与表单中不一样的情况才需要配置 | 
- 
 
-### 表单配置子项 
-> 表单配置子项，是对表单新增，修改，详情有效。通过配置可以实现表单内数据回显、校验、交互、提交，等**交互功能**，也可以定义表单**样式、布局**；
-> 表单配置子项是通用配置外 [表单配置](./form.md)特有的配置项
-> 表单组件中，字段顺序是按照，字段先后顺序排列；所以无需特别配置
+ ## 开箱可用的表单组件
+
+- 文本输入框  ------  [FormInput](#forminput) 
+- 文本域输入框 ------ [FormTextarea](#formtextarea) 
+- 普通下拉框  ------  [FormSelect](#formselect) 
+- 普通多选下拉框 ---- [FormMulSelect](#FormMulSelect) 
+- 级联选择 ---------- [FormCascader](#FormCascader) 
+- 单选框  ----------  [FormRadio](#FormRadio) 
+- 多选框   ---------  [FormCheckbox](#FormCheckbox)  
+- 开关    ---------   [FormSwitch](#FormSwitch)  
+- 日期输入框 --------  [FormDate](#FormDate) 
+- 日期范围输入框 ----- [FormDateRange](#FormDateRange) 
+- 日期时间输入框 ----- [FormDateTime](#FormDateTime) 
+- 日期时间范围输入框 -- [FormDateTime](#FormDateTimeRange) 
+- 普通数字输入框 ----- [FormNumber](#FormNumber) 
+- 扩展数字输入框 ----- [FormNumberPlus](#FormNumberPlus) 
+- 百分比输入框 ------- [FormRateInput](#FormRateInput) 
+- 金额文本输入框  ---  [FormMoneyInput](#FormMoneyInput) 
+- 数值范围  --------  [FormNumberRange](#FormNumberRange) 
+- 滑块选择  --------  [FormNumberRange](#FormNumberRange) 
+- 文件上传 ---------- [FormSlider](#FormSlider) 
+- 颜色选择 ---------- [FormColorPicker](#FormColorPicker) 
+- 树型选择器 --------- [FormTreeSelect](#FormTreeSelect) 
+- 纯文本 ------------- [FormText](#FormText) 
+- 隐藏字段 ----------- [FormHide](#FormHide) 
+- 增删改查表格表单 ---- [FormCurd](#FormCurd) 
+- 子表单 -------------- [FormChildrenForm](#FormChildrenForm) 
+- 可编辑表格 ---------- [FormTableEditable](#FormTableEditable)  (todo)
+## 模板项目中附带的表单组件  
+- 地图选点  --------- [FormSelectPoint](#FormSelectPoint) 
+- 地图划区  --------- [FormDrawElement](#FormDrawElement) 
+- 字典下拉多选框  --  [FormDynamicSelect](#FormDynamicSelect)  
+- 富文本编辑 -------- [FormRichEditor](#FormRichEditor) 
+- 输入搜索下拉框  -- (todo)
 
 
- |  键   | 意义  |类型| 必选  |默认值  |备注   |
-|  ----  | ----  |----  |----  |----  |----  | 
-| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| rules  | 验证规则 | array |× |[] | 成员可为字符串、正则、对象。字符串是系统预定义的验证规则 包括required、email、url、integer |  
-| expressProp  | 表单属性 | object |×  |{} | 一组特殊的配置属性，成员值支持表达式语法，支持配置除defaultValue、rules、changeHandle以外的大多数属性，如 disabled，hidden等。额外支持required、value 实现动态表单项值以及必填验证   | 
-| changeHandle  | 表单联动配置 |Object |×  |{} |  表单联动配置 | 
-| defaultValue  | 默认值 |Object |×  |{} |  默认值 | 
-| hidden  | 是否显示 | reg |×  | | 控制该表单的显隐，支持表达式语法 | 
-| col  | 占位列数 | string |×  |'' |默认2列 可动态配置 | 
-| extra  | 其他组件属性 | object |×  |{} | 各表单组件特有属性建议配置在extra内，Dyvue最终会将其解构到配置项（所以将其配置到与父级也有效） | 
-
- 
   
+## 表单交互
+表单交互是开发业务开发中的重点，也是动态表单开发的难点，DyVue提供了两项配置实现表单的交互联动
+### 被动式（表达式）   
+   是一组特殊的表单字段属性，Dyvue会监听表单数据的变动，数据变动会触发配置中`expressProp`属性生效,支持配置除defaultValue、rules、changeHandle以外的大多数表单字段属性，如 disabled，hidden，等。额外支持required、value 实现动态定义表单项值以及必填验证
+  `expressProp`属性支持函数、Dyvue表达式语法，两种定义方式
+  1. Dyvue表达式语法中的#{key}将被替换为formData.key
+  2. 函数参数分别为 当前字段值，和整个表单当前值
+  3. 
+
+  ``` js
+  {
+	  ...
+		"formOption": {
+			"expressProp":{
+				"disabled": "#{ownership}==1" ,
+        required:(value,formData)=>  formData.ownership==1 
+			}
+		 
+	},
+  ```
+### 主动式   
+  当字段值发生变化是会触发配置中的`changeHandle`方法,方法参数分别为‘当前值’和表单示例，您可以通过表单实例调用[表单Api](#表单开放Api)实现交互
+``` js
+     changeHandle(value,vm) {    // 实现事件式数据联动
+          vm.updateFormData({
+            'address':'地址-'+value,
+            name:'姓名'+value
+          })
+        },
+```
+::: warning  注意
+两者可以同时生效    但同时对一条数据配置值时，会因优先级问题出现问题
+:::
+
+## 表单开放Api
+1. updateFormData   
+更新表单数据
+``` js
+    formVm.updateFormData({
+            key: value
+        })
+```
+2. setFormItemRequired
+   设置表单项必填
+``` js
+   formVm.setFormItemRequired(key,isRequired)
+```
+3. setFormItemDisabled
+   设置表单项disabled状态
+ ``` js
+   formVm.setFormItemDisabled(key,isDisable)
+```
+4. setFormItemHidden
+   设置表单项隐藏
+``` js
+   formVm.setFormItemHidden(key,isHidden)
+```
+5. resetFields
+ 重置表单数据
+``` js
+   formVm.resetFields()
+```
+
+ 
+## 组件参数
+| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
+| --- | ---- | ---- | ---- | ------ | ---- | 
+| formOption | 表单整体配置                    | Object | ×    |  参默认配置   |   配置项参考[表单整体配置](#表单整体配置)  |
+| formItemList | 表单字段                    | Array | √    |  []   |  配置项参考[表单字段配置](#表单字段配置)   |
+| actions  | 操作                    | Array | ×     |     |      |
+ 
+### 表单整体配置
+表单整体配置均有默认值，可以不用配置。
+ | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+ | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+ | colNum             | 列数 | integer | ×    | 2     |          |
+ | formProperties | 表单属性 | object | ×    | {}     |  支持el-form  所有属性    |
+ | borderForm       | 是否带边框           | boolean  | ×    | false    |   |
+ | showFoldBtn      | 是否展示目录按钮           | boolean | ×    | false     |  |
+ | label-width     | label宽度       | string | ×    | 130px     |  会覆盖formProperties内的label-width  |
+ | label-position     | label 位置             | string    | ×    | right   |    会覆盖formProperties内的label-position   |
+ | pageLabelWidth           | 页面表单label宽度           | string    | ×    |  160px      |   会覆盖页面表单formProperties内的label-width   |
+ | textMode           | 是否文本模式           | boolean    | ×    |  false      |   为false 是就是[详情](./detail.md)  |
+
+
+## 表单字段配置
+**表单字段配置分两部分**
+    1. 表单字段通用配置---  对各类表单组件都生效的配置
+    2. 表单字段组件配置---  各表单组件特有的配置信息  通常配置在extra中
+
+通用配置对各类表单组件都生效
+
+ | 键               | 意义          | 类型   | 必选 | 默认值 | 备注          |
+ | ---------------- | ------------------ | ------ | ---- | ------ | ---------------------- |  
+ | label | 表单项标签名 | string | √    |      |       |
+ | labelTip | 表单项标签名提示文字 | string | ×    |      |       |
+ | type | 表单项类型 | string | ×    |  FormInput    |       |
+ | key | 表单项字段名 | string | √    |      |   不能重复    |
+ | wraperProperties | 表单项包裹容器属性 | object | ×    | {}     | 包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件     |
+ | rules            | 验证规则           | array  | ×    | []     | 成员可为字符串、正则、对象  字符串是系统预定义的验证规则 包括required email url integer        |
+ | expressProp      | 表单属性           | object | ×    | {}     | 是实现表单交互的重要属性  参[表单交互](#被动式（表达式）) |
+ | changeHandle     | 表单联动配置       | Object | ×    | {}     | 表单联动配置     |
+ | defaultValue     | 默认值             | Any    | ×    | null   |                           |
+ | hidden           | 是否显示           | reg    | ×    |        | 控制该表单的显隐，支持表达式语法       |
+ | col             | 占据的列数 | integer | ×    | ''     |  默认一共两列          |
+ | extra            | 其他组件属性       | object | ×    | {}     | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） |
+
+
+::: tip 字段表单配置说明
+字段表单配置较灵活，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在formOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、expressProp、changeHandle、defaultValue，searchOption，listOption等配置后，绑定到表单组件。 
+表单组件配置参考 [表单项配置](#表单项配置)
+:::
+
 ::: demo
 ``` html
 <template>
@@ -73,7 +194,7 @@ const fields  =[
     label: "姓名",           
     formSection: "基础信息",      
     formOption: {                  
-      wraperProperties:{    //会传入elment 表单组件FormItem的参数props
+      wraperProperties:{    //会传入elment 表单组件el-form-item的参数props
         style: {},
       },
       rules: [                  //表单验证验证规则
@@ -85,14 +206,14 @@ const fields  =[
         required:'#{status}==2',
       },
       extra:{
-        clearable:true
+        clearable:true   
       }
     },
   },
   {
     key: "status",
     type: "FormSelect",
-    label: '多选框',
+    label: '选择框',
     formSection: "基础信息",      
     options: [          //select radio checkbox 相关组件有必填options信息
       {
@@ -110,10 +231,10 @@ const fields  =[
     ],
     formOption: {
         changeHandle(value,vm) {    // 实现事件式数据联动
-              vm.updateFormData({
-                'address':'地址-'+value,
-                name:'姓名'+value
-              })
+          vm.updateFormData({
+            'address':'地址-'+value,
+            name:'姓名'+value
+          })
         },
     },
   },
@@ -149,13 +270,29 @@ const fields  =[
     },
   }, 
   {
-    key: "address",
-    label: "公司地址",   
+    key: "tip",
+    label: "", 
+    type:'FormText',  
     formSection: "职业信息",      
     formOption: {
+       content:'这是一段描述文字',
+       wraperProperties:{
+          'label-width':'0px'
+       }
     },
   }, 
+  {
+     key :'price',
+     type:'FormNumberRange',
+     label:'价格区间',
+     formSection: "职业信息",      
+      formOption: {
+        
+      },
+  },
+    
 ]
+ 
 
 export default {
   data () {
@@ -175,656 +312,454 @@ export default {
 </script>
 ```
 :::
+## 表单项配置
 
-### 搜索栏配置子项 
-> 搜索栏， 实质也是表单，所以理论上凡是表单配置子项都可以无缝配置在搜索栏子项中。
-> 不过常态下搜索栏无需验证，表单项间无交互，所以rules，expressProp、 hidden等通常是无需配置的，总之搜索栏配置是表单配置的子集
->  默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
-
-
-|  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| defaultValue  | 默认值 |Object |×  |{} |  默认值 | 
-| sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
-| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
-| extra  | 额外信息 | string |×  |'' |额外的表单属性，会一通绑定到表单上 | 
-
-
-
-::: tip 字段搜索栏配置说明
-和字段表单配置一样，原则上可以根据表单组件属性无限拓展，拓展属性即可放在extra内也可与extra同级，甚至可以不放在searchOption中，Dy-Vue最终会将字段对象扁平化，删除wraperProperties、rules、expressProp、defaultValue，searchOption，listOption等配置后，绑定到搜索表单组件。 
-:::
-
-::: demo
-```html
-<template>
-<ClientOnly>
-
-  <DynamicSearchForm
-    class="relative"
-    :options="searchOption"
-    :fields="fields"
-  ></DynamicSearchForm>
-</ClientOnly>
-  
-</template>
-<script>
-
-const fields  =[
-  {
-    key: "name",                  
-    type: "FormInput",           
-    label: "姓名",           
-    searchOption: {                  
-      wraperProperties:{    //会传入elment 表单组件FormItem的参数props
-        style: {},
-      },
-      extra: {    //会传入elment 表单组件本身  支持表达式语法
-        clearable:true
-      },
-      span:8
-    },
-  },
-  
-  {
-    key: "status",
-    type: "FormSelect",
-    label: '多选框',
-    options: [          //select radio 相关组件有必填options信息
-      {
-        value: "1",
-        label: "11",
-      },
-      {
-        value: "2",
-        label: "22",
-      },
-      {
-        value: "3",
-        label: "33",
-      },
-    ],
-    searchOption: {
-      sort:1
-    },
-  },
-   {
-    key: "cName",
-    label: "公司名称",
-    formOption: {},
-  },
-  {
-    key: "email",
-    label: "邮箱",
-    searchOption: true,
-  },
-   
-]
-
-export default {
-  data () {
-    return {
-      searchOption:this.$appendToPreset('searchOption',{
-         
-      }),
-      fields:this.$buildSearchFields(fields),
-    }
-  }
-}
+### FormInput
+支持elementUi el-input组件所有属性
+### FormTextarea
+支持elementUi el-input组件所有属性
+### FormSelect
+### FormMulSelect
+同上
+### FormCascader  
+同上
+### FormSwitch    
+同上
+### FormRadio   
  
-</script>
-```
-:::
-
-
-### 表格配置子项 
-> 表格配置,支持template属性，制定展示内容
-> 默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
-> 对于配有options数组的字段，没有配置展示组件时，Dy-Vue会自动获取对应label作为展示用
-
-
-|  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| template  | 默认值 |function |×  |{} |  默认返回原始值，可返回字符串或对象  | 
-| sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
-| colProperties  | 表格属性 | integer | ×  |{} |  element Ui table 组件支持的其他属性都可配置在内 | 
-
- 
-> 自定义组件相关属性可直接放在与sort平级
-
-::: demo
-```html
-<template>
-<ClientOnly>
-
-  <DynamicTable
-    class="relative"
-    :table="tableOption"
-    :columns="columns"
-    :data="data"
-  ></DynamicTable>
-</ClientOnly>
+| 键              | 意义         | 类型    | 必选 | 默认值 | 备注                                                 |
+| --------------- | ------------ | ------- | ---- | ------ | ---------------------------------------------------|
+| groupProperties | 分组属性     | Object  | ×    | {}     | 支持 el-radio-group组件所有属性                      |
+| itemProperties  | 单项属性     | Object  | ×    | {}     | 支持 el-radio/el-radio-button 组件所有属性           |
+| buttom          | 是否按钮形式 | Boolean | ×    | false  | 为true时渲染el-radio-button false渲染el-radio-button |
   
-</template>
-<script>
 
-const fields  =[
-  {
-    key: "name",                  
-    type: "FormInput",           
-    label: "姓名",           
-    tableOption: {                  
-        sort:2,
-        colProperties:{
-          width:90,
-          sortable:true,
-        }
-    },
-  },
+
+### FormCheckbox  
+
+| 键              | 意义         | 类型    | 必选 | 默认值 | 备注                                                |
+| --------------- | ------------ | ------- | ---- | ------ | --------------------------------------------------- |
+| groupProperties | 分组属性     | Object  | ×    | {}     | 支持 el-checkbox-group组件所有属性                  |
+| itemProperties  | 单项属性     | Object  | ×    | {}     | 支持 el-checkbox/el-checkbox-button 组件所有属性    |
+| buttom          | 是否按钮形式 | Boolean | ×    | false  | 为true时渲染el-checkbox-button false渲染el-checkbox |
   
-  {
-    key: "status",
-    type: "FormSelect",
-    label: '多选框',
-    options: [          //select radio 相关组件有必填options信息
-      {
-        value: 1,
-        label: "11",
-      },
-      {
-        value: 2,
-        label: "22",
-      },
-      {
-        value: 3,
-        label: "33",
-      },
-    ],
-    tableOption: {
-    },
-  },
-   {
-    key: "cName",
-    label: "公司名称",
-    tableOption: {
-      sort:1,
-        template(row){
-         return row.cName+'有限公司'
-       }
-    },
-  },
-  {
-    key: "email",
-    label: "邮箱",
-    tableOption: true,
-  },
-   
-]
+### FormRichEditor
 
-export default {
-  data () {
-    return {
-      tableOption:this.$appendToPreset('tableOption',{
-         
-      }),
-      columns:this.$buildTableFields(fields),
-      data:[
-        {
-          name:'李华',
-          status:1,
-          cName:'腾威网络',
-          email:'q231542@163.com'
-        }
-      ]
-    }
-  }
-}
+| 键      | 意义     | 类型   | 必选 | 默认值     | 备注 |
+| ------- | -------- | ------ | ---- | ---------------- | ---- |
+| plugins | 插件列表 | Object | ×    |                   |      |
+| toolbar | 工具条   | Object | ×    |                   |      |
+  
+
+
+### FormDate 
+为`el-date-picker`组件的二次封装   type="date"  value-format="yyyy-MM-dd"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormDateRange  
+为`el-date-picker`组件的二次封装   type="daterange"  value-format="yyyy-MM-dd"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormDateTime 
+为`el-date-picker`组件的二次封装  type="datetime"  value-format="yyyy-MM-dd HH:mm:ss"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormDateTimeRange 
+为`el-date-picker`组件的二次封装r   type="datetimerange"  value-format="yyyy-MM-dd HH:mm:ss"
+支持 el-date-picker 组件除type、value-format外所有属性
+### FormNumber  
+  同el-input type="number"    额外添加了两个属性（slot）
+| 键     | 意义     | 类型   | 必选 | 默认值 | 备注 |
+| ------ | -------- | ------ | ---- | ------ | ---- |
+| prefix | 前置符号 | string | ×    |        |      |
+| suffix | 后置符号 | string | ×    |        |      |
+### FormNumberPlus 
+   同el-input type="number"  额外加强了相关功能
+  自动千分位，支持整数限制、非负数限制、小数点后自动补零、前方添加特殊符号（比如￥），后方添加特殊符号
+
+| 键           | 意义               | 类型    | 必选 | 默认值 | 备注                                                   |
+| ------------ | ------------------ | ------- | ---- | ------ |  ----------------------- |
+| positive     | 是否禁止输入负号   | boolean | ×    | false  |                                                        |
+| onlyInt      | 是否禁止输入小数点 | boolean | ×    | 750    |                                                        |
+| zeroPadding  | 自动补零到指定位数 | number  | ×    |        |                                                        |
+| decimalLimit | 最大小数位数       | number  | ×    |        | 最大小数位数，小数位数超过这个长度的部分，将被自动截掉 |
+| prefix       | 前置符号           | string  | ×    |        |                                                        |
+| suffix       | 后置符号           | string  | ×    |        |                                                        |
+
+  
+
+### FormRateInput 
+百分比的数字输入框，存储/提交的时候，给的是转换后的真实小数。例如 50% 提交的值是 0.5。
+
+### FormNumberRange 
+  配置同  [FormNumber](#FormNumber)
+### FormSlider 
+ 同 elementUi el-slider
+### FormColorPicker  
+ 同 elementUi el-color-picker  
+ ### FormUpload 
+基于ElementUi el-upload 封装，配置属性参考el-upload 。 额外作了拓展/优化配置
+
+1. 上传动作强制使用apiPromise（http-request） 配置 ，建议全局定义上传行为，需要适配上传以及犯规结果参数
+2. 简化accept 参数  支持doc、img、video以及自定义参数
+3.  list-type  添加 table 类型
+4.  list-type 为table 是 添加downloadApi 参数
  
-</script>
-```
-:::
 
+### FormTreeSelect 
+支持el-tree 所有属性
+### FormText 
+纯文本，不可编辑，用于某些特定的场景
+特有参数  content   文本内容
+### FormHide 
+常用于更新、修改表单  提交id。该类型不会展示在界面中，但会提交数据
+### FormCurd 
+  表格形式的子表单
 
-### 详情配置子项 
+   | 键          | 意义       | 类型   | 必选 | 默认值 | 备注                                 |
+   | ----------- | ---------- | ------ | ---- | ------ | ------------------------------------ |
+   | fields      | 字段列表   | array  | √    | []     | 配置规则同[页面模板组件](./index.md) |
+   | options     | 选项       | object | √    | {}     | 配置规则同[页面模板组件](./index.md) |
+   | entityLabel | 子表单名称 | string | ×    |        |                                      |
+ 
+  
+### FormTableEditable 
+  配置同  [FormCurd](#FormCurd) 
+   不支持验证,不支持expressProp
+### FormTableEditable 
+  支持验证
+| 键     | 意义     | 类型  | 必选 | 默认值 | 备注                                 |
+| ------ | -------- | ----- | ---- | ------ | ------------------------------------ |
+| fields | 字段列表 | array | √    | []     | 配置规则同[页面模板组件](./index.md) |
+  
 
-> 详情配置子项，本质上也是表单组件渲染，可通过配置表单展示模式，将表单展示为更界面友好的详情页，详情页面无需验证，changeHandle交互，这些配置没有意义， 字段详情配置子项，通常无需配置。
-> Dy-Vue会默认使用formOption配置，formOption不满足需求时，支持detailOption自定义配置，detailOption中配置将覆盖formOption配置  
-> 默认情况下搜索字段顺序和表单相同是按照字段先后顺序排列；若需要更改循序需要添加sort，Dy-Vue会按照sort从小到大正序排列
-
- |  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| wraperProperties  | 表单项包裹容器属性 | object |× | {} |包裹容器都为form-item 组件 Dy-Vue会将所有属性绑定到该组件 |  
-| expressProp  | 表单属性 | object |×  |{} |  成员值支持表达式语法，实现表单内容动态展示，规则和表单相同     | 
-| sort  | 顺序 | integer | ×  |10 | 相同时会按照字段本身先后循序排列 | 
-| span  | 栅格系统中占位列数 | string |×  |'' |一共24列 | 
-| extra  | 其他组件属性 | object |×  |{} | 额外的组件属性建议配置在extra内，Dyvue最终会将其展开到配置项中（所有将其配置到与父级也是有效） | 
-
-
-::: demo
+  ::: demo
 ``` html
 <template>
 <ClientOnly>
-
   <DynamicForm
     class="relative"
     :formOption="formOption"
     :formItemList="formItemList"
     :actions="actions"
-    :data="data"
   ></DynamicForm>
 </ClientOnly>
   
 </template>
 <script>
+   
+
+const eduListFields = [
+   
+    {
+        key: 'treeStreetType',
+        type: 'FormSelect',
+        label: '单位',
+        tableOption: {
+
+        },
+        options: [
+            {
+                value: '1',
+                label: '株'
+            },
+            {
+                value: '2',
+                label: '平方'
+            }
+        ],
+        formOption: {
+            col: 5,
+            rules: ['required']
+        }
+    },
+    {
+        key: 'treeStreetContext',
+        type: 'FormInput',
+        label: '备注',
+        tableOption: true,
+        formOption: {
+            col: 5,
+            rules: ['required']
+        }
+    },
+        {
+        key: 'color',
+        type: 'FormColorPicker',
+        label: '颜色',
+        tableOption: true,
+        formOption: {
+            col: 5,
+            rules: ['required']
+        }
+    }
+]
+ const eduListOption = {
+    topToolBar: {
+        bulkdelete: null,
+        create: {
+          colNum:1,
+          saveAtion: {
+              callback: {
+                  showTip: false
+              }
+          }
+        }
+    },
+    tableOption: {
+        hasCheckbox: false,
+        lineActions: {
+            detail: null,
+            delete: {
+                callback: {
+                    showTip: false
+                }
+            },
+            update: {
+                colNum:1,
+                saveAtion: {
+                    callback: {
+                        showTip: false
+                    }
+                }
+            }
+        }
+    }
+}
+
+//没有联动
+const eduListTableFields = [
+ 
+    {
+        key: 'parentId',
+        type: 'FormInput',
+        label: '类别',
+
+        tableOption: {
+            sort: 2,
+        },
+        formOption: {
+        }
+    },
+    {
+        key: 'quantity',
+        type: 'FormNumber',
+        label: '数量',
+        tableOption: {
+            label: '设备数量',
+            sort: 3
+        },
+        formOption: {
+        }
+    },
+    {
+        key: 'treeStreetType',
+        type: 'FormSelect',
+        label: '单位',
+        tableOption: {
+        },
+        options: [
+            {
+                value: '1',
+                label: '台'
+            },
+            {
+                value: '2',
+                label: '平方'
+            }
+        ],
+        formOption: {
+        }
+    },
+    {
+        key: 'time',
+        type: 'FormDate',
+        label: '日期',
+        tableOption: {},
+        formOption: {
+        }
+    },
+    // {
+    //     key: 'treeStreetContext',
+    //     type: 'FormInput',
+    //     label: '备注',
+    //     tableOption: {},
+    //     formOption: {
+    //         disabled:true,
+    //     }
+    // }
+
+]
+ const eduListTableOption = {
+    hasCheckbox: false
+}
+
 const fields  =[
-  {
-    key: "name",                  
-    type: "FormInput",           
-    label: "姓名",           
-    formSection: "基础信息",      
-    formOption: {                  
-      wraperProperties:{    //会传入elment 表单组件FormItem的参数props
-        style: {},
-      },
-    },
-  },
-  {
-    key: "status",
-    type: "FormSelect",
-    label: '多选框',
-    formSection: "基础信息",      
-    options: [          //select radio 相关组件有必填options信息
-      {
-        value: 1,
-        label: "选我会给设置姓名disabled",
-      },
-      {
-        value: 2,
-        label: "选我会设置姓名必填",
-      },
-      {
-        value: 3,
-        label: "选我会设置姓名只读",
-      },
-    ],
-    formOption: {
-        
-    },
-  },
-   {
-    key: "cName",
-    label: "公司名称",
-    formSection: "职业信息",      
-    formOption: {
-      expressProp: {    //会传入elment 表单组件本身  支持表达式语法
-        value: '${status}==3?"333":"222"',
-      },
-    },
-  },
   {
     key: "email",
     label: "邮箱",
     formSection: "职业信息",      
     formOption: {
-         
+         rules: [    //表单验证验证规则
+        'email',    //系统预置规则包括    required email url integer
+       {    //自定义规则
+            message: '请输入***',
+            trigger: 'blur',
+            required: true
+       }
+      ],
     },
   },
     {
-    key: "phone",
-    label: "公司电话",   
-    formSection: "职业信息",      
-    formOption: {
-      
+      key: 'children-form',
+      label: '',
+      type: 'FormChildrenForm',
+      formSection: '子表单',
+      formOption: {
+        col: 2,
+        wraperProperties: {
+          'label-width': '0px'
+        },
+          fields: eduListFields,
+          entityLabel: '子表单',
+                      defaultValue: [
+                {
+                    id: 1,
+                    treeStreetType: '1',
+                    treeStreetContext: '实打实大所多撒',
+                    color:"blue"
+                },
+            ]
+      }
     },
-  }, 
-  {
-    key: "address",
-    label: "公司地址",   
-    formSection: "职业信息",      
-    formOption: {
-      span:24
+    {
+      key: 'curd',
+      label: '',
+      type: 'FormCurd',
+      formSection: '表格子表单',
+      formOption: {
+        col: 2,
+        wraperProperties: {
+          'label-width': '0px'
+        },
+        fields: eduListFields,
+        options: eduListOption,
+        entityLabel: '表格子表单',
+        defaultValue: [
+            {
+              id: 1,
+              treeStreetType: '1',
+              treeStreetContext: '实打实大所多撒',
+              color:"blue"
+            },
+        ]
+      }
     },
-  }, 
+    // {
+    //   key: 'tableeditable',
+    //   label: '',
+    //   type: 'FormTableEditable',
+    //   formSection: '可编辑表格',
+    //   formOption: {
+    //     col: 2,
+    //     wraperProperties: {
+    //       'label-width': '0px'
+    //     },
+    //     fields: eduListTableFields,
+    //     options: eduListOption,
+    //     entityLabel: '可编辑表格',
+    //     defaultValue: [
+    //       {
+    //         quantity: 1,
+    //         treeStreetType: '1',
+    //         time:"2022-05-26",
+    //         parentId:12
+    //       },
+    //     ]
+    //   }
+    // },
 ]
 
 export default {
   data () {
+     debugger
+
     return {
       formOption:this.$appendToPreset('formOption',{
-         textMode:true
+         'label-width':'100px',
+          borderForm: false,
+          showFoldBtn: true,
       }),
       formItemList:this.$buildFormFields(fields),
-      data:{
-        name:'李佩',
-        cName:'滕王',
-        status:1,
-        email:'2312@we.com',
-        phone:'18002356365',
-        address:'重庆天一路',
-      },
-      actions:{
-        cancel:{
-          component:'el-button',
-          label:'取消'
+      actions: this.$generateActionOption({
+        actionType:'submit',
+        apiPromise:Promise.resolve({msg:'操作成功',code:200})
+      })
+    }
+  }
+}
+ 
+</script>
+```
+:::
+
+## 模板项目中附带的表单组件  
+- 地图选点  --------- [FormSelectPoint](#FormSelectPoint) 
+- 地图划区  --------- [FormDrawElement](#FormDrawElement) 
+- 字典下拉多选框  ---  [FormDynamicSelect](#FormDynamicSelect)  
+- 富文本编辑 -------- [FormRichEditor](#FormRichEditor) 
+- 输入搜索下拉框  -- (todo)
+
+## 自定义表单组件
+自定义表单组件的开发十分简单，DyVue提供了**通用表单混入**--`FormMixin`,在您的表单组件中引入该mixin，就可使用DyVue提供的多个组件Api及相关属性
+
+### props
+自定义表单组件 接受的参数
+| 键     | 意义     | 类型  |  默认值 | 备注                       |
+| ------ | -------- | ----- | ---- | ------ | --------------------- |
+| value | 表单项值 | any |        |    |
+| item | 表单字段配置 | string |        |   |
+
+### computed
+自定义表单组件 计算属性
+| 键     | 意义     | 类型  |   默认值 | 备注                     |
+| ------ | -------- | ----- | ---- | ------ | ------------------ |
+| isTextMode | 是否文本模式 | boolean |  false     |  |
+| isDisabled | 是否禁用 | boolean |    false     |  |
+| placeholder | placeholder | string |      |  |
+| bindOptions | 所有组件参数 | string |       | 建议通过v-bind 绑定到组件  |
+| val | 表单项展示值 | any |        | 用于展示，设置值  |
+
+ 
+``` html
+<template>
+    <!-- 普通输入框 -->
+    <section>
+        <el-switch
+            v-if="!isTextMode"
+            v-model="val"
+            v-bind="bindOptions"
+            :disabled="isDisabled"
+        />
+        <div v-else :style="item.textStyle || {}" class="form-input-text">
+            {{ textModeValue || '-' }}
+        </div>
+    </section>
+</template>
+
+<script>
+import {FormMixin} from 'dyvue2'
+
+export default {
+    name: 'FormSwitch',
+    mixins: [FormMixin],
+    data() {
+        return {}
+    },
+    computed: {
+        textModeValue() {
+            return this.val === this.bindOptions['active-value'] ? this.bindOptions['active-text'] : this.bindOptions['inactive-text']
         }
-      }
     }
-  }
-}
- 
-</script>
-```
-:::
-
-
-## 页面配置
->常规增删改查页面几乎不需要特别配置，Dy-Vue已经预置了相关配置，但业务总是多变的，非常规页面的配置是开发的重点
-
-::: demo 只配置字段示例
-```html
-<template>
-<ClientOnly>
-
-  <DynamicCurdPage
-    :entityLabel="entityLabel"
-    :fields="fields"
-    :pageOptionsprops="pageOptions"
-    :apiPromises="apiPromises"
-  ></DynamicCurdPage>
-</ClientOnly>
-
-</template>
-<script>
-
-const entityLabel = '****'
- 
-const fields  =[
- { key: "keyWord",  label: "关键字", searchable: true },
-  {key:'id'},
-  {
-    key: "sName",
-    label: "姓名",
-    formOption: {},
-    tableOption: {
-    },
-  },
-  {
-    key: "latinSciName",
-    label: "外号",
-    tableOption:true,
-    formOption: {
-    },
-  },
-  {
-    key: "originalNumber",
-    label: "原编号",   
-    tableOption:true,
-    formOption: {
-    },
-  }, 
-]
-
-export default {
-  data () {
-    return {
-      // 页面配置
-      pageOptions: {
-      },
-      // 字段配置
-      fields,
-      entityLabel,
-      // Api配置
-      apiPromises:{
-        create:mockApi,
-        bulkdelete:mockApi,
-        list:tableinfoListApi,
-        detail:mockApi,
-        update:mockApi
-      },
-    }
-  }
-}
-//----------------------Api-------------------
-function tableinfoListApi (params) {
-  return import("../../.vuepress/components/vuePlugins/utils").then(module=>{
-      return Promise.resolve(module.apiListMock(fields,5));
-  })
-}
-function mockApi (data) {
-  return Promise.resolve({})
-}
-</script>
-```
-:::
-
-###  普通增删改查页面配置
->为减少使用过程中，重复配置常用增删改查相关页面配置，Dy-Vue预设了大量常用配置,使常规增删改查页面配置归零。
->只有当预设配置不能满足需求时，才需要额外传入页面配置项，Dy-Vue 会对用户传入的页面配置和预设配置进行深度递归合并，用户配置会自动覆盖预设配置
-
-|  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| searchOption  | [搜索栏配置](#自定义搜索栏配置) | Object | ×  | 预设 | 搜索栏配置 | 
-| topToolBar  | [上方工具栏操作按钮](#自定义上方操作栏配置) | Object |×  | 上方操作按钮 |  | 
-| listOption  | [列表配置](#自定义列表配置) |Object |× | 预设| 列表配置 | 
-| treeOption  | [左侧筛选树配置](#左侧筛选树) |Object| × | 预设 |   | 
-| pagination  | [分页](#自定义分页配置) | Object |×  |  分页配置|  | 
-
-
-### 页面模板预定义配置（CURD）
-增删改查（CURD）实际上是5（批量删除+1）个[操作](../actions/index.md),他们分别被放在topToolBar和listOption.lineActions中，它们的键名是固定的
-- create  新增    (操作类型默认 [表单弹窗](./../actions/index.md#表单弹窗))
-- bulkdelete 批量删除  (操作类型默认 [接口请求](./../actions/index.md#接口请求))
-- update  修改    (操作类型默认 [表单弹窗](./../actions/index.md#表单弹窗))
-- detail  详情    (操作类型默认 [表单弹窗](./../actions/index.md#表单弹窗))
-- delete 删除  (操作类型默认 [接口请求](./../actions/index.md#接口请求))
-
-默认情况下您不需要进行任何相关配置，就可实现增删改查功能
-当您在的需求中只有部分功能，
-- 如没有批量删除时只需要配置` bulkdelete:null `
-- 如修改弹窗标题时只需要配置` title:'****' `
-
-dyVue会将您的配置和预定义配置进行合并
-
-``` js
-{
-  topToolBar:{
-    create:{
-        title:'添加信息'    //更改默认弹窗标题
-    },
-    bulkdelete:null    //删除批量删除按钮
-  },
-  listOption:{
-    lineActions：{
-      update: {
-        colNum:1  //更改默认弹窗布局为一列
-      },
-      detail: {
-        container:'drawer'  //更改默认弹窗容器为抽屉
-      },
-      //delete 操作保持默认配置  
-    }
-     
-  }
-}
-
-```
-
-
-::: details   页面配置合并原则
-1. 用户配置与预设配置数据类型（对象、数组)不相同时会丢弃用户配置，使用预设配置，
-2. 若为都对象，会继续进行深度递归合并
-3. 用户配置为null、undefined  会删除预设配置项 
-4. 用户新增配置项，会合并到预设配置中
-5. 用户没有配置对应项会使用预定义配置 
-6. 其他情况，用户配置覆盖预设配置
-
-
-7. 为数组  （-鼓励使用对象-）
-  - 若预设配置成员都为基本类型，用户配置覆盖预设配置
-  - 若预设配置成员包含非基本类型，会合并两者（很少发生）
-:::
-
-::: demo 用户配置示例
-```html
-<template>
-<ClientOnly>
-
-  <DynamicCurdPage
-    :entityLabel="entityLabel"
-    :fields="fields"
-    :pageOptionsprops="pageOptions"
-    :apiPromises="apiPromises"
-  ></DynamicCurdPage>
-</ClientOnly>
-
-</template>
-<script>
-
-const entityLabel = '****'
- 
-const fields  =[
- { key: "keyWord",  label: "关键字", searchable: true },
-  {
-    key: "sName",
-    label: "姓名",
-    formOption: {
-    },
-    tableOption: {
-    },
-  },
-  {
-    key: "latinSciName",
-    label: "外号",
-    tableOption:true,
-    formOption: {
-    },
-  },
-  {
-    key: "originalNumber",
-    label: "原编号",   
-    tableOption:true,
-    formOption: {
-    },
-  }, 
-]
-
-export default {
-  data () {
-    return {
-      // 页面配置
-      pageOptions: {
-        topToolBar:{
-          create:null,  //删除顶部新增操作按钮
-        },
-          treeOption:null,   //删除左侧tree
-        },
- 
-      // 字段配置
-      fields,
-      entityLabel,
-      // Api配置
-      apiPromises:{
-        create:mockApi,
-        bulkdelete:mockApi,
-        list:tableinfoListApi,
-        detail:mockApi,
-        update:mockApi
-      },
-    }
-  }
-}
-//----------------------Api-------------------
-function tableinfoListApi (params) {
-  return import("../../.vuepress/components/vuePlugins/utils").then(module=>{
-      return Promise.resolve(module.apiListMock(fields,5));
-  })
-}
-function mockApi (data) {
-  return Promise.resolve({})
 }
 </script>
 
 ```
-:::
-
- 
-
-### 自定义搜索栏配置
-参考搜索栏组件配置：[Dynamic-Search](/guide/components/search)
-
-### 自定义上方操作栏配置
-参考表单组件配置：[Dynamic-Action](/guide/actions/index)
-
-### 自定义列表配置
-参考列表组件配置：[Dynamic-List/Table](/guide/components/list)
-
-
-### 自定义查询树配置
-
-#### 预设/默认配置
-```
-{
-  lazy: true,
-  'node-key': 'deptId',
-  props: {
-    label: 'deptName',
-    children: 'children',
-    isLeaf: 'leaf'
-  },
-  'current-node-key': null,
-  'highlight-current': true,
-  fieldName: 'test'
-}
-```
-
-### 自定义分页配置
-
-
-#### 预设/默认配置
-```
-{
-  small: false,
-  'current-page': 1,
-  pageSize: 10,
-  layout: 'total,sizes, prev, pager, next, jumper',
-  'hide-on-single-page': true,
-  'page-sizes': [10, 20, 30, 40, 50]
-  // background:true
-}
-```
-
-### 表格上方插槽
-插槽采用配置形式，配置项包括`component`和`properties`
-`component`为已经全局注册的组件名，`properties`为绑定到组件中的属性
-```
- tableUp:{
-    component:'DyTmpl',
-    properties:{
-      tmpl:'总数量:<span class="text-blue py4 px4">#{num}</span>,总数量1:<span class="text-red py4 px4">#{num1}</span>',
-      data:{
-        num:123254,
-        num1:5546
-      }
-    }
-  },
-
- ```
- 
-## Api配置
->Api配置中包含增删改查相关Api函数，返回值均为Promise
-
-|  键   | 意义  |类型| 必选  |默认值  |备注   
-|  ----  | ----  |----  |----  |----  |----  |----  |
-| create  | 新增 |function| × | ()=>Promise.reslove({}) |   | 
-| bulkdelete  | 批量删除  |function |× | 同上|   | 
-| list  | 列表 | function | ×  | 同上 |   | 
-| detail  | 详情 | function |×  |  同上|  | 
-| update  | 修改 | function |×  | 同上 |  | 
-| delete  | 删除 | function |×  | 同上 | 未配置delete项是会尝试使用bulkdelete  | 
-
-## 页面名称
->默认、预设情况下 新增/修改/详情 标题会依据页面名称自动生成，若需要自定义可在页面配置中配置以覆盖预设的标题
-
-     
  

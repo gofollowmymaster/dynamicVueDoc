@@ -20,7 +20,9 @@ module.exports = {
         { text: '组件', link: '/guide/components/index' },
         { text: '操作', link: '/guide/actions/index' },
         { text: '样式', link: '/guide/layout' },
-        { text: '示例', link: '/pageBuilder/index' },
+        { text: '练习板', link: '/pageBuilder/index' },
+        { text: 'git', link: 'https://gitee.com/alerting/dyVue2-admin' },
+
 
 
 
@@ -28,24 +30,13 @@ module.exports = {
       sidebar: {
         '/guide/components/': [
           '',     /* /foo/ */
-          'form',  /* /foo/one.html */
           'list',   /* /foo/two.html */
           'search',   /* /foo/two.html */
-          'detail'   /* /foo/two.html */
+          'detail',   /* /foo/two.html */
+          'curd',  /* /foo/one.html */
+
         ],
-  
-        // '/guide/actions/': [
-        //   '',      /* /bar/ */
-        //   'requestApi', /* /bar/three.html */
-        //   'router'   /* /bar/four.html */
-        // ],
-  
-        // fallback
-        // '/': [
-        //   '',        /* / */
-        //   'contact', /* /contact.html */
-        //   'about'    /* /about.html */
-        // ]
+   
       },
       displayAllHeaders: false, // 默认值：false
       activeHeaderLinks: true, // 默认值：true

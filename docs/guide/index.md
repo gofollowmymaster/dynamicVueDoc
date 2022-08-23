@@ -42,7 +42,7 @@ const entityLabel = '****'
 const fields  =[
  { key: "keyWord", type: "FormInput", label: "关键字", 
     searchOption: {
-      span:8
+      col:1
     }
   },
   {key:'id' ,type:'FormHide',formOption:true},
@@ -85,7 +85,7 @@ const fields  =[
     label: "备注",
     tableOption:true,
     formOption:{
-      span:24
+      col:2
     }
   },
 ]
@@ -112,7 +112,7 @@ export default {
   }
 
  
-//----------------------Api-------------------
+//----------------------数据请求Api-------------------
  function tableinfoListApi (params) {
   return import("../.vuepress/components/vuePlugins/utils").then(module=>{
     return Promise.resolve(module.apiListMock(fields,5));
@@ -146,17 +146,20 @@ export default {
 ### 配置
 Dy-Vue 设计初衷是实现配置式低代码管理后台页面开发， 是借助配置驱动整个页面功能， **配置是Dyvue的大脑/中枢**，配置主要分为两部分:
 ::: tip 数据字段配置   
-管理页面中常见组件包括**搜索栏**，**表格**，**表单**都是需要和服务端交互的组件，其中大量场景中数据字段配置是相同/重叠的,所以数据字段可以作为单独的一项配置
-DyVue 既支持字段集中配置也支持各组件独立配置（不再有如formOption，tableOption，searchOption等）
+- 管理页面中常见组件包括**搜索栏**，**表格**，**表单**都是需要和服务端交互的组件，其中大量场景中数据字段配置是相同/重叠的,所以我们将数据字段提取出来作为单独的一项配置，
+  也为对接后台快速开发提供了便利
+  
+- DyVue 既支持字段集中配置也支持各组件独立配置（不再有如formOption，tableOption，searchOption等）
 :::
 ::: tip 页面功能配置
 页面功能配置包括**页面布局**，**内容组件属性**，**操作行为**等，配合数据字段配置实现整体功能
 :::
  
 ### 组件
-页面是由组件组成的，Dy-Vue定义了后台管理常用的组件，包括动态表单，动态表格，动态操作栏，动态表单弹窗，动态内容弹窗，CURD组件，以及集成了上述组件的CURD模板组件等
+页面是由组件组成的，Dy-Vue定义了后台管理常用的组件，包括[动态表单](./components/form.md)，[动态表格](./components/list.md)，[动态操作栏](./actions/index.md)，动态表单弹窗，动态内容弹窗，以及集成了上述组件的CURD模板组件等
 **组件是Dyvue的血肉机体**
 ::: tip 组件要点
+
 - 通过页面配置将[组件](./components)组织起来实现多样的交互
 - 您既可以使用Dy-Vue提供的模板组件实现列表页面功能，也可以只使用部分功能组件实现特殊页面需求
 - 如果您需要使用自定义组件，只需要全局注册后，就可以在Dyvue中配置使用
@@ -264,7 +267,8 @@ this.$appendToPreset(options)
 
 ## 生成测试数据
 
-DyVue 支持一键填充测试数据，这在大表单中尤其有用，开发调试时免去了反复填写表单的过程，提升开发效率
- 
+DyVue 支持一键填充测试数据，这在大表单中尤其有用，开发调试时免去了反复填写表单的过程，提升开发效率。
+
 ## 开发计划
-待补充
+- Vue3支持
+- 对接swagger 数据，自动生成字段配置

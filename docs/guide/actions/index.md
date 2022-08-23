@@ -75,7 +75,7 @@ pageClass:  wide-width-container
 | containerProperties | 容器属性                    | Object | ×       |  {}   |   所有属性将绑定到容器组件中  |
 | layout | 容器布局                 | String | ×       |  LayoutGrid    |     |
 | layoutProperties | 容器布局                 | String | ×       |  LayoutGrid    |     |
-| body | 容器内容                 | Array | ×       |  []    |  弹窗内容组件列表    配置参见[]()  |
+| body | 容器内容                 | Array | ×       |  []    |  弹窗内容组件列表    配置参见[弹窗内容组件配置](#弹窗内容组件配置)  |
 
 
 #### 弹窗内容组件配置
@@ -406,6 +406,10 @@ actionHandle为一个函数 参数为actionData
 | showTip | 弹出提示              | boolean     |      |
 | back | 返回              | number     |     |
 
+
+## 开发计划
+- 上传操作
+- 打印操作
 
 
  
