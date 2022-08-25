@@ -2,7 +2,7 @@ module.exports = {
     title: 'Dynamic-Vue',
     description: '前端开发利器,数据驱动视图,高效低代码搬砖',
     dest: 'docs',// 设置输出目录
-    base:'/dynamicVueDoc/',
+    base:'/dynamicvuedoc/',
     head: [ // 注入到当前页面的 HTML <head> 中的标签
       ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
       // ['link', { rel: 'icon', href: '/img/logo.ico' }], // 增加一个自定义的 favicon(网页标签的图标)
@@ -21,8 +21,9 @@ module.exports = {
         { text: '操作', link: '/guide/actions/index' },
         { text: '样式', link: '/guide/layout' },
         { text: '练习板', link: '/pageBuilder/index' },
-        { text: 'git', link: 'https://gitee.com/alerting/DynamicVue2' },
-        { text: '体验', link: 'https://gitee.com/alerting/DynamicVue2' },
+        { text: 'git', link: 'https://github.com/gofollowmymaster/DynamicVue2' },
+        { text: '体验', link: 'http://alerting.gitee.io/dynamicvue2/' },
+
 
 
 
