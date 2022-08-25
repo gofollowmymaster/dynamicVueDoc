@@ -5,7 +5,7 @@ module.exports = {
     base:'/dynamicvuedoc/',
     head: [ // 注入到当前页面的 HTML <head> 中的标签
       ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
-      // ['link', { rel: 'icon', href: '/img/logo.ico' }], // 增加一个自定义的 favicon(网页标签的图标)
+      ['link', { rel: 'icon', href: '/favicon.ico' }], // 增加一个自定义的 favicon(网页标签的图标)
       // ['link', { rel: 'stylesheet', href: '/nav.css' }],
     ],
     markdown: {
