@@ -50,6 +50,7 @@ pageClass:  wide-width-container
 - 增删改查表格表单 ---- [FormCurd](#FormCurd) 
 - 子表单 -------------- [FormChildrenForm](#FormChildrenForm) 
 - 可编辑表格 ---------- [FormTableEditable](#FormTableEditable)  (todo)
+- Slot --------------- [slot](#插槽)
 ## 模板项目中附带的表单组件  
 - 地图选点  --------- [FormSelectPoint](#FormSelectPoint) 
 - 地图划区  --------- [FormDrawElement](#FormDrawElement) 
@@ -420,7 +421,7 @@ export default {
    | entityLabel | 子表单名称 | string | ×    |        |                                      |
  
   
-### FormTableEditable 
+### FormChildrenForm 
   配置同  [FormCurd](#FormCurd) 
    不支持验证,不支持expressProp
 ### FormTableEditable 
@@ -699,6 +700,13 @@ export default {
 </script>
 ```
 :::
+
+### 插槽
+自定义表单组件 接受的参数
+| 键     | 意义     | 类型  |  默认值 | 备注                       |
+| ------ | -------- | ----- | ---- | ------ | --------------------- |
+| wrapertype | 包裹容器 | string/component |    'div'    |    |
+| key | 插槽名 | string |        |   |
 
 ## 模板项目中附带的表单组件  
 - 地图选点  --------- [FormSelectPoint](#FormSelectPoint) 

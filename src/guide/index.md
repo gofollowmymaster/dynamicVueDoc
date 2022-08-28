@@ -156,7 +156,7 @@ Dy-Vue 设计初衷是实现配置式低代码管理后台页面开发， 是借
 :::
  
 ### 组件
-页面是由组件组成的，Dy-Vue定义了后台管理常用的组件，包括[动态表单](./components/form.md)，[动态表格](./components/list.md)，[动态操作栏](./actions/index.md)，动态表单弹窗，动态内容弹窗，以及集成了上述组件的CURD模板组件等
+页面是由组件组成的，Dy-Vue定义了后台管理常用的组件，包括[动态表单](./components)，[动态表格](./components/list.md)，[动态操作栏](./actions/index.md)，动态表单弹窗，动态内容弹窗，以及集成了上述组件的CURD模板组件等
 **组件是Dyvue的血肉机体**
 ::: tip 组件要点
 

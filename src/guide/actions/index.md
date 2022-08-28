@@ -12,6 +12,86 @@ pageClass:  wide-width-container
 - 操作出发时支持弹出poper层、msgBox提示
 - 请求/下载等操作发起后支持多种[回调](#操作回调)
 :::
+
+## 操作栏组件
+
+操作栏组件， 
+::: tip 不止于此
+ 
+:::
+ 
+| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
+| --- | ---- | ---- | ---- | ------ | ---- | 
+| actions | 操作列表                    | Array | √    |  []   |   配置项参考[操作配置](#操作配置)  |
+| actionData | 操作数据                    | Object | √    |  {}   |  将要传递给操作的数据，支持传多组数据，在操作中通过actionDataKey制定传入操作的数据   |
+ 
+
+
+::: demo
+``` html
+<template>
+<ClientOnly>
+
+  <DynamicActions
+    :actions="actions"
+    :action-data="data"
+  ></DynamicActions>
+</ClientOnly>
+  
+</template>
+<script>
+   
+
+export default {
+  data () {
+    return {
+      data:{
+          temperature:42
+        },
+      actions: [{
+        component: 'el-button',   //操作触发组件  默认按钮
+        label: '查看',                //操作出发组件文字
+        actionType: 'dialogPage',   //操作类型
+        isLoadData: true,          //是否加载数据
+        containerProperties: {            //弹窗属性
+          title: '气温详情'
+        },
+        container: 'el-dialog',    //弹窗容器
+        body: [                           //弹窗内容
+          {
+              component: 'DyTmpl',      // 组件
+              name: '@object@',           //组件数据名     @object@ 会获取操作携带的所有数据  也可指定键名
+              props: {                    //弹窗属性 
+                class: ['grid-col-24']  ,
+                tmpl:"当前气温#{temperature}℃",
+              }
+            },
+        ]                 
+       
+      },
+      {
+          label: '请求',
+          actionType: 'requestApiAction',
+          apiPromise:  requestFunction,
+          callback:{
+            showTip:true
+          }
+      }] ,
+    }
+  }
+}
+ 
+ 
+function requestFunction (params) {
+  console.log(params)
+  return   Promise.resolve( params).then(( res )=>{
+          return  {}
+      });
+  
+}
+</script>
+```
+:::
 ## 支持的操作
 1.  内容弹窗--[dialogPage](#内容弹窗)
 2.  表单弹窗--[dialogForm](#表单弹窗)
@@ -30,12 +110,7 @@ pageClass:  wide-width-container
  
 
 
-## 组件参数
-| 键  | 意义 | 类型 | 必选 | 默认值 | 备注 |
-| --- | ---- | ---- | ---- | ------ | ---- | 
-| actions | 操作列表                    | Array | √    |  []   |   配置项参考[操作配置](#操作配置)  |
-| actionData | 操作数据                    | Object | √    |  {}   |  将要传递给操作的数据，支持传多组数据，在操作中通过actionDataKey制定传入操作的数据   |
- 
+
 ## 操作配置
 和表单配置类似操作配置也分为通用配置和具体操作特有配置
 ### 通用配置
@@ -129,7 +204,8 @@ export default {
             },
         ]                 
        
-      }] ,
+      },
+     ] ,
     }
   }
 }
