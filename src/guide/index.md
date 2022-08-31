@@ -106,6 +106,7 @@ export default {
       },
       // 页面配置
       pageOptions: {
+         treeOption:null
         },
       }
     }
