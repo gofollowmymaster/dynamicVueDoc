@@ -43,17 +43,19 @@ function detailApi(data) {
 }
  
 
+    var formFields=  buildFormFields( parseObject(fields))
  
 
     function  parseObject(content){
+      let res
       try{
-       return  eval(content)
+       res=  eval(content)
       }catch(err){
         console.error(err)
       }
+      return res
     }
 
-    var formFields=  buildFormFields( parseObject(fields))
 
 
 export default {
@@ -103,7 +105,7 @@ export default {
         let contentParsed
 
         try{
-          contentParsed=  eval(ev.data.content)
+          contentParsed=  parseObject(ev.data.content)
         }catch(err){
           console.error(err)
         }
@@ -125,8 +127,6 @@ export default {
         }
         if (ev.data.type == "page") {
           this.onPageOptionChange(ev.data.content)
-
-
         }
         self.pageKey= new Date().getTime()
 
@@ -153,7 +153,7 @@ export default {
         let contentParsed
 
         try{
-            formFields=  buildFormFields( this.fields)
+            // formFields=  buildFormFields( this.fields)
             console.log('--formFields1--',formFields)
             contentParsed=  eval(content)
             console.log('--contentParsed--',contentParsed)
@@ -177,7 +177,7 @@ export default {
         }
         return v;
       });
-      },
+    },
    
    
   },
